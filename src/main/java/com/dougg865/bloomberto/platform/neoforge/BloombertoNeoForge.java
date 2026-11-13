@@ -13,7 +13,7 @@ public final class BloombertoNeoForge {
         Bloomberto.init();
         NeoForgeEvents.register();
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            NeoForgeClientEvents.register();
+            NeoForgeClientEvents.register(modEventBus);
         }
     }
 }

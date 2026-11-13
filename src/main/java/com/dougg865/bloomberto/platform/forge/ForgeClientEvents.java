@@ -25,6 +25,11 @@ final class ForgeClientEvents {
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run);
             }
         });
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.entity.player.ItemTooltipEvent e) ->
+                com.dougg865.bloomberto.api.client.Tooltips.apply(e.getItemStack(), e.getToolTip(), e.getFlags().isAdvanced()));
+        net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus().addListener(
+                (net.minecraftforge.client.event.RegisterKeyMappingsEvent e) ->
+                        com.dougg865.bloomberto.api.client.Keybinds.drainPending().forEach(e::register));
         MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
         MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {

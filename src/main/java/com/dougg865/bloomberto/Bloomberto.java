@@ -62,6 +62,7 @@ public final class Bloomberto {
     public static void initClient() {
         com.dougg865.bloomberto.api.render.Shaders.listenForReloads();
         com.dougg865.bloomberto.api.render.post.PostEffects.registerBuiltIns();
+        com.dougg865.bloomberto.impl.render.DebugOverlay.register();
         com.dougg865.bloomberto.api.client.ClientEvents.WORLD_RENDER.register(
                 ctx -> com.dougg865.bloomberto.api.render.post.PostEffects.render(ctx.partialTick()));
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(

@@ -71,6 +71,11 @@ public final class Textures {
         return handle;
     }
 
+    /** How many textures created through this class are currently alive (loading or ready). */
+    public static int activeCount() {
+        return ACTIVE.size();
+    }
+
     private static void closeExisting(ResourceLocation id) {
         TextureHandle old = ACTIVE.remove(id);
         if (old != null) {

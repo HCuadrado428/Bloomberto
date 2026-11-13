@@ -13,8 +13,12 @@ final class NeoForgeClientEvents {
     private NeoForgeClientEvents() {
     }
 
-    static void register() {
+    static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         Bloomberto.initClient();
+        modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent e) ->
+                com.dougg865.bloomberto.api.client.Keybinds.drainPending().forEach(e::register));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.ItemTooltipEvent e) ->
+                com.dougg865.bloomberto.api.client.Tooltips.apply(e.getItemStack(), e.getToolTip(), e.getFlags().isAdvanced()));
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) ->
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run));
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->

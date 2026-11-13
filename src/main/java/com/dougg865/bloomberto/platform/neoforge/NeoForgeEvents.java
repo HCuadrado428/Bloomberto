@@ -14,6 +14,8 @@ final class NeoForgeEvents {
     }
 
     static void register() {
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.RegisterCommandsEvent e) ->
+                com.dougg865.bloomberto.impl.command.BloombertoCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post e) ->
                 BloombertoEvents.SERVER_TICK.invoke(l -> l.accept(e.getServer())));
         NeoForge.EVENT_BUS.addListener((LevelEvent.Load e) -> {

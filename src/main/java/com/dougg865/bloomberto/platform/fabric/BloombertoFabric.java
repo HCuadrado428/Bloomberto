@@ -11,6 +11,8 @@ public final class BloombertoFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Bloomberto.init();
+        net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+                com.dougg865.bloomberto.impl.command.BloombertoCommand.register(dispatcher));
         ServerTickEvents.END_SERVER_TICK.register(server ->
                 BloombertoEvents.SERVER_TICK.invoke(l -> l.accept(server)));
         ServerWorldEvents.LOAD.register((server, level) ->

@@ -19,6 +19,10 @@ public interface PlatformHelper {
      * on a dedicated server and on Fabric (Fabric has no mod list of its own; use Mod Menu's API with
      * {@code ConfigScreen.create}).
      */
+    /** Registers a key mapping with the loader. Client only; see {@code Keybinds}. */
+    default void registerKeyMapping(net.minecraft.client.KeyMapping mapping) {
+    }
+
     default void registerConfigScreen(String modId, com.dougg865.bloomberto.api.config.Config config) {
     }
 

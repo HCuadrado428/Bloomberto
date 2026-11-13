@@ -3,6 +3,9 @@ package com.dougg865.bloomberto.testmod;
 import com.dougg865.bloomberto.Bloomberto;
 import com.dougg865.bloomberto.api.animation.Easing;
 import com.dougg865.bloomberto.api.client.ClientEvents;
+import com.dougg865.bloomberto.api.client.HudOverlays;
+import com.dougg865.bloomberto.api.client.Keybinds;
+import com.dougg865.bloomberto.api.client.Tooltips;
 import com.dougg865.bloomberto.api.color.Color;
 import com.dougg865.bloomberto.api.render.WorldDraw;
 import com.dougg865.bloomberto.api.render.post.BuiltInEffects;
@@ -20,6 +23,15 @@ public final class TestModClient {
     }
 
     public static void init() {
+        // A key (default: K) that toggles the demo HUD overlay, an overlay and a tooltip.
+        net.minecraft.resources.ResourceLocation overlay = Bloomberto.id(TestMod.MOD_ID, "hud");
+        HudOverlays.register(overlay, (graphics, partialTick) ->
+                graphics.drawString(Minecraft.getInstance().font, "Bloomberto testmod HUD (press K)", 4, 4, 0xFFFFFF));
+        Keybinds.register(TestMod.MOD_ID, "toggle_hud", org.lwjgl.glfw.GLFW.GLFW_KEY_K, "general",
+                () -> HudOverlays.setVisible(overlay, !HudOverlays.isVisible(overlay)));
+        Tooltips.shiftInfo(stack -> stack.is(TestMod.EXAMPLE_ITEM.get()),
+                java.util.List.of(Component.literal("An example item from the Bloomberto testmod.")));
+
         // A vignette that fades in the first time a world is on screen.
         ClientEvents.CLIENT_TICK.register(() -> {
             if (!effectShown && Minecraft.getInstance().level != null && TestMod.EFFECTS_ENABLED.get()) {

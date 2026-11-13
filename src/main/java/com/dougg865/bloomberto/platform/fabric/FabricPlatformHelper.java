@@ -23,6 +23,11 @@ public final class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public void registerKeyMapping(net.minecraft.client.KeyMapping mapping) {
+        FabricClientHooks.registerKeyMapping(mapping);
+    }
+
+    @Override
     public boolean isModLoaded(String modId) {
         return FabricLoader.getInstance().isModLoaded(modId);
     }

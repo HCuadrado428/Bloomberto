@@ -15,6 +15,8 @@ final class ForgeEvents {
     }
 
     static void register() {
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.RegisterCommandsEvent e) ->
+                com.dougg865.bloomberto.impl.command.BloombertoCommand.register(e.getDispatcher()));
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ServerTickEvent e) -> {
             if (e.phase == TickEvent.Phase.END) {
                 BloombertoEvents.SERVER_TICK.invoke(l -> l.accept(ServerLifecycleHooks.getCurrentServer()));
