@@ -8,7 +8,8 @@
   "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
-    "main": ["com.dougg865.bloomberto.testmod.fabric.TestModFabric"]
+    "main": ["com.dougg865.bloomberto.testmod.fabric.TestModFabric"],
+    "client": ["com.dougg865.bloomberto.testmod.fabric.TestModFabricClient"]
   },
   "depends": {
     "minecraft": "${minecraft_version}",
