@@ -50,6 +50,17 @@ public final class Vtx {
         *///?}
     }
 
+    /** The entity vertex format: position, color, uv, overlay, light and normal (e.g. {@code RenderType.entityCutoutNoCull}). */
+    public static void entity(VertexConsumer c, PoseStack.Pose pose, float x, float y, float z, int argb, float u, float v,
+                              int overlay, int light, float nx, float ny, float nz) {
+        //? if >=1.21 {
+        c.addVertex(pose, x, y, z).setColor(argb).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
+        //?} else {
+        /*c.vertex(pose.pose(), x, y, z).color(r(argb), g(argb), b(argb), a(argb)).uv(u, v).overlayCoords(overlay).uv2(light)
+                .normal(pose.normal(), nx, ny, nz).endVertex();
+        *///?}
+    }
+
     public static int a(int argb) {
         return argb >>> 24;
     }

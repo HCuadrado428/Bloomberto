@@ -76,4 +76,22 @@ public final class TestModClient {
     private static void moreExamples() {
         PostEffects.register(Bloomberto.id(TestMod.MOD_ID, "bloom"), () -> new BuiltInEffects.Bloom().strength(2f));
     }
+
+    /**
+     * Blockbench example (the files are in {@code assets/bloomberto_testmod/geo} and {@code animations}). An entity or block
+     * entity implements {@code Animatable}, keeps one controller and plays clips by name:
+     *
+     * <pre>{@code
+     * AnimationController controller = ModelLibrary.animations(Bloomberto.id(MOD_ID, "animations/totem.animation.json")).controller();
+     * controller.play("animation.totem.idle").transition(5);
+     * // register: EntityRenderers.register(TYPE, ctx -> new AnimatedEntityRenderer<>(ctx, geoId, textureId));
+     * }</pre>
+     */
+    @SuppressWarnings("unused")
+    private static com.dougg865.bloomberto.api.animation.model.AnimationController modelExample() {
+        var controller = com.dougg865.bloomberto.api.animation.model.ModelLibrary
+                .animations(Bloomberto.id(TestMod.MOD_ID, "animations/totem.animation.json")).controller();
+        controller.play("animation.totem.idle").transition(5);
+        return controller;
+    }
 }

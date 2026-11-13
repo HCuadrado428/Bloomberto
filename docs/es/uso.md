@@ -146,6 +146,54 @@ ClientEvents.WORLD_RENDER.register(ctx -> WorldDraw.of(ctx)
     .throughWalls(true).billboard(textura, pos.getCenter(), 1f, Color.WHITE));
 ```
 
+## Más funciones de cliente *(cliente)*
+
+```java
+Keybinds.register("mymod", "open_menu", GLFW.GLFW_KEY_M, "general", () -> abrirMenu());   // llámalo mientras el mod carga
+HudOverlays.register(Bloomberto.id("mymod", "mana"), (graphics, partialTick) -> graphics.drawString(font, "Maná", 4, 4, 0xFFFFFF));
+Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.literal("Se encuentra bajo tierra.")));
+```
+
+**Efectos visuales**
+```java
+((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);        // temblor de impacto
+PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // zoom en pantalla
+Particles.of(ParticleTypes.FLAME).ring(pos, 1.5, 24).speed(0.05).spawn(level);            // nivel de cliente o de servidor
+Trail trail = new Trail(30, 30); trail.add(pos);  /* cada tick */  WorldDraw.of(ctx).trail(trail, 0.4f, cabeza, cola);
+RenderTypes.additive(texture); RenderTypes.emissive(texture); RenderTypes.glow(texture);   // render types con brillo
+new OffscreenTarget(256, 256);                                                             // framebuffer propio
+```
+El zoom escala la imagen; no cambia el campo de visión.
+
+**UI**
+```java
+List<Rect> celdas = FlexLayout.row().gap(6).padding(8).add(FlexLayout.Item.fixed(20, 20)).add(FlexLayout.Item.grow(1, 0, 20)).compute(area);
+UiGraphics.nineSlice(graphics, texture, new NineSlice(16, 16, 3), rect);   // las esquinas no se deforman
+UiGraphics.scissor(graphics, rect, () -> dibujar());                         // recorte
+Transition t = Transition.create().fade().slide(0, 12).scale(0.9f).duration(10); t.show();
+UiGraphics.transition(graphics, t, pivotRect, () -> dibujar());
+// widgets con skin: ThemedButton, ThemedToggle, ThemedSlider, ScrollList (incluye un tema oscuro por defecto)
+```
+
+**Modelos y animaciones de Blockbench (estilo GeckoLib)**
+```java
+GeoModel model = ModelLibrary.model(Bloomberto.id("mymod", "geo/golem.geo.json"));
+AnimationController controller = ModelLibrary.animations(Bloomberto.id("mymod", "animations/golem.animation.json")).controller();
+controller.play("animation.golem.walk").transition(5);                      // mezcla durante 5 ticks
+controller.play("animation.golem.attack").transition(2).then("animation.golem.idle");
+// entidad: implementa Animatable y registra  new AnimatedEntityRenderer<>(ctx, geoId, textureId)
+// block entity: implementa Animatable y registra  new AnimatedBlockEntityRenderer<>(geoId, textureId)
+```
+Lee geometría Bedrock (`.geo.json`, formatos 1.12.0 y 1.8.0) y archivos de animación con keyframes lineales, Catmull-Rom y de
+paso, y los tres modos de bucle. Las expresiones Molang aún no están soportadas. Los archivos se recargan con F3+T.
+
+## Herramientas de desarrollo
+
+- `/bloomberto reload` vuelve a leer todos los archivos de configuración; `/bloomberto info` muestra versiones y valores.
+- `/bloomberto datagen <modid>` ejecuta tu generador de datos registrado (`Datagen.register("mymod", gen -> ...)`):
+  modelos, block states, idiomas, recetas, loot tables y tags, en el formato de la versión de Minecraft en ejecución.
+- Un overlay de depuración (F8) muestra tweens, tareas, texturas y efectos activos en desarrollo.
+
 ## Ejemplo
 
 `src/testmod` es un mod de ejemplo completo que usa cada función de arriba; instala `bloomberto-testmod-*.jar` junto a
