@@ -1,6 +1,10 @@
 package com.dougg865.bloomberto;
 
+import com.dougg865.bloomberto.api.animation.TweenManager;
+import com.dougg865.bloomberto.api.event.BloombertoEvents;
+import com.dougg865.bloomberto.api.scheduler.Schedulers;
 import com.dougg865.bloomberto.platform.Services;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +28,32 @@ public final class Bloomberto {
     public static void init() {
         LOGGER.info("Initializing {} on {} ({})", MOD_NAME,
                 Services.PLATFORM.getLoader(), Services.PLATFORM.getLoaderName());
+        BloombertoEvents.SERVER_TICK.register(server -> Schedulers.server().tick());
+        if (Boolean.getBoolean("bloomberto.debugEvents")) {
+            registerDebugListeners();
+        }
+    }
+
+    /** Logs the first occurrence of each event; enabled with {@code -Dbloomberto.debugEvents=true}. */
+    private static void registerDebugListeners() {
+        AtomicBoolean firstTick = new AtomicBoolean(true);
+        BloombertoEvents.SERVER_TICK.register(server -> {
+            if (firstTick.getAndSet(false)) {
+                LOGGER.info("[debugEvents] server_tick");
+            }
+        });
+        BloombertoEvents.LEVEL_LOAD.register(level ->
+                LOGGER.info("[debugEvents] level_load {}", level.dimension().location()));
+        BloombertoEvents.PLAYER_JOIN.register(p -> LOGGER.info("[debugEvents] player_join {}", p.getGameProfile().getName()));
+        BloombertoEvents.PLAYER_LEAVE.register(p -> LOGGER.info("[debugEvents] player_leave {}", p.getGameProfile().getName()));
+    }
+
+    /** Called by the client entrypoint of each loader, after {@link #init()}. Never call on a server. */
+    public static void initClient() {
+        com.dougg865.bloomberto.api.client.ClientEvents.CLIENT_TICK.register(() -> {
+            Schedulers.client().tick();
+            TweenManager.shared().tick();
+        });
     }
 
     /**

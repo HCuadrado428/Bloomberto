@@ -13,7 +13,8 @@
   "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
-    "main": ["com.dougg865.bloomberto.platform.fabric.BloombertoFabric"]
+    "main": ["com.dougg865.bloomberto.platform.fabric.BloombertoFabric"],
+    "client": ["com.dougg865.bloomberto.platform.fabric.BloombertoFabricClient"]
   },
   "depends": {
     "fabricloader": ">=0.15.0",

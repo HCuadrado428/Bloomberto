@@ -122,7 +122,10 @@ tasks.processResources {
 }
 
 loom {
-    runConfigs.configureEach { ideConfigGenerated(false) }
+    runConfigs.configureEach {
+        ideConfigGenerated(false)
+        property("bloomberto.debugEvents", "true")
+    }
 }
 
 // Final jars of every target are collected in the root build/libs folder.

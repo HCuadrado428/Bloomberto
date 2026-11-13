@@ -14,12 +14,13 @@ for t in "${targets[@]}"; do
   pid=$!
   result=FAIL
   for _ in $(seq 1 120); do
-    if grep -q "Initializing Bloomberto" "$log"; then result=OK; break; fi
+    if grep -q "Initializing Bloomberto" "$log" \
+       && grep -q "debugEvents.*level_load" "$log" && grep -q "debugEvents.*server_tick" "$log"; then result=OK; break; fi
     if grep -qE "BUILD FAILED|FAILURE:" "$log"; then break; fi
     sleep 5
   done
   kill -- -"$pid" 2>/dev/null; pkill -f "gradle.*runServer" 2>/dev/null; sleep 3
-  if [ "$result" = OK ]; then grep -m1 "Initializing Bloomberto" "$log"; else fail=1; tail -30 "$log"; fi
+  if [ "$result" = OK ]; then grep -E "Initializing Bloomberto|debugEvents" "$log" | head -4; else fail=1; tail -30 "$log"; fi
   echo "$t: $result"
 done
 exit $fail

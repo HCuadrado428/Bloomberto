@@ -36,8 +36,8 @@ Instead of separate `common/`, `fabric/`, `forge/` Gradle modules, Stonecutter b
 
 ## Smoke test
 
-`scripts/smoke-test.sh [target...]` starts a dedicated server per target and checks that Bloomberto logs
-`Initializing Bloomberto on <LOADER>`.
+`scripts/smoke-test.sh [target...]` starts a dedicated server per target (with `-Dbloomberto.debugEvents=true`) and checks that Bloomberto logs
+`Initializing Bloomberto on <LOADER>` and fires `level_load` and `server_tick`. Client events (client tick, HUD) are compiled on all targets but not yet run, since there is no client in this environment.
 
 | Target | Status |
 |---|---|
