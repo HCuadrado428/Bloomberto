@@ -7,6 +7,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 ## [Unreleased]
 
 ### Added
+- `core`/`api`: `Color` (RGB/HSV/hex), `Interpolation`, `Spline`, `Noise` and a tick `Scheduler`, with JUnit 5 tests.
 - `testmod`: example mod packaged as a separate jar per target (`bloomberto-testmod-*.jar`).
 - Phase 0 skeleton: Stonecutter + Architectury Loom build producing 5 jars (Fabric/Forge 1.20.1, Fabric/Forge/NeoForge 1.21.1), `Bloomberto.id`, `Services.PLATFORM`.
 - Repository base: README, license (MIT), `.gitignore`, project brief in `docs/`.

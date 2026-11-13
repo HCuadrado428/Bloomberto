@@ -25,7 +25,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
       - name: Build ${{ matrix.target }}
-        run: ./gradlew :${{ matrix.target }}:build --no-daemon
+        run: ./gradlew :${{ matrix.target }}:build --no-daemon  # build includes the JUnit tests
       - uses: actions/upload-artifact@v4
         with:
           name: bloomberto-${{ matrix.target }}
