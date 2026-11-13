@@ -8,6 +8,8 @@ import com.dougg865.bloomberto.api.config.Config;
 import com.dougg865.bloomberto.api.config.ConfigBuilder;
 import com.dougg865.bloomberto.api.config.ConfigValue;
 import com.dougg865.bloomberto.api.data.DataKey;
+import com.dougg865.bloomberto.api.datagen.Datagen;
+import com.dougg865.bloomberto.api.datagen.Ingredient;
 import com.dougg865.bloomberto.api.data.EntityData;
 import com.dougg865.bloomberto.api.effects.Particles;
 import com.dougg865.bloomberto.api.event.BloombertoEvents;
@@ -83,6 +85,19 @@ public final class TestMod {
         LOGGER.info("[testmod] config file {} (greeting_repeat={})", CONFIG.file().getFileName(), GREETING_REPEAT.get());
 
         REGISTRAR.register();
+
+        // Datagen: run "/bloomberto datagen bloomberto_testmod" to write the JSON resources for the items above.
+        Datagen.register(MOD_ID, gen -> {
+            gen.lang("en_us").add("item.bloomberto_testmod.example_item", "Example Item")
+                    .add("block.bloomberto_testmod.example_block", "Example Block");
+            gen.itemModel("example_item");
+            gen.cubeAll("example_block");
+            gen.shaped("example_block", 1, List.of("##", "##"), java.util.Map.of('#', Ingredient.item("example_item")));
+            gen.shapeless("example_item", 4, List.of(Ingredient.item("example_block")));
+            gen.smelting(Ingredient.item("minecraft:stick"), "example_item", 0.1f, 100);
+            gen.dropSelf("example_block");
+            gen.itemTag("c:examples").add("example_item");
+        });
 
         Network.registerS2C(Greeting.TYPE, (packet, ctx) -> {
             LOGGER.info("[testmod] client got greeting '{}'; joins seen by the client: {}", packet.text(),

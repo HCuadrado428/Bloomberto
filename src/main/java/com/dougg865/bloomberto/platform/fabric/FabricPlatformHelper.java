@@ -18,6 +18,11 @@ public final class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public java.nio.file.Path getGameDir() {
+        return FabricLoader.getInstance().getGameDir();
+    }
+
+    @Override
     public java.nio.file.Path getConfigDir() {
         return FabricLoader.getInstance().getConfigDir();
     }

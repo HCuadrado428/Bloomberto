@@ -20,6 +20,11 @@ public final class NeoForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public java.nio.file.Path getGameDir() {
+        return FMLPaths.GAMEDIR.get();
+    }
+
+    @Override
     public java.nio.file.Path getConfigDir() {
         return FMLPaths.CONFIGDIR.get();
     }
