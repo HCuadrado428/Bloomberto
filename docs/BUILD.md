@@ -81,7 +81,12 @@ Put a world in `versions/<target>/run/saves/<world>` (set `allowCommands:1b` in 
 (`python3 scripts/xinput.py key u`, `type "/tp @s ~ ~ ~"`). Verified this way on 1.21.1 Fabric: world drawing (box, line, 3D text, billboard, trail), all six post effects
 (blur, bloom, pixelate, color grade, desaturate, zoom) plus vignette, a texture downloaded from a URL, a custom core shader with
 a uniform, an animated Blockbench model on a block entity, HUD overlays, keybinds, the UI screen, networking and entity data.
-On 1.20.1 Fabric: startup and world drawing. On NeoForge 1.21.1 (client): startup, networking, world drawing, URL texture,
-custom shader, a post effect and the UI screen. On Forge 1.20.1 (client, Bloomberto alone): startup, networking and keybinds.
-Forge 1.21.1: the development `runClient` of Architectury Loom fails before Bloomberto loads (`clz is null`), so its client side
-(including the HUD layer) has not been seen running.
+On NeoForge 1.21.1 (client): startup, networking, world drawing, URL texture, custom shader, a post effect and the UI screen.
+On Forge 1.21.1 (client, installed with Forge's own installer and launched by a small script, since Loom's `runClient` fails for
+it): startup, networking, entity data, the HUD layer, UI screen, keybinds, post effects, URL texture, custom shader and world
+drawing. On 1.20.1 Fabric: startup and world drawing; on Forge 1.20.1 (client, Bloomberto alone): startup, networking and keybinds.
+Not run: Fabric 1.20.1 beyond that, and Forge 1.20.1 with the testmod.
+
+Known quirk: under this launcher Forge 1.21.1 sometimes crashes ~1 minute after joining, when a bat dies in lava
+("Can not retrieve LootModifierManager until resources have loaded once", inside Forge); setting the `doMobLoot` game rule
+to false avoids it. It is not in Bloomberto code.

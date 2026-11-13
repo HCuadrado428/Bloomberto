@@ -10,6 +10,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - `ShaderProgram.drawQuad` and `impl.render.Immediate`, which hide the 1.20.1 / 1.21 `BufferBuilder` difference; the `testmod` now has examples of a URL texture, a custom core shader, a Blockbench block entity and a key (Y) that cycles the post effects.
 
 ### Fixed
+- World drawing on Forge 1.21: the view matrix Forge provides drew nothing; the bridge now derives it from the camera there (Fabric and NeoForge keep using their own, which a camera-derived matrix broke on Fabric).
 - Custom core shaders: the program JSON must be in the `minecraft` namespace (`assets/minecraft/shaders/core/<namespace>_<name>.json`); `ShaderProgram` now derives that name.
 - Blockbench block entities need a block with `.noOcclusion()`, otherwise the model is lit as if inside a wall (documented).
 - Client crash on startup (`getResourceManager()` was still null when the client entrypoint ran): reload listeners are now registered once the resource manager exists.
