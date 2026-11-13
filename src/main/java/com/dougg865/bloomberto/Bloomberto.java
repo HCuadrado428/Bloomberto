@@ -29,6 +29,8 @@ public final class Bloomberto {
         LOGGER.info("Initializing {} on {} ({})", MOD_NAME,
                 Services.PLATFORM.getLoader(), Services.PLATFORM.getLoaderName());
         BloombertoEvents.SERVER_TICK.register(server -> Schedulers.server().tick());
+        // Touch the network service early so loader channels exist before other mods register packets.
+        LOGGER.debug("Networking: {}", Services.NETWORK.getClass().getSimpleName());
         if (Boolean.getBoolean("bloomberto.debugEvents")) {
             registerDebugListeners();
         }
@@ -36,6 +38,7 @@ public final class Bloomberto {
 
     /** Logs the first occurrence of each event; enabled with {@code -Dbloomberto.debugEvents=true}. */
     private static void registerDebugListeners() {
+        com.dougg865.bloomberto.impl.network.DebugPackets.register();
         AtomicBoolean firstTick = new AtomicBoolean(true);
         BloombertoEvents.SERVER_TICK.register(server -> {
             if (firstTick.getAndSet(false)) {

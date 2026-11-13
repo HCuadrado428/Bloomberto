@@ -15,7 +15,7 @@ for t in "${targets[@]}"; do
   result=FAIL
   for _ in $(seq 1 120); do
     if grep -q "Initializing Bloomberto" "$log" \
-       && grep -q "debugEvents.*level_load" "$log" && grep -q "debugEvents.*server_tick" "$log"; then result=OK; break; fi
+       && grep -q "debugEvents.*level_load" "$log" && grep -q "debugEvents.*server_tick" "$log" && grep -q "debugEvents.*network packets registered" "$log"; then result=OK; break; fi
     if grep -qE "BUILD FAILED|FAILURE:" "$log"; then break; fi
     sleep 5
   done

@@ -56,3 +56,10 @@ feature here as modules are implemented.
 ## Quilt
 
 Not tested yet: the Fabric jar should load on Quilt Loader, but this needs verification (pending).
+
+## Network status
+
+Packet registration is verified on all 5 targets (dedicated server). Sending and receiving packets over a real
+connection is **not yet verified**: it needs a client, which this environment does not have. With
+`-Dbloomberto.debugEvents=true` Bloomberto registers a ping/pong pair that logs on join, so the round trip can be
+checked by joining a server with a client (`[debugEvents] client received ping` then `server received 'pong:...'`).
