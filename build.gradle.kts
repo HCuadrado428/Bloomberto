@@ -57,6 +57,19 @@ sourceSets.main {
     resources.srcDir(rootProject.file("loaders/$loader/resources"))
 }
 
+// Example mod ("testmod"): compiled against the main output and packaged as a separate jar.
+val testmod: SourceSet = sourceSets.create("testmod") {
+    java {
+        setSrcDirs(listOf(rootProject.file("src/testmod/java")))
+        listOf("fabric", "forge", "neoforge").filter { it != loader }.forEach {
+            exclude("**/testmod/$it/**")
+        }
+    }
+    resources.setSrcDirs(listOf(rootProject.file("src/testmod/resources"), rootProject.file("loaders/$loader/testmod-resources")))
+    compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
+    runtimeClasspath += sourceSets.main.get().runtimeClasspath + output
+}
+
 val metaProps = mapOf(
     "mod_id" to modId,
     "mod_name" to property("mod_name"),
@@ -72,6 +85,27 @@ val metaProps = mapOf(
     "java_version" to javaVersion,
     "pack_format" to property("pack_format"),
 )
+
+tasks.named<ProcessResources>("processTestmodResources") {
+    inputs.properties(metaProps)
+    filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta")) {
+        expand(metaProps)
+    }
+}
+
+val testmodJar = tasks.register<Jar>("testmodJar") {
+    archiveBaseName.set("$modId-testmod")
+    archiveClassifier.set("dev")
+    from(testmod.output)
+}
+
+val remapTestmodJar = tasks.register<net.fabricmc.loom.task.RemapJarTask>("remapTestmodJar") {
+    dependsOn(testmodJar)
+    inputFile.set(testmodJar.flatMap { it.archiveFile })
+    archiveBaseName.set("$modId-testmod")
+    archiveClassifier.set("")
+}
+tasks.named("build") { dependsOn(remapTestmodJar) }
 
 tasks.processResources {
     inputs.properties(metaProps)

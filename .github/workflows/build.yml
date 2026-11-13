@@ -32,3 +32,4 @@ jobs:
           path: |
             versions/${{ matrix.target }}/build/libs/*.jar
             !versions/${{ matrix.target }}/build/libs/*-sources.jar
+            !versions/${{ matrix.target }}/build/libs/*-dev.jar

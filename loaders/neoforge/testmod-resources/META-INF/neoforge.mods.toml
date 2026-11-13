@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "${mod_license}"
+
+[[mods]]
+modId = "bloomberto_testmod"
+version = "${version}"
+displayName = "Bloomberto Testmod"
+authors = "${mod_author}"
+description = '''Example usage of the Bloomberto API.'''
+
+[[dependencies.bloomberto_testmod]]
+modId = "bloomberto"
+type = "required"
+versionRange = "[0.1,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.bloomberto_testmod]]
+modId = "minecraft"
+type = "required"
+versionRange = "${mc_range}"
+ordering = "NONE"
+side = "BOTH"

@@ -46,3 +46,13 @@ Instead of separate `common/`, `fabric/`, `forge/` Gradle modules, Stonecutter b
 | 1.21.1-fabric | OK |
 | 1.21.1-neoforge | OK |
 | 1.21.1-forge | Jar verified on a real Forge 1.21.1-52.1.21 server (installer). Loom's dev `runServer` fails for this target (module resolution errors in Forge's bootstrap, also with Loom 1.13), so `smoke-test.sh` reports FAIL for it; this is a Loom dev-run limitation, not a problem of the jar. |
+
+## Testmod
+
+`src/testmod` holds an example mod (`bloomberto_testmod`) that depends on Bloomberto. Each target also
+produces `bloomberto-testmod-<version>.jar`; install both jars in `mods/` to try it. Add one example per
+feature here as modules are implemented.
+
+## Quilt
+
+Not tested yet: the Fabric jar should load on Quilt Loader, but this needs verification (pending).
