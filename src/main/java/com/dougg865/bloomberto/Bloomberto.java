@@ -61,12 +61,16 @@ public final class Bloomberto {
     /** Called by the client entrypoint of each loader, after {@link #init()}. Never call on a server. */
     public static void initClient() {
         com.dougg865.bloomberto.api.render.Shaders.listenForReloads();
+        com.dougg865.bloomberto.api.render.post.PostEffects.registerBuiltIns();
+        com.dougg865.bloomberto.api.client.ClientEvents.WORLD_RENDER.register(
+                ctx -> com.dougg865.bloomberto.api.render.post.PostEffects.render(ctx.partialTick()));
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
                 com.dougg865.bloomberto.impl.config.ConfigSync::clearServerValues);
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
                 com.dougg865.bloomberto.impl.data.ClientEntityData::clear);
         com.dougg865.bloomberto.api.client.ClientEvents.CLIENT_TICK.register(() -> {
             Schedulers.client().tick();
+            com.dougg865.bloomberto.api.render.post.PostEffects.tick();
             TweenManager.shared().tick();
         });
     }

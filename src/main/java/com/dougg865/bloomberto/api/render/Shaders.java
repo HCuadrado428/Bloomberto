@@ -39,6 +39,7 @@ public final class Shaders {
                 (ResourceManagerReloadListener) manager -> {
                     synchronized (Shaders.class) {
                         PROGRAMS.forEach(ShaderProgram::invalidate);
+                        com.dougg865.bloomberto.api.render.post.PostEffects.invalidate();
                     }
                 });
     }
