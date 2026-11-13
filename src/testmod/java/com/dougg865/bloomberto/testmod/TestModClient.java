@@ -43,6 +43,9 @@ public final class TestModClient {
         });
         ClientEvents.WORLD_RENDER.register(ctx ->
                 WorldDraw.of(ctx).trail(trail, 0.4f, Color.ofRgba(255, 200, 0, 200), Color.ofRgba(255, 0, 0, 0)));
+        // A key (default: U) that opens the ui example screen.
+        Keybinds.register(TestMod.MOD_ID, "open_ui", org.lwjgl.glfw.GLFW.GLFW_KEY_U, "general",
+                () -> Minecraft.getInstance().setScreen(new TestScreen()));
         Tooltips.shiftInfo(stack -> stack.is(TestMod.EXAMPLE_ITEM.get()),
                 java.util.List.of(Component.literal("An example item from the Bloomberto testmod.")));
 
