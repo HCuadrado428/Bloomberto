@@ -85,6 +85,7 @@ public final class PostEffects {
 
     /** Runs every active effect; called by Bloomberto in the world render event. */
     public static void render(float partialTick) {
+        com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
         if (Minecraft.getInstance().level == null) {
             return;
         }

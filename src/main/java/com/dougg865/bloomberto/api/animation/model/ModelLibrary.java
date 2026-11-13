@@ -8,8 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 /**
  * Loads Blockbench models and animations from resource packs and keeps them until resources reload (F3+T), so editing a file and
@@ -78,14 +76,13 @@ public final class ModelLibrary {
     }
 
     private static synchronized void listen() {
-        if (listening) {
-            return;
+        if (!listening) {
+            listening = true;
+            com.dougg865.bloomberto.impl.render.ClientReloads.onReload(() -> {
+                MODELS.clear();
+                ANIMATIONS.clear();
+            });
         }
-        listening = true;
-        ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(
-                (ResourceManagerReloadListener) manager -> {
-                    MODELS.clear();
-                    ANIMATIONS.clear();
-                });
+        com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
     }
 }

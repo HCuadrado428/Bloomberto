@@ -70,6 +70,7 @@ public final class Bloomberto {
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
                 com.dougg865.bloomberto.impl.data.ClientEntityData::clear);
         com.dougg865.bloomberto.api.client.ClientEvents.CLIENT_TICK.register(() -> {
+            com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
             Schedulers.client().tick();
             com.dougg865.bloomberto.api.render.post.PostEffects.tick();
             TweenManager.shared().tick();

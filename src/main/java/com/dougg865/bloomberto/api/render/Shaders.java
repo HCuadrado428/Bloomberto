@@ -3,10 +3,7 @@ package com.dougg865.bloomberto.api.render;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 /** Creates {@link ShaderProgram}s. Client only. */
 public final class Shaders {
@@ -29,18 +26,17 @@ public final class Shaders {
         return program;
     }
 
-    /** Hooks into vanilla's reload so programs are rebuilt after F3+T; called when the client starts. */
+    /** Makes programs rebuild after resource reloads (F3+T); called when the client starts. */
     public static synchronized void listenForReloads() {
         if (listening) {
             return;
         }
         listening = true;
-        ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(
-                (ResourceManagerReloadListener) manager -> {
-                    synchronized (Shaders.class) {
-                        PROGRAMS.forEach(ShaderProgram::invalidate);
-                        com.dougg865.bloomberto.api.render.post.PostEffects.invalidate();
-                    }
-                });
+        com.dougg865.bloomberto.impl.render.ClientReloads.onReload(() -> {
+            synchronized (Shaders.class) {
+                PROGRAMS.forEach(ShaderProgram::invalidate);
+                com.dougg865.bloomberto.api.render.post.PostEffects.invalidate();
+            }
+        });
     }
 }

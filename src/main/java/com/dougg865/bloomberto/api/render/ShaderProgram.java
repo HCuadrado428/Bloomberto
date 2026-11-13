@@ -113,6 +113,7 @@ public final class ShaderProgram {
 
     /** The loaded GPU program, creating it if needed; {@code null} if it failed to load. */
     ShaderInstance instance() {
+        com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
         if (instance == null && !failed) {
             try {
                 instance = new ShaderInstance(Minecraft.getInstance().getResourceManager(), id.toString(), format);
