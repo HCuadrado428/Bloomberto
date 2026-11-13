@@ -9,7 +9,7 @@ identical across versions and loaders**.
 como dependencia para simplificar shaders y post-procesado, animación, texturas, UI, red y
 utilidades comunes, con **una única API pública idéntica en todas las versiones y loaders**.
 
-> Status / Estado: **Phase 0 — skeleton (in progress)**. Nothing is published yet.
+> Status / Estado: **Phase 1 MVP (core, animation, render) implemented; not published yet.** Server-side behavior is tested on real servers; rendering and client UI compile on every target but have not been seen on screen yet. / Fase 1 MVP implementada, sin publicar; el render y la UI de cliente compilan en todos los targets pero aún no se han visto en pantalla.
 
 ## Supported targets
 
@@ -29,6 +29,8 @@ One jar per version and loader (5 in total).
 
 ## Documentation
 
+- [Using Bloomberto (English)](docs/en/usage.md) · [Usar Bloomberto (español)](docs/es/uso.md)
+- [Building and testing](docs/BUILD.md)
 - [Project brief / roadmap](docs/PROJECT_BRIEF.md)
 - [Changelog](CHANGELOG.md)
 
