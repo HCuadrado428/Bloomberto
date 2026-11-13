@@ -30,6 +30,7 @@ public final class Bloomberto {
                 Services.PLATFORM.getLoader(), Services.PLATFORM.getLoaderName());
         BloombertoEvents.SERVER_TICK.register(server -> Schedulers.server().tick());
         com.dougg865.bloomberto.impl.config.ConfigSync.register();
+        com.dougg865.bloomberto.impl.data.DataSync.register();
         // Touch the network service early so loader channels exist before other mods register packets.
         LOGGER.debug("Networking: {}", Services.NETWORK.getClass().getSimpleName());
         if (Boolean.getBoolean("bloomberto.debugEvents")) {
@@ -46,8 +47,11 @@ public final class Bloomberto {
                 LOGGER.info("[debugEvents] server_tick");
             }
         });
-        BloombertoEvents.LEVEL_LOAD.register(level ->
-                LOGGER.info("[debugEvents] level_load {}", level.dimension().location()));
+        BloombertoEvents.LEVEL_LOAD.register(level -> {
+            LOGGER.info("[debugEvents] level_load {}", level.dimension().location());
+            LOGGER.info("[debugEvents] entity data store ok ({} entities)",
+                    com.dougg865.bloomberto.impl.data.EntityDataSavedData.get(level.getServer()).store().entityCount());
+        });
         BloombertoEvents.PLAYER_JOIN.register(p -> LOGGER.info("[debugEvents] player_join {}", p.getGameProfile().getName()));
         BloombertoEvents.PLAYER_LEAVE.register(p -> LOGGER.info("[debugEvents] player_leave {}", p.getGameProfile().getName()));
     }
@@ -56,6 +60,8 @@ public final class Bloomberto {
     public static void initClient() {
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
                 com.dougg865.bloomberto.impl.config.ConfigSync::clearServerValues);
+        com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
+                com.dougg865.bloomberto.impl.data.ClientEntityData::clear);
         com.dougg865.bloomberto.api.client.ClientEvents.CLIENT_TICK.register(() -> {
             Schedulers.client().tick();
             TweenManager.shared().tick();
