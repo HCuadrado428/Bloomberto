@@ -102,6 +102,9 @@ public final class ConfigBuilder {
     public Config build() {
         Config config = build(Services.PLATFORM.getConfigDir().resolve(modId + ".toml"));
         Configs.register(config);
+        if (Services.PLATFORM.isClient()) {
+            Services.PLATFORM.registerConfigScreen(modId, config);
+        }
         return config;
     }
 

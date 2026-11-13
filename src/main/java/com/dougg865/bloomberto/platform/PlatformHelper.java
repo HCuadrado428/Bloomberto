@@ -14,6 +14,14 @@ public interface PlatformHelper {
 
     boolean isDevelopmentEnvironment();
 
+    /**
+     * Shows a "config" button for the mod in the loader's mod list, opening the generated config screen. Does nothing
+     * on a dedicated server and on Fabric (Fabric has no mod list of its own; use Mod Menu's API with
+     * {@code ConfigScreen.create}).
+     */
+    default void registerConfigScreen(String modId, com.dougg865.bloomberto.api.config.Config config) {
+    }
+
     /** {@code true} when running on the physical client (not a dedicated server). */
     boolean isClient();
 }

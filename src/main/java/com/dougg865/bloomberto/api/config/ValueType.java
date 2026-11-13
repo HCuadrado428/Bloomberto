@@ -19,6 +19,13 @@ public interface ValueType<T> {
     /** Human readable constraints, written into the file as a comment; may be empty. */
     String describe();
 
+    /** A value type limited to a numeric range; used by config screens to show a slider. */
+    interface Ranged {
+        double min();
+
+        double max();
+    }
+
     ValueType<Boolean> BOOLEAN = new ValueType<>() {
         @Override
         public Boolean fromToml(Object raw) {
@@ -54,7 +61,15 @@ public interface ValueType<T> {
     };
 
     static ValueType<Integer> intRange(int min, int max) {
-        return new ValueType<>() {
+        class IntRange implements ValueType<Integer>, Ranged {
+            public double min() {
+                return min;
+            }
+
+            public double max() {
+                return max;
+            }
+
             @Override
             public Integer fromToml(Object raw) {
                 if (!(raw instanceof Long l)) {
@@ -72,11 +87,20 @@ public interface ValueType<T> {
             public String describe() {
                 return "Range: " + min + " ~ " + max;
             }
-        };
+        }
+        return new IntRange();
     }
 
     static ValueType<Double> doubleRange(double min, double max) {
-        return new ValueType<>() {
+        class DoubleRange implements ValueType<Double>, Ranged {
+            public double min() {
+                return min;
+            }
+
+            public double max() {
+                return max;
+            }
+
             @Override
             public Double fromToml(Object raw) {
                 double v;
@@ -102,7 +126,8 @@ public interface ValueType<T> {
             public String describe() {
                 return "Range: " + min + " ~ " + max;
             }
-        };
+        }
+        return new DoubleRange();
     }
 
     static <E extends Enum<E>> ValueType<E> enumOf(Class<E> type) {

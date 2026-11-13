@@ -35,6 +35,13 @@ public final class NeoForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public void registerConfigScreen(String modId, com.dougg865.bloomberto.api.config.Config config) {
+        if (FMLEnvironment.dist.isClient()) {
+            NeoForgeClientEvents.registerConfigScreen(config);
+        }
+    }
+
+    @Override
     public boolean isClient() {
         return FMLEnvironment.dist.isClient();
     }

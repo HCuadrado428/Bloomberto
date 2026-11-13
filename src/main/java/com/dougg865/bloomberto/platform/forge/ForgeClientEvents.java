@@ -53,4 +53,12 @@ final class ForgeClientEvents {
                 ClientEvents.HUD_RENDER.invoke(l -> l.render(e.getGuiGraphics(), e.getPartialTick())));
         *///?}
     }
+
+    /** Adds the "config" button of the mod list for the mod that is currently loading. */
+    static void registerConfigScreen(com.dougg865.bloomberto.api.config.Config config) {
+        net.minecraftforge.fml.ModLoadingContext.get().registerExtensionPoint(
+                net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory(
+                        (minecraft, parent) -> com.dougg865.bloomberto.api.client.ConfigScreen.create(parent, config)));
+    }
 }

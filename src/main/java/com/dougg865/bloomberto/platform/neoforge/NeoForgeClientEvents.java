@@ -34,4 +34,11 @@ final class NeoForgeClientEvents {
                 ClientEvents.HUD_RENDER.invoke(l ->
                         l.render(e.getGuiGraphics(), e.getPartialTick().getGameTimeDeltaPartialTick(false))));
     }
+
+    /** Adds the "config" button of the mod list for the mod that is currently loading. */
+    static void registerConfigScreen(com.dougg865.bloomberto.api.config.Config config) {
+        net.neoforged.fml.ModLoadingContext.get().getActiveContainer().registerExtensionPoint(
+                net.neoforged.neoforge.client.gui.IConfigScreenFactory.class,
+                (container, parent) -> com.dougg865.bloomberto.api.client.ConfigScreen.create(parent, config));
+    }
 }

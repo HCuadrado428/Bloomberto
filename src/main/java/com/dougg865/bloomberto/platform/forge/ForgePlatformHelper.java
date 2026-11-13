@@ -34,6 +34,13 @@ public final class ForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public void registerConfigScreen(String modId, com.dougg865.bloomberto.api.config.Config config) {
+        if (FMLEnvironment.dist.isClient()) {
+            ForgeClientEvents.registerConfigScreen(config);
+        }
+    }
+
+    @Override
     public boolean isClient() {
         return FMLEnvironment.dist.isClient();
     }
