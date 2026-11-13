@@ -33,3 +33,16 @@ Instead of separate `common/`, `fabric/`, `forge/` Gradle modules, Stonecutter b
 - `loaders/<loader>/resources/` — loader metadata (`fabric.mod.json`, `mods.toml`, `neoforge.mods.toml`)
   and the `ServiceLoader` registration for `PlatformHelper`.
 - `versions/<mc>-<loader>/gradle.properties` — dependency versions for that target.
+
+## Smoke test
+
+`scripts/smoke-test.sh [target...]` starts a dedicated server per target and checks that Bloomberto logs
+`Initializing Bloomberto on <LOADER>`.
+
+| Target | Status |
+|---|---|
+| 1.20.1-fabric | OK |
+| 1.20.1-forge | OK |
+| 1.21.1-fabric | OK |
+| 1.21.1-neoforge | OK |
+| 1.21.1-forge | **Known issue**: the jar builds, but Architectury Loom's dev `runServer` fails to start (module resolution errors in Forge's bootstrap, also with Loom 1.13). Needs verification with a real Forge 1.21.1 server/client. |

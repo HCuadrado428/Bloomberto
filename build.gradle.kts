@@ -68,6 +68,7 @@ val metaProps = mapOf(
     "mod_sources" to property("mod_sources"),
     "mod_issues" to property("mod_issues"),
     "mc_range" to property("mc_range"),
+    "minecraft_version" to mc,
     "java_version" to javaVersion,
     "pack_format" to property("pack_format"),
 )
