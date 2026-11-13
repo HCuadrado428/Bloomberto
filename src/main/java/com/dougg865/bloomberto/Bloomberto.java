@@ -60,6 +60,7 @@ public final class Bloomberto {
 
     /** Called by the client entrypoint of each loader, after {@link #init()}. Never call on a server. */
     public static void initClient() {
+        com.dougg865.bloomberto.api.render.Shaders.listenForReloads();
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
                 com.dougg865.bloomberto.impl.config.ConfigSync::clearServerValues);
         com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(

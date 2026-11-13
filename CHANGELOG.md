@@ -7,6 +7,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 ## [Unreleased]
 
 ### Added
+- `render` textures: `Textures.fromUrl/fromFile/fromBytes/fromImage` with background decode (PNG/JPEG/GIF/BMP), disk cache, size limits and a placeholder via `TextureHandle`. `render` shaders: `Shaders.create` / `ShaderProgram` with typed uniforms, rebuilt after resource reloads. Logic is unit tested; GPU upload not yet seen on screen.
 - `render` world: `ClientEvents.WORLD_RENDER` (with `WorldRenderContext`) on every loader and `WorldDraw` for lines, boxes, filled boxes, quads, textured quads, billboards and 3D text, built on `impl.render.Vtx` that hides the 1.20.1 / 1.21.1 vertex API difference. Compiles on all targets; not yet seen on screen.
 - `core` registry: `Registrar` declares items, blocks, block items, entity/block-entity types, sounds, mob effects, attributes and creative tabs (or any registry) once, and registers them through Fabric registries or the Forge/NeoForge `RegisterEvent`. Call `register()` from the mod constructor.
 - `core` data: `EntityData`/`DataKey`/`DataSerializer` attach saved data to players and entities by UUID (stored in a world `SavedData`, same on every loader, survives death), with `synced()` keys sent to the owning player. Uses one mechanism for all loaders instead of Capabilities / Data Attachments.
