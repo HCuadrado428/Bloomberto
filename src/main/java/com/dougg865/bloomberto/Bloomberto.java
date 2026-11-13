@@ -41,6 +41,7 @@ public final class Bloomberto {
     /** Logs the first occurrence of each event; enabled with {@code -Dbloomberto.debugEvents=true}. */
     private static void registerDebugListeners() {
         com.dougg865.bloomberto.impl.network.DebugPackets.register();
+        com.dougg865.bloomberto.impl.registry.DebugContent.register();
         AtomicBoolean firstTick = new AtomicBoolean(true);
         BloombertoEvents.SERVER_TICK.register(server -> {
             if (firstTick.getAndSet(false)) {
@@ -49,6 +50,7 @@ public final class Bloomberto {
         });
         BloombertoEvents.LEVEL_LOAD.register(level -> {
             LOGGER.info("[debugEvents] level_load {}", level.dimension().location());
+            com.dougg865.bloomberto.impl.registry.DebugContent.verify();
             LOGGER.info("[debugEvents] entity data store ok ({} entities)",
                     com.dougg865.bloomberto.impl.data.EntityDataSavedData.get(level.getServer()).store().entityCount());
         });
