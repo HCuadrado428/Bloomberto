@@ -25,13 +25,8 @@ final class NeoForgeClientEvents {
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
         NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-                net.minecraft.client.renderer.MultiBufferSource.BufferSource buffers =
-                        net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource();
-                com.mojang.blaze3d.vertex.PoseStack poseStack = new com.mojang.blaze3d.vertex.PoseStack();
-                poseStack.mulPose(e.getModelViewMatrix());
-                ClientEvents.WORLD_RENDER.invoke(l -> l.render(new com.dougg865.bloomberto.api.client.WorldRenderContext(
-                        poseStack, e.getCamera(), e.getPartialTick().getGameTimeDeltaPartialTick(false), buffers)));
-                buffers.endBatch();
+                com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(new com.mojang.blaze3d.vertex.PoseStack(), e.getCamera(),
+                        e.getPartialTick().getGameTimeDeltaPartialTick(false), e.getModelViewMatrix());
             }
         });
         NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post e) ->

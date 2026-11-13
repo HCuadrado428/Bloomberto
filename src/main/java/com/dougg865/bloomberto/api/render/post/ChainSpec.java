@@ -15,8 +15,10 @@ import java.util.Map;
  * spec.pass("blit", "swap", ChainSpec.MAIN);   // vanilla "blit" copies a target
  * }</pre>
  *
- * Program names without a namespace refer to Minecraft's own programs ({@code blit}, {@code box_blur}, ...); the program
- * files are {@code assets/<ns>/shaders/program/<name>.json} with its {@code .vsh}/{@code .fsh}.
+ * Minecraft looks programs up only in its own namespace. A program named {@code mymod_blur} is the file
+ * {@code assets/minecraft/shaders/program/mymod_blur.json}, whose {@code "vertex"} and {@code "fragment"} are the shaders
+ * {@code assets/minecraft/shaders/program/<name>.vsh} / {@code .fsh}. Use a unique prefix for your mod: a name with a
+ * {@code namespace:} is rejected by vanilla. Vanilla's own programs ({@code blit}, {@code box_blur}, ...) can be used by name.
  */
 public final class ChainSpec {
     /** The name of the screen's main render target. */

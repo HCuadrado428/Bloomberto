@@ -165,6 +165,10 @@ public final class WorldDraw {
         stack.pushPose();
         stack.translate(rel.x, rel.y, rel.z);
         stack.mulPose(ctx.camera().rotation());
+        //? if >=1.21 {
+        // On 1.21 the camera's rotation leaves the text facing away from the viewer (seen in-game), so turn it around.
+        stack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(180f));
+        //?}
         stack.scale(-scale, -scale, scale);
         float x = -font.width(text) / 2f;
         if (throughWalls) {

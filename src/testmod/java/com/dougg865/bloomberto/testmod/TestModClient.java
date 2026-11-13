@@ -67,7 +67,10 @@ public final class TestModClient {
             WorldDraw.of(ctx)
                     .box(new AABB(spawn, spawn).inflate(0.5), Color.fromHex("#ffcc00"))
                     .line(spawn, spawn.add(0, 3, 0), Color.fromHex("#00ccff"))
-                    .text(Component.literal("Bloomberto testmod"), spawn.add(0, 3.5, 0), 0.03f, Color.WHITE);
+                    .text(Component.literal("Bloomberto testmod"), spawn.add(0, 3.5, 0), 0.03f, Color.WHITE)
+                    .billboard(Bloomberto.id("minecraft", "textures/item/apple.png"), spawn.add(2, 1.5, 0), 1f, Color.WHITE)
+                    .throughWalls(true)
+                    .text(Component.literal("through walls"), spawn.add(0, 4.3, 0), 0.02f, Color.fromHex("#ff55ff"));
         });
     }
 

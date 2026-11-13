@@ -59,10 +59,10 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap").target("bright").target("blur");
-            spec.pass("bloomberto:bloom_bright", ChainSpec.MAIN, "bright");
+            spec.pass("bloomberto_bloom_bright", ChainSpec.MAIN, "bright");
             spec.pass("box_blur", "bright", "blur").linearFilter().uniform("BlurDir", 1f, 0f);
             spec.pass("box_blur", "blur", "bright").linearFilter().uniform("BlurDir", 0f, 1f);
-            spec.pass("bloomberto:bloom_combine", ChainSpec.MAIN, "swap").aux("BloomSampler", "bright");
+            spec.pass("bloomberto_bloom_combine", ChainSpec.MAIN, "swap").aux("BloomSampler", "bright");
             copyBack(spec, "swap");
         }
 
@@ -100,7 +100,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:vignette", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_vignette", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 
@@ -118,7 +118,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:desaturate", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_desaturate", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 
@@ -140,7 +140,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:pixelate", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_pixelate", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 
@@ -184,7 +184,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:color_grade", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_color_grade", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 
@@ -228,7 +228,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:shake", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_shake", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 
@@ -264,7 +264,7 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("bloomberto:zoom", ChainSpec.MAIN, "swap");
+            spec.pass("bloomberto_zoom", ChainSpec.MAIN, "swap");
             copyBack(spec, "swap");
         }
 

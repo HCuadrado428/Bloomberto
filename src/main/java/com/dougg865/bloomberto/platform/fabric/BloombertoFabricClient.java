@@ -19,21 +19,13 @@ public final class BloombertoFabricClient implements ClientModInitializer {
         WorldRenderEvents.END.register(context -> {
             //? if >=1.21 {
             float partial = context.tickCounter().getGameTimeDeltaPartialTick(false);
+            com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(new com.mojang.blaze3d.vertex.PoseStack(), context.camera(),
+                    partial, context.positionMatrix());
             //?} else {
             /*float partial = context.tickDelta();
+            com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(context.matrixStack(), context.camera(), partial, null);
             *///?}
-            ClientEvents.WORLD_RENDER.invoke(l -> l.render(new com.dougg865.bloomberto.api.client.WorldRenderContext(
-                    context.matrixStack(), context.camera(), partial,
-                    net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource())));
-            net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
         });
-        //? if >=1.21 {
-        net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, context, flag, lines) ->
-                com.dougg865.bloomberto.api.client.Tooltips.apply(stack, lines, flag.isAdvanced()));
-        //?} else {
-        /*net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, flag, lines) ->
-                com.dougg865.bloomberto.api.client.Tooltips.apply(stack, lines, flag.isAdvanced()));
-        *///?}
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             //? if >=1.21 {
             float partial = tickDelta.getGameTimeDeltaPartialTick(false);

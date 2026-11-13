@@ -63,3 +63,20 @@ Packet registration is verified on all 5 targets (dedicated server). Sending and
 connection is **not yet verified**: it needs a client, which this environment does not have. With
 `-Dbloomberto.debugEvents=true` Bloomberto registers a ping/pong pair that logs on join, so the round trip can be
 checked by joining a server with a client (`[debugEvents] client received ping` then `server received 'pong:...'`).
+
+## Client smoke test without a monitor
+
+Rendering code can be checked on a machine with no GPU using a virtual display and Mesa's software OpenGL
+(`xvfb`, `libgl1-mesa-dri`, `imagemagick`):
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 MESA_GL_VERSION_OVERRIDE=4.5 MESA_GLSL_VERSION_OVERRIDE=450 \
+  xvfb-run -a -s "-screen 0 1280x720x24" \
+  ./gradlew :1.21.1-fabric:runClient --args="--quickPlaySingleplayer <world> --username Dev"
+```
+
+Put a world in `versions/<target>/run/saves/<world>` (set `allowCommands:1b` in its `level.dat` to use chat commands) and the
+`bloomberto-testmod` jar in `versions/<target>/run/mods`. `import -window root shot.png` (with the `DISPLAY` and
+`XAUTHORITY` of the Xvfb process) takes a screenshot, and `scripts/xinput.py` sends keys, text and clicks
+(`python3 scripts/xinput.py key u`, `type "/tp @s ~ ~ ~"`). Verified this way on 1.21.1 Fabric: world drawing, post effects,
+HUD, keybinds, the UI screen, networking and entity data; on 1.20.1 Fabric: startup and world drawing.

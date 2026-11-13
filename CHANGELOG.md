@@ -6,6 +6,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Fixed
+- Client crash on startup (`getResourceManager()` was still null when the client entrypoint ran): reload listeners are now registered once the resource manager exists.
+- Post-processing programs and shaders must live in the `minecraft` namespace in 1.21 (`assets/minecraft/shaders/program/bloomberto_*`); the effects failed to build before.
+- World drawing on 1.21: the camera view matrix is now set explicitly (`WorldRenderBridge`), and 3D text is turned to face the camera.
+
 ### Added
 - `animation` v2: Blockbench support: `GeoParser` (Bedrock geometry 1.12.0 / 1.8.0), `AnimationParser` (linear, Catmull-Rom and step keyframes, loop/once/hold), `AnimationController` (`play(...).transition(n).then(...)`), `ModelGeometry` (pure geometry with GeckoLib conventions), `ModelLibrary` (reloads with F3+T), `GeoRenderer`, `AnimatedEntityRenderer` and `AnimatedBlockEntityRenderer`. Parsing, sampling, blending and geometry are unit tested; drawing on screen is not verified, and the GeckoLib sign conventions are reproduced from memory so mirrored or inverted rotations are possible. No Molang.
 - `ui` module: `FlexLayout` (row/column, grow, justify, align, min/max), `NineSlice` geometry, `ScrollModel`, `SliderModel`, `Transition` (fade/slide/scale) as pure tested logic; client widgets `ThemedButton`, `ThemedToggle`, `ThemedSlider`, `ScrollList` and helpers `UiGraphics.nineSlice/scissor/transition` with a default dark theme (generated textures). Widgets compile on all targets but have not been seen on screen. Text fields and a full widget framework are out of scope (use vanilla `EditBox`).

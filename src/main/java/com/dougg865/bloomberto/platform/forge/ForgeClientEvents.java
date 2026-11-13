@@ -34,19 +34,13 @@ final class ForgeClientEvents {
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
         MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-                float partial = e.getPartialTick();
-                net.minecraft.client.renderer.MultiBufferSource.BufferSource buffers =
-                        net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource();
                 //? if >=1.21 {
-                // Forge 1.21 hands out the view matrix instead of a pose stack.
-                com.mojang.blaze3d.vertex.PoseStack poseStack = new com.mojang.blaze3d.vertex.PoseStack();
-                poseStack.mulPose(e.getPoseStack());
+                // Forge 1.21 hands out the view matrix; the pose stack is an identity stack.
+                com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(new com.mojang.blaze3d.vertex.PoseStack(), e.getCamera(),
+                        e.getPartialTick(), e.getPoseStack());
                 //?} else {
-                /*com.mojang.blaze3d.vertex.PoseStack poseStack = e.getPoseStack();
+                /*com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(e.getPoseStack(), e.getCamera(), e.getPartialTick(), null);
                 *///?}
-                ClientEvents.WORLD_RENDER.invoke(l -> l.render(new com.dougg865.bloomberto.api.client.WorldRenderContext(
-                        poseStack, e.getCamera(), partial, buffers)));
-                buffers.endBatch();
             }
         });
         //? if >=1.21 {

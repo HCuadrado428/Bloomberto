@@ -4,8 +4,8 @@
         "srcrgb": "one",
         "dstrgb": "zero"
     },
-    "vertex": "bloomberto:screenquad",
-    "fragment": "bloomberto:shake",
+    "vertex": "bloomberto_screenquad",
+    "fragment": "bloomberto_shake",
     "attributes": [ "Position" ],
     "samplers": [
         { "name": "DiffuseSampler" }
@@ -13,7 +13,6 @@
     "uniforms": [
         { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
         { "name": "OutSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
-        { "name": "InSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
         { "name": "Offset", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] }
     ]
 }

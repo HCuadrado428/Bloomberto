@@ -40,7 +40,7 @@ class PostEffectTest {
     @Test
     void bloomUsesTheBlurredTargetAsAuxInput() {
         ChainSpec spec = new BuiltInEffects.Bloom().buildSpec();
-        ChainSpec.Pass combine = spec.passes().stream().filter(p -> p.program().equals("bloomberto:bloom_combine")).findFirst().orElseThrow();
+        ChainSpec.Pass combine = spec.passes().stream().filter(p -> p.program().equals("bloomberto_bloom_combine")).findFirst().orElseThrow();
         assertEquals("bright", combine.auxTargets().get("BloomSampler"));
         assertEquals(5, spec.passes().size());
     }
