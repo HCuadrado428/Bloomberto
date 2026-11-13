@@ -6,6 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public final class BloombertoFabricClient implements ClientModInitializer {
     @Override
@@ -15,6 +16,17 @@ public final class BloombertoFabricClient implements ClientModInitializer {
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
+        WorldRenderEvents.END.register(context -> {
+            //? if >=1.21 {
+            float partial = context.tickCounter().getGameTimeDeltaPartialTick(false);
+            //?} else {
+            /*float partial = context.tickDelta();
+            *///?}
+            ClientEvents.WORLD_RENDER.invoke(l -> l.render(new com.dougg865.bloomberto.api.client.WorldRenderContext(
+                    context.matrixStack(), context.camera(), partial,
+                    net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource())));
+            net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+        });
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             //? if >=1.21 {
             float partial = tickDelta.getGameTimeDeltaPartialTick(false);

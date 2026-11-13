@@ -9,6 +9,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 /*import net.minecraftforge.client.event.RenderGuiEvent;
 *///?}
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
@@ -26,6 +27,23 @@ final class ForgeClientEvents {
         });
         MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
+        MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
+            if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+                float partial = e.getPartialTick();
+                net.minecraft.client.renderer.MultiBufferSource.BufferSource buffers =
+                        net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource();
+                //? if >=1.21 {
+                // Forge 1.21 hands out the view matrix instead of a pose stack.
+                com.mojang.blaze3d.vertex.PoseStack poseStack = new com.mojang.blaze3d.vertex.PoseStack();
+                poseStack.mulPose(e.getPoseStack());
+                //?} else {
+                /*com.mojang.blaze3d.vertex.PoseStack poseStack = e.getPoseStack();
+                *///?}
+                ClientEvents.WORLD_RENDER.invoke(l -> l.render(new com.dougg865.bloomberto.api.client.WorldRenderContext(
+                        poseStack, e.getCamera(), partial, buffers)));
+                buffers.endBatch();
+            }
+        });
         //? if >=1.21 {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((AddGuiOverlayLayersEvent e) ->
                 e.getLayeredDraw().add(Bloomberto.id("hud"), (graphics, delta) ->
