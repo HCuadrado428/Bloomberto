@@ -60,6 +60,11 @@ public final class TestMod {
     public static final Registered<?> TAB = REGISTRAR.creativeTab("tab", Component.literal("Bloomberto testmod"),
             () -> new ItemStack(EXAMPLE_ITEM.get()), List.of(EXAMPLE_ITEM, EXAMPLE_BLOCK_ITEM));
 
+    // --- A block entity drawn with a Blockbench model (see TotemBlockEntity and TestModClient) ---
+    public static final Registered<Block> TOTEM_BLOCK = REGISTRAR.block("totem", () -> new TotemBlock(BlockBehaviour.Properties.of().noOcclusion()));
+    public static final Registered<net.minecraft.world.level.block.entity.BlockEntityType<?>> TOTEM_BE = REGISTRAR.blockEntityType("totem",
+            () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder.of(TotemBlockEntity::new, TOTEM_BLOCK.get()).build(null));
+
     // --- Data: a counter saved on each player and synced to their client ---
     public static final DataKey<Integer> JOINS = DataKey.ofInt(Bloomberto.id(MOD_ID, "joins"), 0).synced();
 

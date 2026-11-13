@@ -17,7 +17,7 @@ public final class Shaders {
      * Declares a core shader. Nothing is loaded until the program is first used on the render thread, so this
      * is safe to call while the mod initializes.
      *
-     * @param id     the shader name; files live at {@code assets/<namespace>/shaders/core/<path>.json}
+     * @param id     the shader name; its program JSON is {@code assets/minecraft/shaders/core/<namespace>_<path>.json}
      * @param format the vertex format your shader's vertex stage expects
      */
     public static synchronized ShaderProgram create(ResourceLocation id, VertexFormat format) {

@@ -7,5 +7,6 @@ public final class TestModFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         TestModClient.init();
+        TestModClient.registerRenderers();
     }
 }

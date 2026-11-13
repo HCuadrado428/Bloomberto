@@ -78,5 +78,7 @@ LIBGL_ALWAYS_SOFTWARE=1 MESA_GL_VERSION_OVERRIDE=4.5 MESA_GLSL_VERSION_OVERRIDE=
 Put a world in `versions/<target>/run/saves/<world>` (set `allowCommands:1b` in its `level.dat` to use chat commands) and the
 `bloomberto-testmod` jar in `versions/<target>/run/mods`. `import -window root shot.png` (with the `DISPLAY` and
 `XAUTHORITY` of the Xvfb process) takes a screenshot, and `scripts/xinput.py` sends keys, text and clicks
-(`python3 scripts/xinput.py key u`, `type "/tp @s ~ ~ ~"`). Verified this way on 1.21.1 Fabric: world drawing, post effects,
-HUD, keybinds, the UI screen, networking and entity data; on 1.20.1 Fabric: startup and world drawing.
+(`python3 scripts/xinput.py key u`, `type "/tp @s ~ ~ ~"`). Verified this way on 1.21.1 Fabric: world drawing (box, line, 3D text, billboard, trail), all six post effects
+(blur, bloom, pixelate, color grade, desaturate, zoom) plus vignette, a texture downloaded from a URL, a custom core shader with
+a uniform, an animated Blockbench model on a block entity, HUD overlays, keybinds, the UI screen, networking and entity data.
+On 1.20.1 Fabric: startup and world drawing. Forge and NeoForge clients have not been run.

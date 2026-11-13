@@ -12,6 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * Draws a block entity with an animated Blockbench model, centered on the block. Register it with
  * {@code BlockEntityRenderers.register(TYPE, ctx -> new AnimatedBlockEntityRenderer<>(geo, texture))} from client setup.
  * The block entity must implement {@link Animatable}. Client only.
+ *
+ * <p>The block that owns the block entity must be created with {@code .noOcclusion()}: an opaque block has light level 0 inside
+ * it, so the model would be drawn almost black. If the block should have no shape of its own, also make its
+ * {@code getRenderShape} return {@code RenderShape.INVISIBLE}.
  */
 public class AnimatedBlockEntityRenderer<T extends BlockEntity & Animatable> implements BlockEntityRenderer<T> {
     private final ResourceLocation geometry;

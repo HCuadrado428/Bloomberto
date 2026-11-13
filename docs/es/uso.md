@@ -125,7 +125,7 @@ static final ShaderProgram GLOW = Shaders.create(Bloomberto.id("mymod", "glow"),
 GLOW.setFloat("Intensity", 0.5f).setColor("Tint", Color.fromHex("#ff8800"));
 if (GLOW.use()) { /* dibujar */ }
 ```
-Los archivos van en `assets/<ns>/shaders/core/glow.json` más `.vsh` y `.fsh`.
+Los archivos van en `assets/minecraft/shaders/core/mymod_glow.json` (vanilla solo lo busca ahí) más los `.vsh` y `.fsh` que nombra.
 
 **Post-procesado**
 ```java

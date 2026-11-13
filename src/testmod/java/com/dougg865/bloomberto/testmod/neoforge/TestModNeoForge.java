@@ -8,10 +8,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 
 @Mod(TestMod.MOD_ID)
 public final class TestModNeoForge {
-    public TestModNeoForge() {
+    public TestModNeoForge(net.neoforged.bus.api.IEventBus modEventBus) {
         TestMod.init();
         if (FMLEnvironment.dist == Dist.CLIENT) {
             TestModClient.init();
+            modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLClientSetupEvent e) -> e.enqueueWork(TestModClient::registerRenderers));
         }
     }
 }

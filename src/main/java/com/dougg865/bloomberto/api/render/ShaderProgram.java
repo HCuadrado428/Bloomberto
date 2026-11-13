@@ -13,7 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 /**
- * A core shader you wrote ({@code assets/<ns>/shaders/core/<name>.json} plus {@code .vsh}/{@code .fsh}).
+ * A core shader you wrote: the program JSON at {@code assets/minecraft/shaders/core/<namespace>_<name>.json} (vanilla only
+ * finds it there) and the {@code .vsh}/{@code .fsh} it names.
  * Uniforms are set with typed methods at any time; they are applied the next time the program is {@link #use() used}.
  * The GPU program is created when first needed and rebuilt after every resource reload.
  *
@@ -111,18 +112,42 @@ public final class ShaderProgram {
         return true;
     }
 
+    /**
+     * Draws a filled rectangle with this shader. The program must use the {@code POSITION_COLOR} vertex format. Uniforms are
+     * uploaded first. Render thread only.
+     *
+     * @param pose the transform, e.g. {@code guiGraphics.pose().last().pose()} when drawing in a GUI
+     * @return {@code false} if the shader could not be loaded
+     */
+    public boolean drawQuad(Matrix4f pose, float x, float y, float width, float height, int argb) {
+        if (!use()) {
+            return false;
+        }
+        com.dougg865.bloomberto.impl.render.Immediate.quadPositionColor(pose, x, y, width, height, argb);
+        return true;
+    }
+
     /** The loaded GPU program, creating it if needed; {@code null} if it failed to load. */
     ShaderInstance instance() {
         com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
         if (instance == null && !failed) {
             try {
-                instance = new ShaderInstance(Minecraft.getInstance().getResourceManager(), id.toString(), format);
+                instance = new ShaderInstance(Minecraft.getInstance().getResourceManager(), programName(), format);
             } catch (IOException | RuntimeException e) {
                 failed = true;
                 Bloomberto.LOGGER.error("Could not load shader {}", id, e);
             }
         }
         return instance;
+    }
+
+    /**
+     * Minecraft resolves a core shader's JSON only in its own namespace, so the program of {@code mymod:glow} is the file
+     * {@code assets/minecraft/shaders/core/mymod_glow.json}. Its {@code vertex} and {@code fragment} entries may point to your own
+     * namespace ({@code "vertex": "mymod:glow"} is {@code assets/mymod/shaders/core/glow.vsh}).
+     */
+    String programName() {
+        return id.getNamespace() + "_" + id.getPath().replace('/', '_');
     }
 
     /** Drops the GPU program so it is rebuilt from the (possibly changed) resources on next use. */

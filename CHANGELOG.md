@@ -6,7 +6,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Added
+- `ShaderProgram.drawQuad` and `impl.render.Immediate`, which hide the 1.20.1 / 1.21 `BufferBuilder` difference; the `testmod` now has examples of a URL texture, a custom core shader, a Blockbench block entity and a key (Y) that cycles the post effects.
+
 ### Fixed
+- Custom core shaders: the program JSON must be in the `minecraft` namespace (`assets/minecraft/shaders/core/<namespace>_<name>.json`); `ShaderProgram` now derives that name.
+- Blockbench block entities need a block with `.noOcclusion()`, otherwise the model is lit as if inside a wall (documented).
 - Client crash on startup (`getResourceManager()` was still null when the client entrypoint ran): reload listeners are now registered once the resource manager exists.
 - Post-processing programs and shaders must live in the `minecraft` namespace in 1.21 (`assets/minecraft/shaders/program/bloomberto_*`); the effects failed to build before.
 - World drawing on 1.21: the camera view matrix is now set explicitly (`WorldRenderBridge`), and 3D text is turned to face the camera.
