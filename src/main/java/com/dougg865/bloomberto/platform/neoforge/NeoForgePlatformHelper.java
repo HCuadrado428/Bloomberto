@@ -1,0 +1,35 @@
+package com.dougg865.bloomberto.platform.neoforge;
+
+import com.dougg865.bloomberto.platform.Loader;
+import com.dougg865.bloomberto.platform.PlatformHelper;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.LoadingModList;
+
+public final class NeoForgePlatformHelper implements PlatformHelper {
+    @Override
+    public Loader getLoader() {
+        return Loader.NEOFORGE;
+    }
+
+    @Override
+    public String getLoaderName() {
+        return "NeoForge";
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get() != null ? ModList.get().isLoaded(modId) : LoadingModList.get().getModFileById(modId) != null;
+    }
+
+    @Override
+    public boolean isDevelopmentEnvironment() {
+        return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public boolean isClient() {
+        return FMLEnvironment.dist.isClient();
+    }
+}
