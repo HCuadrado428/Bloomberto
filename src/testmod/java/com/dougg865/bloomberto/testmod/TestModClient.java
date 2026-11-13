@@ -6,6 +6,8 @@ import com.dougg865.bloomberto.api.client.ClientEvents;
 import com.dougg865.bloomberto.api.client.HudOverlays;
 import com.dougg865.bloomberto.api.client.Keybinds;
 import com.dougg865.bloomberto.api.client.Tooltips;
+import com.dougg865.bloomberto.api.effects.Trail;
+import com.dougg865.bloomberto.api.render.post.BuiltInEffects;
 import com.dougg865.bloomberto.api.color.Color;
 import com.dougg865.bloomberto.api.render.WorldDraw;
 import com.dougg865.bloomberto.api.render.post.BuiltInEffects;
@@ -29,6 +31,18 @@ public final class TestModClient {
                 graphics.drawString(Minecraft.getInstance().font, "Bloomberto testmod HUD (press K)", 4, 4, 0xFFFFFF));
         Keybinds.register(TestMod.MOD_ID, "toggle_hud", org.lwjgl.glfw.GLFW.GLFW_KEY_K, "general",
                 () -> HudOverlays.setVisible(overlay, !HudOverlays.isVisible(overlay)));
+        // A key (default: J) that shakes the screen; a ribbon that follows the player.
+        Keybinds.register(TestMod.MOD_ID, "shake", org.lwjgl.glfw.GLFW.GLFW_KEY_J, "general",
+                () -> ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20));
+        Trail trail = new Trail(30, 30);
+        ClientEvents.CLIENT_TICK.register(() -> {
+            if (Minecraft.getInstance().player != null) {
+                trail.add(Minecraft.getInstance().player.position().add(0, 0.1, 0));
+            }
+            trail.tick();
+        });
+        ClientEvents.WORLD_RENDER.register(ctx ->
+                WorldDraw.of(ctx).trail(trail, 0.4f, Color.ofRgba(255, 200, 0, 200), Color.ofRgba(255, 0, 0, 0)));
         Tooltips.shiftInfo(stack -> stack.is(TestMod.EXAMPLE_ITEM.get()),
                 java.util.List.of(Component.literal("An example item from the Bloomberto testmod.")));
 

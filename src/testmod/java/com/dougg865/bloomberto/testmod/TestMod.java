@@ -9,6 +9,7 @@ import com.dougg865.bloomberto.api.config.ConfigBuilder;
 import com.dougg865.bloomberto.api.config.ConfigValue;
 import com.dougg865.bloomberto.api.data.DataKey;
 import com.dougg865.bloomberto.api.data.EntityData;
+import com.dougg865.bloomberto.api.effects.Particles;
 import com.dougg865.bloomberto.api.event.BloombertoEvents;
 import com.dougg865.bloomberto.api.network.Network;
 import com.dougg865.bloomberto.api.network.PacketCodec;
@@ -92,6 +93,8 @@ public final class TestMod {
                 LOGGER.info("[testmod] server got reply '{}' from {}", packet.text(), ctx.player().getGameProfile().getName()));
 
         BloombertoEvents.PLAYER_JOIN.register(player -> {
+            // Particles: a ring of flames around the player who just joined (sent from the server).
+            Particles.of(net.minecraft.core.particles.ParticleTypes.FLAME).ring(player.position(), 1.5, 24).speed(0.04).spawn(player.level());
             EntityData.set(player, JOINS, EntityData.get(player, JOINS) + 1);
             for (int i = 0; i < GREETING_REPEAT.get(); i++) {
                 Network.sendToPlayer(player, new Greeting("welcome " + player.getGameProfile().getName()));

@@ -142,4 +142,38 @@ class PostEffectTest {
         spec.pass("p", ChainSpec.MAIN, "a").aux("S", "ghost");
         assertThrows(IllegalArgumentException.class, spec::validate, "unknown aux target");
     }
+
+    @Test
+    void shakeModelStaysWithinItsAmplitudeAndIsZeroWithoutStrength() {
+        ShakeModel model = new ShakeModel(1L, 20f);
+        boolean moved = false;
+        for (int i = 0; i < 200; i++) {
+            float[] o = model.offset(i * 0.013f, 0.5f, 0.02f);
+            assertTrue(Math.abs(o[0]) <= 0.01f + 1e-6f && Math.abs(o[1]) <= 0.01f + 1e-6f);
+            moved |= o[0] != 0f || o[1] != 0f;
+            assertArrayEquals(new float[] {0f, 0f}, model.offset(i * 0.013f, 0f, 0.02f), 1e-9f);
+        }
+        assertTrue(moved);
+    }
+
+    @Test
+    void shakeTriggerFadesOutAndDisables() {
+        BuiltInEffects.Shake shake = new BuiltInEffects.Shake();
+        shake.trigger(1f, 4);
+        assertTrue(shake.isEnabled());
+        assertEquals(1f, shake.getIntensity(), 1e-6f);
+        for (int i = 0; i < 4; i++) {
+            shake.tick();
+        }
+        assertFalse(shake.isEnabled());
+        assertEquals(0f, shake.getIntensity(), 1e-6f);
+    }
+
+    @Test
+    void zoomMapsIntensityToScale() {
+        Map<String, float[]> u = uniforms(new BuiltInEffects.Zoom().maxZoom(2f).center(0.25f, 0.75f).setIntensity(0.5f));
+        assertEquals(1.5f, u.get("Zoom")[0], 1e-6f);
+        assertArrayEquals(new float[] {0.25f, 0.75f}, u.get("Center"), 1e-6f);
+        assertEquals(1f, uniforms(new BuiltInEffects.Zoom().setIntensity(0f)).get("Zoom")[0], 1e-6f);
+    }
 }

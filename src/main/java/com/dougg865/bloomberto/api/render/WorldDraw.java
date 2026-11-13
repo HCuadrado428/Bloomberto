@@ -179,4 +179,16 @@ public final class WorldDraw {
         stack.popPose();
         return this;
     }
+
+    /**
+     * Draws a {@link com.dougg865.bloomberto.api.effects.Trail}: a ribbon that fades from {@code head} to {@code tail} color
+     * (including alpha) and narrows towards its end.
+     */
+    public WorldDraw trail(com.dougg865.bloomberto.api.effects.Trail trail, float width, Color head, Color tail) {
+        for (var segment : trail.segments(ctx.cameraPos(), width)) {
+            float mid = (segment.ageStart() + segment.ageEnd()) / 2f;
+            quad(segment.a1(), segment.a2(), segment.b2(), segment.b1(), head.lerp(tail, mid));
+        }
+        return this;
+    }
 }

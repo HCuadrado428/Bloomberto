@@ -41,6 +41,15 @@ public final class Vtx {
         *///?}
     }
 
+    /** Position, color and uv (for {@code POSITION_COLOR_TEX} formats, e.g. {@code RenderTypes.additive}). */
+    public static void posColorUv(VertexConsumer c, PoseStack.Pose pose, float x, float y, float z, int argb, float u, float v) {
+        //? if >=1.21 {
+        c.addVertex(pose, x, y, z).setColor(argb).setUv(u, v);
+        //?} else {
+        /*c.vertex(pose.pose(), x, y, z).color(r(argb), g(argb), b(argb), a(argb)).uv(u, v).endVertex();
+        *///?}
+    }
+
     public static int a(int argb) {
         return argb >>> 24;
     }

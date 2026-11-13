@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
  * }</pre>
  *
  * The built-in effects are already registered under {@code bloomberto:blur}, {@code bloomberto:bloom},
- * {@code bloomberto:vignette}, {@code bloomberto:desaturate}, {@code bloomberto:pixelate} and {@code bloomberto:color_grade}.
+ * {@code bloomberto:vignette}, {@code bloomberto:desaturate}, {@code bloomberto:pixelate}, {@code bloomberto:color_grade}, {@code bloomberto:shake} and {@code bloomberto:zoom}.
  * While Iris, Oculus or OptiFine render with a shader pack, effects are skipped (see {@link #isSuppressed()}).
  */
 public final class PostEffects {
@@ -67,6 +67,8 @@ public final class PostEffects {
         registerIfAbsent("desaturate", BuiltInEffects.Desaturate::new);
         registerIfAbsent("pixelate", BuiltInEffects.Pixelate::new);
         registerIfAbsent("color_grade", BuiltInEffects.ColorGrade::new);
+        registerIfAbsent("shake", BuiltInEffects.Shake::new);
+        registerIfAbsent("zoom", BuiltInEffects.Zoom::new);
     }
 
     private static void registerIfAbsent(String name, Supplier<? extends PostEffect> factory) {
