@@ -9,6 +9,9 @@ public interface PlatformHelper {
 
     boolean isModLoaded(String modId);
 
+    /** The loader's config directory (usually {@code <game dir>/config}). */
+    java.nio.file.Path getConfigDir();
+
     boolean isDevelopmentEnvironment();
 
     /** {@code true} when running on the physical client (not a dedicated server). */

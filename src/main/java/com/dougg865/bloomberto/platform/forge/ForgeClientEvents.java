@@ -8,6 +8,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 //?} else {
 /*import net.minecraftforge.client.event.RenderGuiEvent;
 *///?}
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
@@ -23,6 +24,8 @@ final class ForgeClientEvents {
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run);
             }
         });
+        MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
+                ClientEvents.DISCONNECT.invoke(Runnable::run));
         //? if >=1.21 {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((AddGuiOverlayLayersEvent e) ->
                 e.getLayeredDraw().add(Bloomberto.id("hud"), (graphics, delta) ->

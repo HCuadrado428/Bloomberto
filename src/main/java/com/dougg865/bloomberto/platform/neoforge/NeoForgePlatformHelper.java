@@ -1,6 +1,7 @@
 package com.dougg865.bloomberto.platform.neoforge;
 
 import com.dougg865.bloomberto.platform.Loader;
+import net.neoforged.fml.loading.FMLPaths;
 import com.dougg865.bloomberto.platform.PlatformHelper;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -16,6 +17,11 @@ public final class NeoForgePlatformHelper implements PlatformHelper {
     @Override
     public String getLoaderName() {
         return "NeoForge";
+    }
+
+    @Override
+    public java.nio.file.Path getConfigDir() {
+        return FMLPaths.CONFIGDIR.get();
     }
 
     @Override

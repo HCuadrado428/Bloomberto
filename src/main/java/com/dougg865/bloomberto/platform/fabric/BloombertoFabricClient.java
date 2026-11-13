@@ -4,6 +4,7 @@ import com.dougg865.bloomberto.Bloomberto;
 import com.dougg865.bloomberto.api.client.ClientEvents;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 public final class BloombertoFabricClient implements ClientModInitializer {
@@ -12,6 +13,8 @@ public final class BloombertoFabricClient implements ClientModInitializer {
         Bloomberto.initClient();
         ClientTickEvents.END_CLIENT_TICK.register(client ->
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
+                ClientEvents.DISCONNECT.invoke(Runnable::run));
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             //? if >=1.21 {
             float partial = tickDelta.getGameTimeDeltaPartialTick(false);

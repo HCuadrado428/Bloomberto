@@ -1,6 +1,7 @@
 package com.dougg865.bloomberto.platform.forge;
 
 import com.dougg865.bloomberto.platform.Loader;
+import net.minecraftforge.fml.loading.FMLPaths;
 import com.dougg865.bloomberto.platform.PlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -15,6 +16,11 @@ public final class ForgePlatformHelper implements PlatformHelper {
     @Override
     public String getLoaderName() {
         return "Forge";
+    }
+
+    @Override
+    public java.nio.file.Path getConfigDir() {
+        return FMLPaths.CONFIGDIR.get();
     }
 
     @Override

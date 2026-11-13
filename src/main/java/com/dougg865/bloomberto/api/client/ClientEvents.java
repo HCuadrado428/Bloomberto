@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiGraphics;
 public final class ClientEvents {
     /** End of every client tick. */
     public static final Event<Runnable> CLIENT_TICK = new Event<>("client_tick");
+    /** The client left a world or server. */
+    public static final Event<Runnable> DISCONNECT = new Event<>("disconnect");
     /** After the in-game HUD has been drawn. */
     public static final Event<HudRender> HUD_RENDER = new Event<>("hud_render");
 

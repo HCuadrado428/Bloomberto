@@ -29,6 +29,7 @@ public final class Bloomberto {
         LOGGER.info("Initializing {} on {} ({})", MOD_NAME,
                 Services.PLATFORM.getLoader(), Services.PLATFORM.getLoaderName());
         BloombertoEvents.SERVER_TICK.register(server -> Schedulers.server().tick());
+        com.dougg865.bloomberto.impl.config.ConfigSync.register();
         // Touch the network service early so loader channels exist before other mods register packets.
         LOGGER.debug("Networking: {}", Services.NETWORK.getClass().getSimpleName());
         if (Boolean.getBoolean("bloomberto.debugEvents")) {
@@ -53,6 +54,8 @@ public final class Bloomberto {
 
     /** Called by the client entrypoint of each loader, after {@link #init()}. Never call on a server. */
     public static void initClient() {
+        com.dougg865.bloomberto.api.client.ClientEvents.DISCONNECT.register(
+                com.dougg865.bloomberto.impl.config.ConfigSync::clearServerValues);
         com.dougg865.bloomberto.api.client.ClientEvents.CLIENT_TICK.register(() -> {
             Schedulers.client().tick();
             TweenManager.shared().tick();
