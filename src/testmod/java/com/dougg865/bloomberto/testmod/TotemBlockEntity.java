@@ -19,7 +19,7 @@ public final class TotemBlockEntity extends BlockEntity implements Animatable {
     @Override
     public AnimationController animationController() {
         if (controller == null) {
-            controller = ModelLibrary.animations(Bloomberto.id(TestMod.MOD_ID, "animations/totem.animation.json")).controller();
+            controller = ModelLibrary.animations(Bloomberto.id(TestMod.MOD_ID, "models/totem.bbmodel")).controller();
             controller.play("animation.totem.sway");
         }
         return controller;

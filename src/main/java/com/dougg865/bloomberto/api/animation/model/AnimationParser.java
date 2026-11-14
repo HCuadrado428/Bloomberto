@@ -111,7 +111,7 @@ public final class AnimationParser {
     }
 
     /** Constant parts of a vector and, for axes that are Molang expressions, the compiled expression (or null). */
-    private record Vals(float[] c, com.dougg865.bloomberto.api.animation.molang.Molang[] e) {
+    record Vals(float[] c, com.dougg865.bloomberto.api.animation.molang.Molang[] e) {
     }
 
     private static Vals vec(JsonElement e, String where, float scalarFallback) throws ParseException {
@@ -128,7 +128,7 @@ public final class AnimationParser {
         return fill(new JsonElement[] {a.get(0), a.get(1), a.get(2)}, where);
     }
 
-    private static Vals fill(JsonElement[] items, String where) throws ParseException {
+    static Vals fill(JsonElement[] items, String where) throws ParseException {
         float[] c = new float[3];
         com.dougg865.bloomberto.api.animation.molang.Molang[] expr = null;
         for (int i = 0; i < 3; i++) {

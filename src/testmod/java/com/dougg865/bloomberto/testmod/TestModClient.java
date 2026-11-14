@@ -41,7 +41,7 @@ public final class TestModClient {
                 (net.minecraft.world.level.block.entity.BlockEntityType<?>) TestMod.TOTEM_BE.get();
         net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(type, ctx ->
                 new com.dougg865.bloomberto.api.animation.model.AnimatedBlockEntityRenderer<TotemBlockEntity>(
-                        Bloomberto.id(TestMod.MOD_ID, "geo/totem.geo.json"),
+                        Bloomberto.id(TestMod.MOD_ID, "models/totem.bbmodel"),
                         Bloomberto.id(TestMod.MOD_ID, "textures/entity/totem.png")));
     }
 

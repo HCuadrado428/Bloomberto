@@ -19,7 +19,8 @@ import net.minecraft.resources.ResourceLocation;
  * controller.play("animation.golem.walk").transition(5);
  * }</pre>
  *
- * Files live in {@code assets/<namespace>/<path>}. A file that is missing or broken is reported in the log once and yields an
+ * Files live in {@code assets/<namespace>/<path>}. A path ending in {@code .bbmodel} is read as a Blockbench project
+ * (model and animations) with {@link BbModelParser}. A file that is missing or broken is reported in the log once and yields an
  * empty model / no animations instead of crashing the game.
  */
 public final class ModelLibrary {
@@ -47,7 +48,8 @@ public final class ModelLibrary {
         listen();
         return MODELS.computeIfAbsent(location, loc -> {
             try {
-                return GeoParser.parse(read(loc));
+                String text = read(loc);
+                return loc.getPath().endsWith(".bbmodel") ? BbModelParser.parseModel(text) : GeoParser.parse(text);
             } catch (ParseException | IOException e) {
                 Bloomberto.LOGGER.error("Could not load model {}: {}", loc, e.getMessage());
                 return EMPTY_MODEL;
@@ -59,7 +61,8 @@ public final class ModelLibrary {
         listen();
         return ANIMATIONS.computeIfAbsent(location, loc -> {
             try {
-                return new AnimationSet(AnimationParser.parse(read(loc)));
+                String text = read(loc);
+                return new AnimationSet(loc.getPath().endsWith(".bbmodel") ? BbModelParser.parseAnimations(text) : AnimationParser.parse(text));
             } catch (ParseException | IOException e) {
                 Bloomberto.LOGGER.error("Could not load animations {}: {}", loc, e.getMessage());
                 return AnimationSet.EMPTY;

@@ -1,0 +1,36 @@
+{
+  "meta": {"format_version": "4.9", "model_format": "bedrock"},
+  "name": "totem",
+  "resolution": {"width": 32, "height": 32},
+  "elements": [
+    {"type": "cube", "uuid": "11111111-0000-0000-0000-000000000001", "name": "base", "from": [-4, 0, -4], "to": [4, 4, 4],
+     "origin": [0, 0, 0], "rotation": [0, 0, 0], "box_uv": true, "uv_offset": [0, 0]},
+    {"type": "cube", "uuid": "11111111-0000-0000-0000-000000000002", "name": "head", "from": [-3, 4, -3], "to": [3, 12, 3],
+     "origin": [0, 12, 0], "rotation": [0, 0, 0], "box_uv": true, "uv_offset": [0, 12]}
+  ],
+  "outliner": [
+    {"name": "root", "uuid": "22222222-0000-0000-0000-000000000001", "origin": [0, 0, 0], "rotation": [0, 0, 0], "children": [
+      {"name": "base", "uuid": "22222222-0000-0000-0000-000000000002", "origin": [0, 0, 0], "rotation": [0, 0, 0], "children": [
+        "11111111-0000-0000-0000-000000000001",
+        {"name": "head", "uuid": "22222222-0000-0000-0000-000000000003", "origin": [0, 12, 0], "rotation": [0, 0, 0], "children": [
+          "11111111-0000-0000-0000-000000000002"
+        ]}
+      ]}
+    ]}
+  ],
+  "animations": [
+    {"uuid": "33333333-0000-0000-0000-000000000001", "name": "animation.totem.sway", "loop": "loop", "length": 4, "animators": {
+      "22222222-0000-0000-0000-000000000003": {"name": "head", "type": "bone", "keyframes": [
+        {"channel": "rotation", "time": 0, "data_points": [{"x": 0, "y": "-math.sin(query.anim_time * 90) * 30", "z": 0}]},
+        {"channel": "position", "time": 0, "data_points": [{"x": 0, "y": "math.abs(math.sin(query.anim_time * 180)) * 0.5", "z": 0}]}
+      ]}
+    }},
+    {"uuid": "33333333-0000-0000-0000-000000000002", "name": "animation.totem.pulse", "loop": "hold", "length": 0.5, "animators": {
+      "22222222-0000-0000-0000-000000000002": {"name": "base", "type": "bone", "keyframes": [
+        {"channel": "scale", "time": 0, "data_points": [{"x": 1, "y": 1, "z": 1}]},
+        {"channel": "scale", "time": 0.25, "data_points": [{"x": 1.2, "y": 1.2, "z": 1.2}]},
+        {"channel": "scale", "time": 0.5, "data_points": [{"x": 1, "y": 1, "z": 1}]}
+      ]}
+    }}
+  ]
+}
