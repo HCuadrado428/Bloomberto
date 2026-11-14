@@ -6,6 +6,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+## [0.2.0] - API level 2
+
+### Added
+- `BloombertoApi` (`level()`, `has(n)`, `require(modName, n)`): an API level that goes up with every public API change, so a dependent mod can refuse to start with a clear message when an older jar is installed. Documented in the usage guides, with the stability policy for 0.x.
+
+_API level 1 is the first public build (0.1.0). Everything listed below under 0.2.0 was added after it; jars named 0.1.0 from development builds may contain any part of it._
+
 ### Added
 - `BbModelParser` and `.bbmodel` support in `ModelLibrary`: Blockbench projects are read directly (cubes, groups, UV, bone animations, Molang, embedded textures). The testmod totem now loads from `models/totem.bbmodel`; a test checks it against `geo/totem.geo.json`. Not compared with exports of real Blockbench files.
 - Molang in animations: keyframe values can be expressions (`api.animation.molang.Molang`: arithmetic, comparisons, `?:`, `math.*`, `query.anim_time`/`life_time`, `variable.*`, assignments and `return`), compiled once and evaluated every frame; `AnimationController.variable(name, value)` feeds `variable.*`. Verified in a NeoForge client with the testmod totem (`animation.totem.sway`).

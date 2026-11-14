@@ -3,14 +3,14 @@
 Bloomberto is a library mod: other mods depend on it. The API is the same on Fabric (and Quilt), Forge and NeoForge, for
 Minecraft 1.20.1 and 1.21.1. Public classes live in `com.dougg865.bloomberto.api`; anything in `impl` can change.
 
-> Status: version 0.1.0, not published yet. Items marked *(client)* only exist on the physical client: never touch them from
-> code that runs on a dedicated server. Rendering features compile on every target but have not been seen on screen yet.
+> Status: version 0.2.0 (API level 2: see `BloombertoApi`). Items marked *(client)* only exist on the physical client: never touch them from
+> code that runs on a dedicated server. Rendering features were checked in real clients; see `docs/BUILD.md` for exactly what was verified where.
 
 ## Add it to your mod
 
 Until it is published, build Bloomberto (`./gradlew build`) and use the jar for your loader and version from
 `versions/<mc>-<loader>/build/libs/`. In your own Gradle project add it as a local dependency
-(`modImplementation files("libs/bloomberto-0.1.0+1.21.1-fabric.jar")` on Fabric/Loom) and declare the dependency in your mod
+(`modImplementation files("libs/bloomberto-0.2.0+1.21.1-fabric.jar")` on Fabric/Loom) and declare the dependency in your mod
 metadata (`"depends": {"bloomberto": "*"}` for Fabric, a `[[dependencies.yourmod]]` block for Forge/NeoForge).
 
 Use `Bloomberto.id("namespace", "path")` instead of `new ResourceLocation(...)`: the constructor is private in 1.21.
@@ -198,3 +198,29 @@ keyframes and the three loop modes. Keyframe values can also be Molang expressio
 ## Example
 
 `src/testmod` is a complete example mod using each feature above; install `bloomberto-testmod-*.jar` next to Bloomberto.
+
+## Checking the installed Bloomberto
+
+Jars of the same version number can differ while a release is in development, and Fabric and Forge accept any jar that satisfies
+`depends` / `versionRange`. A mod that needs newer classes should check the **API level** as early as possible (before touching any
+other Bloomberto class). Both checks are safe on a dedicated server because nothing client-only is loaded:
+
+```java
+if (MyMod.class.getClassLoader().getResource("com/dougg865/bloomberto/api/BloombertoApi.class") == null) {
+    throw new IllegalStateException("MyMod needs Bloomberto 0.2.0 or newer; the installed jar is too old");
+}
+BloombertoApi.require("MyMod", 2); // throws a clear message if the installed level is lower
+```
+
+The level goes up whenever a public class or method of `com.dougg865.bloomberto.api` is added, removed or changes behavior in a way
+that matters to other mods. `CHANGELOG.md` lists the level of every release. Use `BloombertoApi.level()` (not a constant, which the
+compiler would copy into your mod) if you want to log it.
+
+## API stability (0.x)
+
+While the version starts with `0.`, any minor release (`0.2` to `0.3`) may break the API, and every break is listed in the
+changelog with the new API level. Patch releases (`0.2.0` to `0.2.1`) only add things or fix bugs. Everything in `impl` is internal.
+Roughly: `api.event`, `api.network`, `api.config`, `api.registry`, `api.client` (keybinds, HUD, tooltips), `api.render.CameraShake` and
+`CameraZoom`, `api.animation` (easing, tweens, keyframes) and `api.color` are the most settled; `api.animation.model`
+(Blockbench, Molang), `api.render.post`, `api.ui` and `api.datagen` are newer and more likely to change. Depending on many classes at
+once is fine, but pin the minimum API level you tested.
