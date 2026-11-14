@@ -6,6 +6,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Fixed
+- Blur and Bloom did nothing on Minecraft 1.20.1: they used vanilla's `box_blur` program, which only exists in 1.21. Bloomberto now ships its own `bloomberto_blur` program for every version.
+
 ### Added
 - The F8 debug overlay is also enabled when the testmod is installed (it needed `-Dbloomberto.debugOverlay=true` before).
 - `ShaderProgram.drawQuad` and `impl.render.Immediate`, which hide the 1.20.1 / 1.21 `BufferBuilder` difference; the `testmod` now has examples of a URL texture, a custom core shader, a Blockbench block entity and a key (Y) that cycles the post effects.

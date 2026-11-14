@@ -23,8 +23,8 @@ public final class BuiltInEffects {
         @Override
         protected void define(ChainSpec spec) {
             spec.target("swap");
-            spec.pass("box_blur", ChainSpec.MAIN, "swap").linearFilter().uniform("BlurDir", 1f, 0f);
-            spec.pass("box_blur", "swap", ChainSpec.MAIN).linearFilter().uniform("BlurDir", 0f, 1f);
+            spec.pass("bloomberto_blur", ChainSpec.MAIN, "swap").linearFilter().uniform("BlurDir", 1f, 0f);
+            spec.pass("bloomberto_blur", "swap", ChainSpec.MAIN).linearFilter().uniform("BlurDir", 0f, 1f);
         }
 
         @Override
@@ -60,8 +60,8 @@ public final class BuiltInEffects {
         protected void define(ChainSpec spec) {
             spec.target("swap").target("bright").target("blur");
             spec.pass("bloomberto_bloom_bright", ChainSpec.MAIN, "bright");
-            spec.pass("box_blur", "bright", "blur").linearFilter().uniform("BlurDir", 1f, 0f);
-            spec.pass("box_blur", "blur", "bright").linearFilter().uniform("BlurDir", 0f, 1f);
+            spec.pass("bloomberto_blur", "bright", "blur").linearFilter().uniform("BlurDir", 1f, 0f);
+            spec.pass("bloomberto_blur", "blur", "bright").linearFilter().uniform("BlurDir", 0f, 1f);
             spec.pass("bloomberto_bloom_combine", ChainSpec.MAIN, "swap").aux("BloomSampler", "bright");
             copyBack(spec, "swap");
         }

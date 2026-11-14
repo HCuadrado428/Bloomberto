@@ -83,6 +83,7 @@ public final class PostChainRunner {
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
         RenderSystem.resetTextureMatrix();
+        if (Boolean.getBoolean("bloomberto.debugPost")) { Bloomberto.LOGGER.info("[post] run {} passes={} {}x{} intensity={}", effect.getClass().getSimpleName(), r.passes.size(), main.width, main.height, effect.getIntensity()); }
         r.chain.process(partialTick);
         RenderSystem.enableDepthTest();
     }

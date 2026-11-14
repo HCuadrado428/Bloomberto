@@ -125,6 +125,7 @@ loom {
     runConfigs.configureEach {
         ideConfigGenerated(false)
         property("bloomberto.debugEvents", "true")
+        findProperty("autoEffect")?.let { property("bloomberto.autoEffect", it.toString()) }
     }
 }
 

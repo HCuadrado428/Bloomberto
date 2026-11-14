@@ -85,7 +85,7 @@ On NeoForge 1.21.1 (client): startup, networking, world drawing, URL texture, cu
 On Forge 1.21.1 (client, installed with Forge's own installer and launched by a small script, since Loom's `runClient` fails for
 it): startup, networking, entity data, the HUD layer, UI screen, keybinds, post effects, URL texture, custom shader and world
 drawing. On 1.20.1 Fabric: startup and world drawing; on Forge 1.20.1 (client, Bloomberto alone): startup, networking and keybinds.
-Not run: Fabric 1.20.1 beyond that, and Forge 1.20.1 with the testmod.
+On 1.20.1 Fabric the post effects were also checked (blur, bloom, pixelate, vignette) with `-PautoEffect=<name>` (turns an effect on without a keyboard). Not run: Fabric 1.20.1 beyond that, and Forge 1.20.1 with the testmod.
 
 Known quirk: under this launcher Forge 1.21.1 sometimes crashes ~1 minute after joining, when a bat dies in lava
 ("Can not retrieve LootModifierManager until resources have loaded once", inside Forge); setting the `doMobLoot` game rule

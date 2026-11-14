@@ -30,6 +30,7 @@ public final class TestModClient {
 
     private static final String[] EFFECTS = {"blur", "bloom", "pixelate", "color_grade", "desaturate", "zoom"};
     private static int effectIndex = -1;
+    private static boolean autoApplied;
     private static TextureHandle urlTexture;
     private static ShaderProgram demoShader;
 
@@ -103,6 +104,15 @@ public final class TestModClient {
                 () -> Minecraft.getInstance().setScreen(new TestScreen()));
         Tooltips.shiftInfo(stack -> stack.is(TestMod.EXAMPLE_ITEM.get()),
                 java.util.List.of(Component.literal("An example item from the Bloomberto testmod.")));
+
+        // Debug: -Dbloomberto.autoEffect=blur turns an effect on as soon as a world is on screen (used by headless tests).
+        ClientEvents.CLIENT_TICK.register(() -> {
+            String auto = System.getProperty("bloomberto.autoEffect");
+            if (auto != null && !autoApplied && Minecraft.getInstance().level != null) {
+                autoApplied = true;
+                PostEffects.get(Bloomberto.id(auto)).setIntensity(1f).enable();
+            }
+        });
 
         // A vignette that fades in the first time a world is on screen.
         ClientEvents.CLIENT_TICK.register(() -> {
