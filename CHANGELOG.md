@@ -6,6 +6,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Added
+- `CameraShake`: shakes the real camera (yaw/pitch), so it keeps working while a shader pack is active. Fabric uses a small mixin on `Camera`; Forge and NeoForge use `ViewportEvent.ComputeCameraAngles`. The testmod's J key uses it.
+
 ### Fixed
 - Blur and Bloom did nothing on Minecraft 1.20.1: they used vanilla's `box_blur` program, which only exists in 1.21. Bloomberto now ships its own `bloomberto_blur` program for every version.
 

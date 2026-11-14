@@ -32,6 +32,11 @@ final class ForgeClientEvents {
                         com.dougg865.bloomberto.api.client.Keybinds.drainPending().forEach(e::register));
         MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles e) -> {
+            float[] shake = com.dougg865.bloomberto.api.render.CameraShake.shared().offset((float) e.getPartialTick());
+            e.setYaw(e.getYaw() + shake[0]);
+            e.setPitch(e.getPitch() + shake[1]);
+        });
         MinecraftForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
                 //? if >=1.21 {

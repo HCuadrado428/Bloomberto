@@ -12,6 +12,7 @@
   },
   "license": "${mod_license}",
   "environment": "*",
+  "mixins": ["bloomberto.mixins.json"],
   "entrypoints": {
     "main": ["com.dougg865.bloomberto.platform.fabric.BloombertoFabric"],
     "client": ["com.dougg865.bloomberto.platform.fabric.BloombertoFabricClient"]

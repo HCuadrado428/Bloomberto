@@ -155,7 +155,8 @@ Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.lite
 
 **Visual effects**
 ```java
-((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);        // impact shake
+CameraShake.shared().shake(1f, 30);   // impact shake: moves the real camera, so it also works with shader packs
+// ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // screen-space version; paused under shader packs
 PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // screen-space zoom
 Particles.of(ParticleTypes.FLAME).ring(pos, 1.5, 24).speed(0.05).spawn(level);            // client or server level
 Trail trail = new Trail(30, 30); trail.add(pos);  /* each tick */  WorldDraw.of(ctx).trail(trail, 0.4f, head, tail);

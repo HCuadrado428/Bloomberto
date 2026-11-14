@@ -89,7 +89,7 @@ public final class TestModClient {
                 () -> HudOverlays.setVisible(overlay, !HudOverlays.isVisible(overlay)));
         // A key (default: J) that shakes the screen; a ribbon that follows the player.
         Keybinds.register(TestMod.MOD_ID, "shake", org.lwjgl.glfw.GLFW.GLFW_KEY_J, "general",
-                () -> ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20));
+                () -> com.dougg865.bloomberto.api.render.CameraShake.shared().shake(1f, 30));
         Trail trail = new Trail(30, 30);
         ClientEvents.CLIENT_TICK.register(() -> {
             if (Minecraft.getInstance().player != null) {
@@ -108,7 +108,12 @@ public final class TestModClient {
         // Debug: -Dbloomberto.autoEffect=blur turns an effect on as soon as a world is on screen (used by headless tests).
         ClientEvents.CLIENT_TICK.register(() -> {
             String auto = System.getProperty("bloomberto.autoEffect");
-            if (auto != null && !autoApplied && Minecraft.getInstance().level != null) {
+            if ("camera_shake".equals(auto) && Minecraft.getInstance().level != null) {
+                var shake = com.dougg865.bloomberto.api.render.CameraShake.shared();
+                if (!shake.isShaking()) {
+                    shake.shake(1f, 200, 6f);
+                }
+            } else if (auto != null && !autoApplied && Minecraft.getInstance().level != null) {
                 autoApplied = true;
                 PostEffects.get(Bloomberto.id(auto)).setIntensity(1f).enable();
             }

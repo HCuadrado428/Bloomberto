@@ -23,6 +23,11 @@ final class NeoForgeClientEvents {
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run));
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles e) -> {
+            float[] shake = com.dougg865.bloomberto.api.render.CameraShake.shared().offset((float) e.getPartialTick());
+            e.setYaw(e.getYaw() + shake[0]);
+            e.setPitch(e.getPitch() + shake[1]);
+        });
         NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
                 com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(new com.mojang.blaze3d.vertex.PoseStack(), e.getCamera(),

@@ -156,7 +156,8 @@ Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.lite
 
 **Efectos visuales**
 ```java
-((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);        // temblor de impacto
+CameraShake.shared().shake(1f, 30);   // temblor de impacto: mueve la cámara real, así que funciona también con shaders
+// ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // versión en pantalla; se pausa con shaders
 PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // zoom en pantalla
 Particles.of(ParticleTypes.FLAME).ring(pos, 1.5, 24).speed(0.05).spawn(level);            // nivel de cliente o de servidor
 Trail trail = new Trail(30, 30); trail.add(pos);  /* cada tick */  WorldDraw.of(ctx).trail(trail, 0.4f, cabeza, cola);
