@@ -90,3 +90,7 @@ On 1.20.1 Fabric the post effects were also checked (blur, bloom, pixelate, vign
 Known quirk: under this launcher Forge 1.21.1 sometimes crashes ~1 minute after joining, when a bat dies in lava
 ("Can not retrieve LootModifierManager until resources have loaded once", inside Forge); setting the `doMobLoot` game rule
 to false avoids it. It is not in Bloomberto code.
+
+## AI disclosure
+
+AI disclosure: most of this library's code, tests, documentation and default assets (UI textures, example models and shaders) were produced with Claude (Anthropic's AI assistant) from my project brief. I directed the design, tested it in real clients (Fabric with Iris and Sodium), reported the bugs I found, and reviewed the results. Every feature is covered by unit tests, CI builds and in-game checks listed in docs/BUILD.md.

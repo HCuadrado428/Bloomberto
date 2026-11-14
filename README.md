@@ -34,6 +34,10 @@ One jar per version and loader (5 in total).
 - [Project brief / roadmap](docs/PROJECT_BRIEF.md)
 - [Changelog](CHANGELOG.md)
 
+## AI disclosure
+
+AI disclosure: most of this library's code, tests, documentation and default assets (UI textures, example models and shaders) were produced with Claude (Anthropic's AI assistant) from my project brief. I directed the design, tested it in real clients (Fabric with Iris and Sodium), reported the bugs I found, and reviewed the results. Every feature is covered by unit tests, CI builds and in-game checks listed in docs/BUILD.md.
+
 ## License
 
 [MIT](LICENSE) © DougG865
