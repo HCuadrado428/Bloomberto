@@ -55,7 +55,7 @@ feature here as modules are implemented.
 
 ## Quilt
 
-Not tested yet: the Fabric jar should load on Quilt Loader, but this needs verification (pending).
+The Fabric jar runs on Quilt Loader (no separate build). Verified with Quilt Loader 0.30.2 and Quilted Fabric API 7.7.0+0.92.2-1.20.1 on Minecraft 1.20.1: a dedicated server (init, events, networking, registries) and a client (HUD, custom shader, camera shake through the mixin). Install the Quilt launcher profile with `quilt-installer install client|server <mc>` and put Quilted Fabric API, `bloomberto` and `bloomberto-testmod` in `mods/`.
 
 ## Network status
 
@@ -85,7 +85,7 @@ On NeoForge 1.21.1 (client): startup, networking, world drawing, URL texture, cu
 On Forge 1.21.1 (client, installed with Forge's own installer and launched by a small script, since Loom's `runClient` fails for
 it): startup, networking, entity data, the HUD layer, UI screen, keybinds, post effects, URL texture, custom shader and world
 drawing. On 1.20.1 Fabric: startup and world drawing; on Forge 1.20.1 (client, Bloomberto alone): startup, networking and keybinds.
-On 1.20.1 Fabric the post effects were also checked (blur, bloom, pixelate, vignette) with `-PautoEffect=<name>` (turns an effect on without a keyboard). On Forge 1.20.1 the testmod (put `bloomberto-testmod-<version>-dev.jar`, not the remapped one, in `run/mods`) was also run: HUD, world drawing, custom shader and the camera shake. Camera shake was also checked on Fabric 1.20.1 and NeoForge 1.21.1, and by the author on Fabric 1.20.1 with Iris. Not run: Quilt, OptiFine, Forge 1.21.1's shake, a real two-player session.
+On 1.20.1 Fabric the post effects were also checked (blur, bloom, pixelate, vignette) with `-PautoEffect=<name>` (turns an effect on without a keyboard). On Forge 1.20.1 the testmod (put `bloomberto-testmod-<version>-dev.jar`, not the remapped one, in `run/mods`) was also run: HUD, world drawing, custom shader and the camera shake. Camera shake was also checked on Fabric 1.20.1 and NeoForge 1.21.1, and by the author on Fabric 1.20.1 with Iris. Forge 1.21.1 (manual install) was checked for the camera shake and the zoom. A real two-player session (Quilt 1.20.1 dedicated server, two clients that joined by `--quickPlayMultiplayer`) showed both players receiving the testmod greeting and the server receiving both replies. OptiFine detection is covered by a unit test that stands in for `net.optifine.Config`; OptiFine itself is not redistributable and was not run. Not run: Fabric/Forge/NeoForge servers with real players on 1.21.1.
 
 Known quirk: under this launcher Forge 1.21.1 sometimes crashes ~1 minute after joining, when a bat dies in lava
 ("Can not retrieve LootModifierManager until resources have loaded once", inside Forge); setting the `doMobLoot` game rule

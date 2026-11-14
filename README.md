@@ -15,7 +15,7 @@ utilidades comunes, con **una única API pública idéntica en todas las version
 
 | Minecraft | Java | Forge | NeoForge | Fabric | Quilt |
 |---|---|---|---|---|---|
-| 1.20.1 | 17 | yes | no | yes | via Fabric jar |
+| 1.20.1 | 17 | yes | no | yes | via Fabric jar (verified on 1.20.1) |
 | 1.21.1 | 21 | yes | yes | yes | via Fabric jar |
 
 One jar per version and loader (5 in total).

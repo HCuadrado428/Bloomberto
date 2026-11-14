@@ -38,6 +38,14 @@ public final class RenderCompat {
         }
     }
 
+    /** Forgets what was detected so tests can try different shader mods. */
+    static synchronized void resetForTests() {
+        resolved = false;
+        irisInUse = null;
+        irisApi = null;
+        optifineShaders = null;
+    }
+
     /** {@code true} if a shader mod is currently rendering with a shader pack. */
     public static boolean shaderPackActive() {
         resolve();
