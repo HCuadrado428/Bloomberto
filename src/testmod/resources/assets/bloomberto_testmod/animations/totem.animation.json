@@ -21,6 +21,16 @@
         }
       }
     },
+    "animation.totem.sway": {
+      "loop": true,
+      "animation_length": 4.0,
+      "bones": {
+        "head": {
+          "rotation": [0, "math.sin(query.anim_time * 90) * 30", 0],
+          "position": [0, "math.abs(math.sin(query.anim_time * 180)) * 0.5", 0]
+        }
+      }
+    },
     "animation.totem.pulse": {
       "loop": "hold_on_last_frame",
       "animation_length": 0.5,

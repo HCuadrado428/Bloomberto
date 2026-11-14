@@ -20,7 +20,7 @@ public final class TotemBlockEntity extends BlockEntity implements Animatable {
     public AnimationController animationController() {
         if (controller == null) {
             controller = ModelLibrary.animations(Bloomberto.id(TestMod.MOD_ID, "animations/totem.animation.json")).controller();
-            controller.play("animation.totem.idle");
+            controller.play("animation.totem.sway");
         }
         return controller;
     }

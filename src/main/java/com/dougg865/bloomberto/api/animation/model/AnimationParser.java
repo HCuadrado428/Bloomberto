@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Reads Blockbench animation files ({@code .animation.json}). Values must be numbers (or numeric strings); Molang
- * expressions are rejected with a clear error.
+ * Reads Blockbench animation files ({@code .animation.json}). Values are numbers or Molang expressions (see {@code api.animation.molang}); expressions
+ * are compiled once and evaluated every frame.
  */
 public final class AnimationParser {
     private AnimationParser() {
@@ -76,8 +76,8 @@ public final class AnimationParser {
         List<AnimationClip.Keyframe> keys = new ArrayList<>();
         if (e.isJsonArray() || e.isJsonPrimitive()) {
             // a constant value, no keyframes
-            float[] v = vec(e, where, scalarFallback);
-            keys.add(new AnimationClip.Keyframe(0f, v, v, AnimationClip.Interp.LINEAR));
+            Vals v = vec(e, where, scalarFallback);
+            keys.add(new AnimationClip.Keyframe(0f, v.c, v.c, AnimationClip.Interp.LINEAR, v.e, v.e));
             return keys;
         }
         for (Map.Entry<String, JsonElement> k : e.getAsJsonObject().entrySet()) {
@@ -88,8 +88,8 @@ public final class AnimationParser {
                 throw new ParseException("Keyframe time '" + k.getKey() + "' in " + where + " is not a number", ex);
             }
             JsonElement value = k.getValue();
-            float[] pre;
-            float[] post;
+            Vals pre;
+            Vals post;
             AnimationClip.Interp interp = AnimationClip.Interp.LINEAR;
             if (value.isJsonObject()) {
                 JsonObject o = value.getAsJsonObject();
@@ -104,32 +104,57 @@ public final class AnimationParser {
                 pre = vec(value, where, scalarFallback);
                 post = pre;
             }
-            keys.add(new AnimationClip.Keyframe(time, pre, post, interp));
+            keys.add(new AnimationClip.Keyframe(time, pre.c, post.c, interp, pre.e, post.e));
         }
         keys.sort(java.util.Comparator.comparingDouble(AnimationClip.Keyframe::time));
         return keys;
     }
 
-    private static float[] vec(JsonElement e, String where, float scalarFallback) throws ParseException {
+    /** Constant parts of a vector and, for axes that are Molang expressions, the compiled expression (or null). */
+    private record Vals(float[] c, com.dougg865.bloomberto.api.animation.molang.Molang[] e) {
+    }
+
+    private static Vals vec(JsonElement e, String where, float scalarFallback) throws ParseException {
         if (e == null) {
             throw new ParseException("A keyframe in " + where + " has no value");
         }
         if (e.isJsonPrimitive()) {
-            float v = number(e, where);
-            return new float[] {v, v, v};
+            return fill(new JsonElement[] {e, e, e}, where);
         }
         JsonArray a = e.getAsJsonArray();
         if (a.size() != 3) {
-            throw new ParseException("A keyframe value in " + where + " must have three numbers");
+            throw new ParseException("A keyframe value in " + where + " must have three numbers or expressions");
         }
-        return new float[] {number(a.get(0), where), number(a.get(1), where), number(a.get(2), where)};
+        return fill(new JsonElement[] {a.get(0), a.get(1), a.get(2)}, where);
+    }
+
+    private static Vals fill(JsonElement[] items, String where) throws ParseException {
+        float[] c = new float[3];
+        com.dougg865.bloomberto.api.animation.molang.Molang[] expr = null;
+        for (int i = 0; i < 3; i++) {
+            JsonElement item = items[i];
+            if (item.isJsonPrimitive() && item.getAsJsonPrimitive().isString()
+                    && !com.dougg865.bloomberto.api.animation.molang.Molang.isNumber(item.getAsString())) {
+                try {
+                    if (expr == null) {
+                        expr = new com.dougg865.bloomberto.api.animation.molang.Molang[3];
+                    }
+                    expr[i] = com.dougg865.bloomberto.api.animation.molang.Molang.compile(item.getAsString());
+                } catch (com.dougg865.bloomberto.api.animation.molang.MolangException ex) {
+                    throw new ParseException("Expression '" + item.getAsString() + "' in " + where + ": " + ex.getMessage(), ex);
+                }
+            } else {
+                c[i] = number(item, where);
+            }
+        }
+        return new Vals(c, expr);
     }
 
     private static float number(JsonElement e, String where) throws ParseException {
         try {
             return e.getAsFloat();
         } catch (NumberFormatException | UnsupportedOperationException ex) {
-            throw new ParseException("Value '" + e + "' in " + where + " is not a number; Molang expressions are not supported yet", ex);
+            throw new ParseException("Value '" + e + "' in " + where + " is not a number or an expression", ex);
         }
     }
 }

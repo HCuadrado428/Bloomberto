@@ -18,6 +18,7 @@ public final class AnimationController {
     private static final float SECONDS_PER_TICK = 0.05f;
 
     private final Map<String, AnimationClip> clips;
+    private final com.dougg865.bloomberto.api.animation.molang.MolangContext molang = new com.dougg865.bloomberto.api.animation.molang.MolangContext();
     private AnimationClip current;
     private float time;
     private float speed = 1f;
@@ -137,6 +138,15 @@ public final class AnimationController {
     }
 
     /**
+     * Sets a Molang variable that animation expressions can read, e.g. {@code controller.variable("speed", 0.8)} for
+     * {@code variable.speed} (also readable as {@code v.speed}).
+     */
+    public AnimationController variable(String name, double value) {
+        molang.set(name.contains(".") ? name : "variable." + name, value);
+        return this;
+    }
+
+    /**
      * The pose to draw with.
      *
      * @param partialTick how far into the current tick (0-1), for smooth motion between ticks
@@ -146,7 +156,7 @@ public final class AnimationController {
             return new Pose();
         }
         float t = time + partialTick * SECONDS_PER_TICK * speed;
-        Pose clipPose = current.sample(t);
+        Pose clipPose = current.sample(t, molang);
         if (blendFrom != null && blendTicks > 0) {
             float progress = Math.min(1f, (blendElapsed + partialTick) / blendTicks);
             return Pose.blend(blendFrom, clipPose, progress);

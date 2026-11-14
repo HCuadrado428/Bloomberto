@@ -187,7 +187,7 @@ controller.play("animation.golem.attack").transition(2).then("animation.golem.id
 // block entity: implementa Animatable y registra  new AnimatedBlockEntityRenderer<>(geoId, textureId)
 ```
 Lee geometría Bedrock (`.geo.json`, formatos 1.12.0 y 1.8.0) y archivos de animación con keyframes lineales, Catmull-Rom y de
-paso, y los tres modos de bucle. Las expresiones Molang aún no están soportadas. Los archivos se recargan con F3+T.
+paso, y los tres modos de bucle. Los valores de los keyframes también pueden ser expresiones Molang como `"math.sin(query.anim_time * 90) * 30"` (las funciones de `math` usan grados; `query.anim_time`, `query.life_time`, `variable.*` / `v.*`, `?:`, comparaciones y sentencias con `;` como `variable.x = ...`). Define tus variables con `controller.variable("speed", 2)`. No soportado: arrays, structs, bucles ni `??`. Los archivos se recargan con F3+T.
 
 ## Herramientas de desarrollo
 

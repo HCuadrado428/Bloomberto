@@ -7,6 +7,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 ## [Unreleased]
 
 ### Added
+- Molang in animations: keyframe values can be expressions (`api.animation.molang.Molang`: arithmetic, comparisons, `?:`, `math.*`, `query.anim_time`/`life_time`, `variable.*`, assignments and `return`), compiled once and evaluated every frame; `AnimationController.variable(name, value)` feeds `variable.*`. Verified in a NeoForge client with the testmod totem (`animation.totem.sway`).
 - `CameraZoom`: a real field-of-view zoom with easing that also works with shader packs (Fabric mixin on `GameRenderer.getFov`; `ViewportEvent.ComputeFov` on Forge/NeoForge). Testmod key Z.
 - `CameraShake`: shakes the real camera (yaw/pitch), so it keeps working while a shader pack is active. Fabric uses a small mixin on `Camera`; Forge and NeoForge use `ViewportEvent.ComputeCameraAngles`. The testmod's J key uses it.
 

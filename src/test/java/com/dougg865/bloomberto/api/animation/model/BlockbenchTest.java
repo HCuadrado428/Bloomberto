@@ -201,12 +201,11 @@ class BlockbenchTest {
     }
 
     @Test
-    void rejectsMolangAndBrokenAnimations() {
+    void rejectsBrokenAnimations() {
         assertThrows(ParseException.class, () -> AnimationParser.parse("{}"));
         assertThrows(ParseException.class, () -> AnimationParser.parse("nope"));
-        ParseException molang = assertThrows(ParseException.class, () -> AnimationParser.parse(
-                "{\"animations\":{\"a\":{\"bones\":{\"x\":{\"rotation\":[\"math.sin(query.anim_time)\",0,0]}}}}}"));
-        assertTrue(molang.getMessage().contains("Molang"));
+        assertThrows(ParseException.class, () -> AnimationParser.parse(
+                "{\"animations\":{\"a\":{\"bones\":{\"x\":{\"rotation\":[\"1 +\",0,0]}}}}}"));
         assertThrows(ParseException.class, () -> AnimationParser.parse(
                 "{\"animations\":{\"a\":{\"bones\":{\"x\":{\"rotation\":{\"abc\":[0,0,0]}}}}}}"));
         assertThrows(ParseException.class, () -> AnimationParser.parse(
@@ -498,7 +497,7 @@ class BlockbenchTest {
         assertEquals(List.of("root", "base", "head"), model.bones().stream().map(GeoModel.Bone::name).toList());
         Map<String, AnimationClip> clips = AnimationParser.parse(
                 java.nio.file.Files.readString(assets.resolve("animations/totem.animation.json")));
-        assertEquals(2, clips.size());
+        assertEquals(3, clips.size());
         AnimationController controller = new AnimationController(clips);
         controller.play("animation.totem.idle").transition(5);
         for (int i = 0; i < 40; i++) {
