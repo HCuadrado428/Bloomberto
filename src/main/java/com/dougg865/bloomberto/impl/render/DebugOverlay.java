@@ -15,13 +15,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
-/** A small HUD panel with Bloomberto's runtime state, toggled with F8. Only available in development or with {@code -Dbloomberto.debugOverlay=true}. */
+/**
+ * A small HUD panel with Bloomberto's runtime state, toggled with F8. Available in development, when the Bloomberto testmod is
+ * installed, or with {@code -Dbloomberto.debugOverlay=true}.
+ */
 public final class DebugOverlay {
     private DebugOverlay() {
     }
 
     public static boolean enabled() {
-        return Services.PLATFORM.isDevelopmentEnvironment() || Boolean.getBoolean("bloomberto.debugOverlay");
+        return Services.PLATFORM.isDevelopmentEnvironment() || Boolean.getBoolean("bloomberto.debugOverlay")
+                || Services.PLATFORM.isModLoaded("bloomberto_testmod");
     }
 
     /** The lines shown in the panel. */

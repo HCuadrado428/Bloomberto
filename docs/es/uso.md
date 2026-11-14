@@ -192,7 +192,7 @@ paso, y los tres modos de bucle. Las expresiones Molang aún no están soportada
 - `/bloomberto reload` vuelve a leer todos los archivos de configuración; `/bloomberto info` muestra versiones y valores.
 - `/bloomberto datagen <modid>` ejecuta tu generador de datos registrado (`Datagen.register("mymod", gen -> ...)`):
   modelos, block states, idiomas, recetas, loot tables y tags, en el formato de la versión de Minecraft en ejecución.
-- Un overlay de depuración (F8) muestra tweens, tareas, texturas y efectos activos en desarrollo.
+- Un overlay de depuración (F8) muestra tweens, tareas, texturas y efectos activos; está activo en desarrollo, con el testmod instalado o con `-Dbloomberto.debugOverlay=true`.
 
 ## Ejemplo
 

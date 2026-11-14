@@ -191,7 +191,7 @@ keyframes and the three loop modes. Molang expressions are not supported yet. Fi
 - `/bloomberto reload` re-reads every config file; `/bloomberto info` prints versions and config values.
 - `/bloomberto datagen <modid>` runs your registered data generator (`Datagen.register("mymod", gen -> ...)`):
   models, block states, language files, recipes, loot tables and tags, written in the format of the running Minecraft version.
-- A debug overlay (F8) shows tweens, tasks, textures and active effects in development.
+- A debug overlay (F8) shows tweens, tasks, textures and active effects; it is on in development, when the testmod is installed, or with `-Dbloomberto.debugOverlay=true`.
 
 ## Example
 
