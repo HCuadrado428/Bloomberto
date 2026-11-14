@@ -21,7 +21,7 @@ public final class RenderCompat {
             return;
         }
         resolved = true;
-        if (Services.PLATFORM.isModLoaded("iris") || Services.PLATFORM.isModLoaded("oculus")) {
+        if (modLoaded("iris") || modLoaded("oculus")) {
             try {
                 Class<?> api = Class.forName("net.irisshaders.iris.api.v0.IrisApi");
                 irisApi = api.getMethod("getInstance").invoke(null);
@@ -35,6 +35,14 @@ public final class RenderCompat {
             optifineShaders = Class.forName("net.optifine.Config").getMethod("isShaders");
         } catch (ReflectiveOperationException | LinkageError ignored) {
             optifineShaders = null;
+        }
+    }
+
+    private static boolean modLoaded(String id) {
+        try {
+            return Services.PLATFORM.isModLoaded(id);
+        } catch (RuntimeException | LinkageError | java.util.ServiceConfigurationError e) {
+            return false; // no loader available (unit tests)
         }
     }
 
