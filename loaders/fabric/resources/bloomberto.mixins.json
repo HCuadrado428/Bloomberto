@@ -3,6 +3,6 @@
   "minVersion": "0.8",
   "package": "com.dougg865.bloomberto.platform.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
-  "client": ["CameraMixin"],
+  "client": ["CameraMixin", "GameRendererMixin"],
   "injectors": { "defaultRequire": 1 }
 }

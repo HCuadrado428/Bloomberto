@@ -23,6 +23,8 @@ final class NeoForgeClientEvents {
                 ClientEvents.CLIENT_TICK.invoke(Runnable::run));
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ViewportEvent.ComputeFov e) ->
+                e.setFOV(com.dougg865.bloomberto.api.render.CameraZoom.shared().apply(e.getFOV(), (float) e.getPartialTick())));
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles e) -> {
             float[] shake = com.dougg865.bloomberto.api.render.CameraShake.shared().offset((float) e.getPartialTick());
             e.setYaw(e.getYaw() + shake[0]);

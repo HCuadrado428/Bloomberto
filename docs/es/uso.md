@@ -156,6 +156,7 @@ Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.lite
 
 **Efectos visuales**
 ```java
+CameraZoom.shared().zoomTo(3f, 8, Easing.OUT_CUBIC);   // zoom real por FOV (3x), funciona con shaders; reset(8, ...) lo deshace
 CameraShake.shared().shake(1f, 30);   // temblor de impacto: mueve la cámara real, así que funciona también con shaders
 // ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // versión en pantalla; se pausa con shaders
 PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // zoom en pantalla

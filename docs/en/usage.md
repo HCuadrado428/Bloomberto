@@ -155,6 +155,7 @@ Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.lite
 
 **Visual effects**
 ```java
+CameraZoom.shared().zoomTo(3f, 8, Easing.OUT_CUBIC);   // real FOV zoom (3x), works with shader packs; reset(8, ...) to undo
 CameraShake.shared().shake(1f, 30);   // impact shake: moves the real camera, so it also works with shader packs
 // ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // screen-space version; paused under shader packs
 PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // screen-space zoom

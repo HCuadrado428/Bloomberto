@@ -90,6 +90,15 @@ public final class TestModClient {
         // A key (default: J) that shakes the screen; a ribbon that follows the player.
         Keybinds.register(TestMod.MOD_ID, "shake", org.lwjgl.glfw.GLFW.GLFW_KEY_J, "general",
                 () -> com.dougg865.bloomberto.api.render.CameraShake.shared().shake(1f, 30));
+        // A key (default: Z) that toggles a 3x field-of-view zoom (works with shader packs).
+        Keybinds.register(TestMod.MOD_ID, "zoom", org.lwjgl.glfw.GLFW.GLFW_KEY_Z, "general", () -> {
+            var zoom = com.dougg865.bloomberto.api.render.CameraZoom.shared();
+            if (zoom.factor(0f) > 1.5f) {
+                zoom.reset(8, Easing.OUT_CUBIC);
+            } else {
+                zoom.zoomTo(3f, 8, Easing.OUT_CUBIC);
+            }
+        });
         Trail trail = new Trail(30, 30);
         ClientEvents.CLIENT_TICK.register(() -> {
             if (Minecraft.getInstance().player != null) {
@@ -113,6 +122,9 @@ public final class TestModClient {
                 if (!shake.isShaking()) {
                     shake.shake(1f, 200, 6f);
                 }
+            } else if ("camera_zoom".equals(auto) && !autoApplied && Minecraft.getInstance().level != null) {
+                autoApplied = true;
+                com.dougg865.bloomberto.api.render.CameraZoom.shared().zoomTo(3f, 8, Easing.OUT_CUBIC);
             } else if (auto != null && !autoApplied && Minecraft.getInstance().level != null) {
                 autoApplied = true;
                 PostEffects.get(Bloomberto.id(auto)).setIntensity(1f).enable();
