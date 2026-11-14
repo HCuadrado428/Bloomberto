@@ -32,8 +32,11 @@ final class ForgeClientEvents {
                         com.dougg865.bloomberto.api.client.Keybinds.drainPending().forEach(e::register));
         MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) ->
                 ClientEvents.DISCONNECT.invoke(Runnable::run));
-        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.ViewportEvent.ComputeFov e) ->
-                e.setFOV(com.dougg865.bloomberto.api.render.CameraZoom.shared().apply(e.getFOV(), (float) e.getPartialTick())));
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.ViewportEvent.ComputeFov e) -> {
+            // only the world's field of view: the first-person hand uses a fixed one and must not be magnified
+            if (e.usedConfiguredFov())
+                e.setFOV(com.dougg865.bloomberto.api.render.CameraZoom.shared().apply(e.getFOV(), (float) e.getPartialTick()));
+        });
         MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles e) -> {
             float[] shake = com.dougg865.bloomberto.api.render.CameraShake.shared().offset((float) e.getPartialTick());
             e.setYaw(e.getYaw() + shake[0]);

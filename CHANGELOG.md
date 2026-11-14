@@ -6,6 +6,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Fixed
+- `CameraZoom` also magnified the first-person hand: the Fabric mixin and the Forge/NeoForge `ComputeFov` listener changed every `getFov` call, including the hand's fixed one. It now only changes the world's field of view (`useFovSetting` / `usedConfiguredFov()`), so items drawn in the hand keep their size and position while zoomed.
+
 ### Added
 - `BbModelParser` and `.bbmodel` support in `ModelLibrary`: Blockbench projects are read directly (cubes, groups, UV, bone animations, Molang, embedded textures). The testmod totem now loads from `models/totem.bbmodel`; a test checks it against `geo/totem.geo.json`. Not compared with exports of real Blockbench files.
 - Molang in animations: keyframe values can be expressions (`api.animation.molang.Molang`: arithmetic, comparisons, `?:`, `math.*`, `query.anim_time`/`life_time`, `variable.*`, assignments and `return`), compiled once and evaluated every frame; `AnimationController.variable(name, value)` feeds `variable.*`. Verified in a NeoForge client with the testmod totem (`animation.totem.sway`).
