@@ -112,6 +112,7 @@ own events.
 **Dynamic textures**
 ```java
 TextureHandle avatar = Textures.fromUrl(Bloomberto.id("mymod", "avatar"), "https://example.com/a.png")
+        // .allowLocalAddresses(false)  // for URLs that come from players or servers: never reach the local network
         .placeholder(Bloomberto.id("mymod", "textures/gui/loading.png")).cache(true).load();
 // draw with avatar.location(); it is the placeholder until the image is ready. avatar.close() frees it.
 ```

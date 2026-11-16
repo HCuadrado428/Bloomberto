@@ -20,6 +20,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - `Shaders.create` with an id that already exists returns the same program instead of leaking a new one; two packet types with the same id are rejected.
 
 ### Added (code review)
+- `Textures.Request.allowLocalAddresses(false)`: refuses URLs (and redirects) that resolve to this computer or the local network, for URLs that come from players or servers. Redirects are now followed by hand (at most 5, never https to http).
+- The texture download cache prunes itself once per session: files older than 30 days go, and the oldest are deleted while the folder is over 256 MiB.
+- Entity data of destroyed (killed or discarded) non-player entities is deleted automatically; chunk unloads and dimension changes keep it.
+- Client and server compare their Bloomberto API level on join; a difference is logged and shown in chat (nothing is refused).
+- `WorldDraw.box` draws its 12 edges in one batch instead of 12.
 - `BloombertoEvents.SERVER_STOPPED` on every loader, and `Scheduler.clear()`, so world-specific tasks can be cancelled when a singleplayer world closes.
 
 ### Fixed

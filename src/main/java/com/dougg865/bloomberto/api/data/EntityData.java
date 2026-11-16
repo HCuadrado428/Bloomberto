@@ -13,8 +13,9 @@ import net.minecraft.world.entity.Entity;
  * loader. Data belongs to the entity's UUID, so a player keeps it across death, respawn and dimension changes.
  *
  * <p>Write only on the server. Reading works on the server, and on the client for {@link DataKey#synced()}
- * keys of the local player. Data of entities that no longer exist is not removed automatically; call
- * {@link #clear(Entity)} when you know an entity is gone for good.
+ * keys of the local player. Data of an entity that is destroyed (killed or discarded) is deleted automatically;
+ * data of entities that are only unloaded with their chunk or change dimension is kept, and players always keep theirs.
+ * Note that a mob converting into another (a zombie drowning, for example) becomes a new entity and does not keep the data.
  */
 public final class EntityData {
     private EntityData() {

@@ -34,6 +34,8 @@ final class ForgeEvents {
         });
         MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.server.ServerStoppedEvent e) ->
                 BloombertoEvents.SERVER_STOPPED.invoke(l -> l.accept(e.getServer())));
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.entity.EntityLeaveLevelEvent e) ->
+                com.dougg865.bloomberto.impl.data.EntityDataCleanup.onLeave(e.getEntity()));
         MinecraftForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BloombertoEvents.PLAYER_LEAVE.invoke(l -> l.accept(player));

@@ -31,6 +31,7 @@ public final class Bloomberto {
         BloombertoEvents.SERVER_TICK.register(server -> Schedulers.server().tick());
         com.dougg865.bloomberto.impl.config.ConfigSync.register();
         com.dougg865.bloomberto.impl.data.DataSync.register();
+        com.dougg865.bloomberto.impl.network.VersionCheck.register();
         // Touch the network service early so loader channels exist before other mods register packets.
         LOGGER.debug("Networking: {}", Services.NETWORK.getClass().getSimpleName());
         if (Boolean.getBoolean("bloomberto.debugEvents")) {

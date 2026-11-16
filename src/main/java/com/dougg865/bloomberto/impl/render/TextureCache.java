@@ -61,6 +61,58 @@ public final class TextureCache {
         }
     }
 
+    /**
+     * Deletes cached files older than {@code maxAge}, then the oldest ones until the cache is at most {@code maxBytes}.
+     * Leftover {@code .tmp} files of interrupted writes are removed too.
+     *
+     * @return how many files were deleted
+     */
+    public int prune(Duration maxAge, long maxBytes) {
+        if (!Files.isDirectory(dir)) {
+            return 0;
+        }
+        record Item(Path path, long size, Instant modified) {
+        }
+        java.util.List<Item> items = new java.util.ArrayList<>();
+        int deleted = 0;
+        try (java.util.stream.Stream<Path> files = Files.list(dir)) {
+            for (Path p : (Iterable<Path>) files::iterator) {
+                String name = p.getFileName().toString();
+                if (!name.endsWith(".bin") && !name.endsWith(".tmp")) {
+                    continue; // only touch files this cache wrote
+                }
+                try {
+                    Instant modified = Files.getLastModifiedTime(p).toInstant();
+                    if (name.endsWith(".tmp") || modified.plus(maxAge).isBefore(Instant.now())) {
+                        Files.deleteIfExists(p);
+                        deleted++;
+                    } else {
+                        items.add(new Item(p, Files.size(p), modified));
+                    }
+                } catch (IOException ignored) {
+                    // a file that vanished or cannot be read is simply skipped
+                }
+            }
+        } catch (IOException e) {
+            return deleted;
+        }
+        long total = items.stream().mapToLong(Item::size).sum();
+        items.sort(java.util.Comparator.comparing(Item::modified));
+        for (Item item : items) {
+            if (total <= maxBytes) {
+                break;
+            }
+            try {
+                Files.deleteIfExists(item.path());
+                total -= item.size();
+                deleted++;
+            } catch (IOException ignored) {
+                // try the next one
+            }
+        }
+        return deleted;
+    }
+
     public void delete(String url) {
         try {
             Files.deleteIfExists(file(url));

@@ -30,6 +30,8 @@ final class NeoForgeEvents {
         });
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStoppedEvent e) ->
                 BloombertoEvents.SERVER_STOPPED.invoke(l -> l.accept(e.getServer())));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent e) ->
+                com.dougg865.bloomberto.impl.data.EntityDataCleanup.onLeave(e.getEntity()));
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BloombertoEvents.PLAYER_LEAVE.invoke(l -> l.accept(player));

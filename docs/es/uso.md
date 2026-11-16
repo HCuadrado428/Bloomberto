@@ -112,6 +112,7 @@ eventos propios de cada loader.
 **Texturas dinámicas**
 ```java
 TextureHandle avatar = Textures.fromUrl(Bloomberto.id("mymod", "avatar"), "https://example.com/a.png")
+        // .allowLocalAddresses(false)  // para URLs de jugadores o servidores: nunca acceder a la red local
         .placeholder(Bloomberto.id("mymod", "textures/gui/loading.png")).cache(true).load();
 // dibuja con avatar.location(); es el placeholder hasta que la imagen esté lista. avatar.close() la libera.
 ```

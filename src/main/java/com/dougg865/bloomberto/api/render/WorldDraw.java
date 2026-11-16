@@ -65,6 +65,11 @@ public final class WorldDraw {
 
     /** A line between two world positions. */
     public WorldDraw line(Vec3 from, Vec3 to, Color color) {
+        draw(RenderType.lines(), vc -> lineVertices(vc, ctx.poseStack().last(), from, to, color));
+        return this;
+    }
+
+    private void lineVertices(VertexConsumer vc, PoseStack.Pose pose, Vec3 from, Vec3 to, Color color) {
         Vec3 a = ctx.relative(from);
         Vec3 b = ctx.relative(to);
         Vec3 d = b.subtract(a);
@@ -72,12 +77,8 @@ public final class WorldDraw {
         float nx = len == 0 ? 0 : (float) d.x / len;
         float ny = len == 0 ? 1 : (float) d.y / len;
         float nz = len == 0 ? 0 : (float) d.z / len;
-        draw(RenderType.lines(), vc -> {
-            PoseStack.Pose pose = ctx.poseStack().last();
-            Vtx.posColorNormal(vc, pose, (float) a.x, (float) a.y, (float) a.z, color.argb(), nx, ny, nz);
-            Vtx.posColorNormal(vc, pose, (float) b.x, (float) b.y, (float) b.z, color.argb(), nx, ny, nz);
-        });
-        return this;
+        Vtx.posColorNormal(vc, pose, (float) a.x, (float) a.y, (float) a.z, color.argb(), nx, ny, nz);
+        Vtx.posColorNormal(vc, pose, (float) b.x, (float) b.y, (float) b.z, color.argb(), nx, ny, nz);
     }
 
     /** The 12 edges of a box. */
@@ -88,9 +89,13 @@ public final class WorldDraw {
             new Vec3(x0, y1, z0), new Vec3(x1, y1, z0), new Vec3(x1, y1, z1), new Vec3(x0, y1, z1)
         };
         int[][] edges = {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
-        for (int[] e : edges) {
-            line(c[e[0]], c[e[1]], color);
-        }
+        // one batch for all 12 edges instead of one draw call per edge
+        draw(RenderType.lines(), vc -> {
+            PoseStack.Pose pose = ctx.poseStack().last();
+            for (int[] e : edges) {
+                lineVertices(vc, pose, c[e[0]], c[e[1]], color);
+            }
+        });
         return this;
     }
 

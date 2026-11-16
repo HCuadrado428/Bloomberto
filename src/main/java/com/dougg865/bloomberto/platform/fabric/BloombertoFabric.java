@@ -21,6 +21,8 @@ public final class BloombertoFabric implements ModInitializer {
                 BloombertoEvents.PLAYER_JOIN.invoke(l -> l.accept(handler.player)));
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server ->
                 BloombertoEvents.SERVER_STOPPED.invoke(l -> l.accept(server)));
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) ->
+                com.dougg865.bloomberto.impl.data.EntityDataCleanup.onLeave(entity));
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
                 BloombertoEvents.PLAYER_LEAVE.invoke(l -> l.accept(handler.player)));
     }

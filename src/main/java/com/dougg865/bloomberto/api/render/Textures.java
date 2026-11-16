@@ -40,6 +40,7 @@ public final class Textures {
         return t;
     });
     private static final Map<ResourceLocation, TextureHandle> ACTIVE = new ConcurrentHashMap<>();
+    private static final java.util.concurrent.atomic.AtomicBoolean PRUNED = new java.util.concurrent.atomic.AtomicBoolean();
 
     private Textures() {
     }
@@ -94,6 +95,7 @@ public final class Textures {
         private int maxBytes = 8 * 1024 * 1024;
         private int maxPixels = 4096 * 4096;
         private Duration timeout = Duration.ofSeconds(20);
+        private boolean allowLocal = true;
 
         private Request(ResourceLocation id, String url, TextureLoader.Source directSource) {
             this.id = id;
@@ -131,6 +133,17 @@ public final class Textures {
             return this;
         }
 
+        /**
+         * Whether the URL may point at this computer or the local network (default {@code true}). Set it to {@code false} for
+         * URLs that come from other players or from a server, so they cannot make the game reach the user's router, NAS or
+         * other local services. The check is repeated after every redirect. (A host that changes its DNS answer between the
+         * check and the connection is not caught.)
+         */
+        public Request allowLocalAddresses(boolean allow) {
+            this.allowLocal = allow;
+            return this;
+        }
+
         public Request timeout(Duration timeout) {
             this.timeout = timeout;
             return this;
@@ -149,6 +162,10 @@ public final class Textures {
         private TextureLoader.Source urlSource() {
             return () -> {
                 TextureCache diskCache = cache ? new TextureCache(cacheDir()) : null;
+                if (diskCache != null && PRUNED.compareAndSet(false, true)) {
+                    // once per game session: drop files older than 30 days and keep the folder under 256 MiB
+                    diskCache.prune(Duration.ofDays(30), 256L * 1024 * 1024);
+                }
                 if (diskCache != null) {
                     byte[] cached = diskCache.read(url, cacheTtl);
                     if (cached != null) {
@@ -160,7 +177,7 @@ public final class Textures {
                         }
                     }
                 }
-                byte[] data = ImageDownloader.download(url, maxBytes, timeout);
+                byte[] data = ImageDownloader.download(url, maxBytes, timeout, allowLocal);
                 if (diskCache != null) {
                     diskCache.write(url, data);
                 }
