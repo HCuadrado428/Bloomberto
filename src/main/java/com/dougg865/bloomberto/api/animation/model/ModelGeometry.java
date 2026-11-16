@@ -19,42 +19,184 @@ public final class ModelGeometry {
     public record Quad(Vertex[] vertices, float nx, float ny, float nz) {
     }
 
+    /**
+     * A model prepared for drawing: every face is stored once in its bone's space, so drawing a frame only computes one
+     * matrix per bone and transforms the stored corners, without creating objects. Built once per {@link GeoModel} and
+     * kept until the model is no longer used.
+     */
+    public static final class Compiled {
+        private final String[] names;
+        private final float[][] pivots;
+        private final float[][] baseRotations;
+        private final int[][] children;
+        private final int[] roots;
+        /** Per bone: 4 corners x (x, y, z, u, v) per quad. */
+        private final float[][] corners;
+        /** Per bone: (nx, ny, nz) per quad. */
+        private final float[][] normals;
+
+        private Compiled(GeoModel model) {
+            List<GeoModel.Bone> bones = model.bones();
+            int n = bones.size();
+            names = new String[n];
+            pivots = new float[n][];
+            baseRotations = new float[n][];
+            children = new int[n][];
+            corners = new float[n][];
+            normals = new float[n][];
+            java.util.Map<String, Integer> index = new java.util.HashMap<>();
+            for (int i = 0; i < n; i++) {
+                index.put(bones.get(i).name(), i);
+            }
+            List<Integer> rootList = new ArrayList<>();
+            List<List<Integer>> kids = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                kids.add(new ArrayList<>());
+            }
+            for (int i = 0; i < n; i++) {
+                GeoModel.Bone b = bones.get(i);
+                names[i] = b.name();
+                pivots[i] = Conventions.position(b.pivot());
+                baseRotations[i] = Conventions.rotation(b.rotation());
+                Integer parent = b.parent() == null ? null : index.get(b.parent());
+                (parent == null ? rootList : kids.get(parent)).add(i);
+                List<Quad> quads = new ArrayList<>();
+                for (GeoModel.Cube cube : b.cubes()) {
+                    addCube(model, b, cube, quads);
+                }
+                float[] c = new float[quads.size() * 20];
+                float[] nn = new float[quads.size() * 3];
+                for (int q = 0; q < quads.size(); q++) {
+                    Quad quad = quads.get(q);
+                    for (int v = 0; v < 4; v++) {
+                        Vertex vx = quad.vertices()[v];
+                        int o = q * 20 + v * 5;
+                        c[o] = vx.x();
+                        c[o + 1] = vx.y();
+                        c[o + 2] = vx.z();
+                        c[o + 3] = vx.u();
+                        c[o + 4] = vx.v();
+                    }
+                    nn[q * 3] = quad.nx();
+                    nn[q * 3 + 1] = quad.ny();
+                    nn[q * 3 + 2] = quad.nz();
+                }
+                corners[i] = c;
+                normals[i] = nn;
+            }
+            roots = rootList.stream().mapToInt(Integer::intValue).toArray();
+            for (int i = 0; i < n; i++) {
+                children[i] = kids.get(i).stream().mapToInt(Integer::intValue).toArray();
+            }
+        }
+
+        /** Receives the corners of each quad, already posed, in order. */
+        @FunctionalInterface
+        public interface Sink {
+            void vertex(float x, float y, float z, float u, float v, float nx, float ny, float nz);
+        }
+
+        /** Sends every posed corner to {@code sink}: four per quad, in the same order as {@link #build}. */
+        public void emit(Pose pose, Sink sink) {
+            Matrix4f identity = new Matrix4f();
+            Vector3f p = new Vector3f();
+            Vector3f nrm = new Vector3f();
+            Matrix3f normalMatrix = new Matrix3f();
+            for (int root : roots) {
+                emitBone(root, pose, identity, sink, p, nrm, normalMatrix);
+            }
+        }
+
+        private void emitBone(int i, Pose pose, Matrix4f parent, Sink sink, Vector3f p, Vector3f nrm, Matrix3f normalMatrix) {
+            float[] animRot;
+            float[] animPos;
+            float[] scale;
+            if (pose.has(names[i])) {
+                BoneTransform anim = pose.get(names[i]);
+                animRot = Conventions.rotation(anim.rotation);
+                animPos = Conventions.position(anim.position);
+                scale = anim.scale;
+            } else {
+                animRot = ZERO;
+                animPos = ZERO;
+                scale = ONE;
+            }
+            float[] pivot = pivots[i];
+            float[] base = baseRotations[i];
+            Matrix4f local = new Matrix4f(parent)
+                    .translate(pivot[0], pivot[1], pivot[2])
+                    .translate(animPos[0], animPos[1], animPos[2])
+                    .rotateZYX(base[2] + animRot[2], base[1] + animRot[1], base[0] + animRot[0])
+                    .scale(scale[0], scale[1], scale[2])
+                    .translate(-pivot[0], -pivot[1], -pivot[2]);
+            float[] c = corners[i];
+            float[] nn = normals[i];
+            if (c.length > 0) {
+                local.normal(normalMatrix);
+                for (int q = 0; q < nn.length / 3; q++) {
+                    normalMatrix.transform(nn[q * 3], nn[q * 3 + 1], nn[q * 3 + 2], nrm);
+                    if (nrm.lengthSquared() > 0f) {
+                        nrm.normalize();
+                    }
+                    for (int v = 0; v < 4; v++) {
+                        int o = q * 20 + v * 5;
+                        p.set(c[o], c[o + 1], c[o + 2]);
+                        local.transformPosition(p);
+                        sink.vertex(p.x, p.y, p.z, c[o + 3], c[o + 4], nrm.x, nrm.y, nrm.z);
+                    }
+                }
+            }
+            for (int child : children[i]) {
+                emitBone(child, pose, local, sink, p, nrm, normalMatrix);
+            }
+        }
+    }
+
+    private static final float[] ZERO = {0f, 0f, 0f};
+    private static final float[] ONE = {1f, 1f, 1f};
+
+    /** Compiled models, by identity; an entry goes away when its model is no longer referenced (e.g. after F3+T). */
+    private static final java.util.Map<GeoModel, Compiled> CACHE =
+            java.util.Collections.synchronizedMap(new IdentityWeakMap<>());
+
+    /** The compiled form of {@code model}, built on first use. */
+    public static Compiled compile(GeoModel model) {
+        Compiled compiled = CACHE.get(model);
+        if (compiled == null) {
+            compiled = new Compiled(model);
+            CACHE.put(model, compiled);
+        }
+        return compiled;
+    }
+
     private ModelGeometry() {
     }
 
-    /** All quads of the model with the pose applied. */
+    /** All quads of the model with the pose applied. Allocates; renderers use {@link #compile}{@code .emit} instead. */
     public static List<Quad> build(GeoModel model, Pose pose) {
         List<Quad> quads = new ArrayList<>();
-        for (GeoModel.Bone root : model.childrenOf(null)) {
-            addBone(model, root, pose, new Matrix4f(), quads);
-        }
+        float[][] pending = new float[4][];
+        int[] count = {0};
+        float[] normal = new float[3];
+        compile(model).emit(pose, (x, y, z, u, v, nx, ny, nz) -> {
+            pending[count[0]++] = new float[] {x, y, z, u, v};
+            normal[0] = nx;
+            normal[1] = ny;
+            normal[2] = nz;
+            if (count[0] == 4) {
+                Vertex[] vs = new Vertex[4];
+                for (int i = 0; i < 4; i++) {
+                    vs[i] = new Vertex(pending[i][0], pending[i][1], pending[i][2], pending[i][3], pending[i][4]);
+                }
+                quads.add(new Quad(vs, normal[0], normal[1], normal[2]));
+                count[0] = 0;
+            }
+        });
         return quads;
     }
 
-    private static void addBone(GeoModel model, GeoModel.Bone bone, Pose pose, Matrix4f parent, List<Quad> out) {
-        BoneTransform anim = pose.has(bone.name()) ? pose.get(bone.name()) : new BoneTransform();
-        float[] pivot = Conventions.position(bone.pivot());
-        float[] baseRot = Conventions.rotation(bone.rotation());
-        float[] animRot = Conventions.rotation(anim.rotation);
-        float[] animPos = Conventions.position(anim.position);
-
-        Matrix4f local = new Matrix4f(parent)
-                .translate(pivot[0], pivot[1], pivot[2])
-                .translate(animPos[0], animPos[1], animPos[2])
-                .rotateZYX(baseRot[2] + animRot[2], baseRot[1] + animRot[1], baseRot[0] + animRot[0])
-                .scale(anim.scale[0], anim.scale[1], anim.scale[2])
-                .translate(-pivot[0], -pivot[1], -pivot[2]);
-
-        for (GeoModel.Cube cube : bone.cubes()) {
-            addCube(model, bone, cube, local, out);
-        }
-        for (GeoModel.Bone child : model.childrenOf(bone.name())) {
-            addBone(model, child, pose, local, out);
-        }
-    }
-
-    private static void addCube(GeoModel model, GeoModel.Bone bone, GeoModel.Cube cube, Matrix4f bonePose, List<Quad> out) {
-        Matrix4f m = new Matrix4f(bonePose);
+    private static void addCube(GeoModel model, GeoModel.Bone bone, GeoModel.Cube cube, List<Quad> out) {
+        Matrix4f m = new Matrix4f(); // the cube's own (static) rotation; the bone pose is applied per frame
         if (cube.pivot() != null) {
             float[] cp = Conventions.position(cube.pivot());
             float[] cr = Conventions.rotation(cube.rotation());

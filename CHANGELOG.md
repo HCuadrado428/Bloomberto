@@ -25,6 +25,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - Entity data of destroyed (killed or discarded) non-player entities is deleted automatically; chunk unloads and dimension changes keep it.
 - Client and server compare their Bloomberto API level on join; a difference is logged and shown in chat (nothing is refused).
 - `WorldDraw.box` draws its 12 edges in one batch instead of 12.
+- Animated models no longer rebuild their geometry every frame: `ModelGeometry.compile(model)` prepares each model once (kept until the model object is no longer used, e.g. after F3+T), and `GeoRenderer` transforms its corners straight into the vertex buffer without creating objects. `ModelGeometry.build` still returns the same quads as before.
 - `BloombertoEvents.SERVER_STOPPED` on every loader, and `Scheduler.clear()`, so world-specific tasks can be cancelled when a singleplayer world closes.
 
 ### Fixed

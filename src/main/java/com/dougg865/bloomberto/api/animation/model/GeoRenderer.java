@@ -20,11 +20,9 @@ public final class GeoRenderer {
         poseStack.pushPose();
         poseStack.scale(1f / 16f, 1f / 16f, 1f / 16f);
         PoseStack.Pose last = poseStack.last();
-        for (ModelGeometry.Quad quad : ModelGeometry.build(model, pose)) {
-            for (ModelGeometry.Vertex v : quad.vertices()) {
-                Vtx.entity(consumer, last, v.x(), v.y(), v.z(), argb, v.u(), v.v(), overlay, light, quad.nx(), quad.ny(), quad.nz());
-            }
-        }
+        // no per-frame quad objects: the model is compiled once and its corners are transformed straight into the buffer
+        ModelGeometry.compile(model).emit(pose, (x, y, z, u, v, nx, ny, nz) ->
+                Vtx.entity(consumer, last, x, y, z, argb, u, v, overlay, light, nx, ny, nz));
         poseStack.popPose();
     }
 }
