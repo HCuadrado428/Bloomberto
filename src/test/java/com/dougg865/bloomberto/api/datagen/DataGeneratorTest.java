@@ -167,4 +167,12 @@ class DataGeneratorTest {
         assertEquals("#c:more", values.get(1).getAsString());
         assertEquals("other:thing", values.get(2).getAsString());
     }
+
+    @Test
+    void neverWritesOutsideTheOutputFolder(@TempDir Path dir) {
+        DataGenerator gen = DataGenerator.create("mymod", dir.resolve("out"));
+        gen.itemModel("../../../../../../escaped");
+        org.junit.jupiter.api.Assertions.assertThrows(java.io.IOException.class, gen::generate);
+        org.junit.jupiter.api.Assertions.assertFalse(java.nio.file.Files.exists(dir.resolve("escaped.json")));
+    }
 }

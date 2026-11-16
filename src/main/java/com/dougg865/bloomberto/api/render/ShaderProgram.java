@@ -41,6 +41,10 @@ public final class ShaderProgram {
         return id;
     }
 
+    public VertexFormat format() {
+        return format;
+    }
+
     public ShaderProgram setFloat(String name, float v) {
         uniforms.setFloat(name, v);
         return this;

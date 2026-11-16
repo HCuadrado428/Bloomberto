@@ -20,6 +20,16 @@ public final class AnimationParser {
 
     /** @return the clips by name (e.g. {@code animation.golem.walk}), in file order */
     public static Map<String, AnimationClip> parse(String json) throws ParseException {
+        try {
+            return parseUnchecked(json);
+        } catch (ParseException e) {
+            throw e;
+        } catch (RuntimeException | StackOverflowError e) {
+            throw new ParseException("Malformed animation file: " + e, e);
+        }
+    }
+
+    private static Map<String, AnimationClip> parseUnchecked(String json) throws ParseException {
         JsonObject root;
         try {
             root = JsonParser.parseString(json).getAsJsonObject();

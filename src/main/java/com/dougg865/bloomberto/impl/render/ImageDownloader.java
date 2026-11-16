@@ -16,6 +16,14 @@ public final class ImageDownloader {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
+    /** Closes streams of downloads that exceed their time budget (three times the request timeout for the whole body). */
+    private static final java.util.concurrent.ScheduledExecutorService WATCHDOG =
+            java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "Bloomberto-download-watchdog");
+                t.setDaemon(true);
+                return t;
+            });
+
     private ImageDownloader() {
     }
 
@@ -37,7 +45,15 @@ public final class ImageDownloader {
         HttpRequest request = HttpRequest.newBuilder(uri).timeout(timeout).GET().build();
         try {
             HttpResponse<InputStream> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            try (InputStream in = response.body()) {
+            InputStream body = response.body();
+            java.util.concurrent.ScheduledFuture<?> watchdog = WATCHDOG.schedule(() -> {
+                try {
+                    body.close(); // unblocks a read() that is stuck on a stalled connection
+                } catch (IOException ignored) {
+                    // already closed
+                }
+            }, Math.max(1L, timeout.toMillis() * 3), java.util.concurrent.TimeUnit.MILLISECONDS);
+            try (InputStream in = body) {
                 if (response.statusCode() / 100 != 2) {
                     throw new IOException("HTTP " + response.statusCode() + " for " + url);
                 }
@@ -57,6 +73,8 @@ public final class ImageDownloader {
                     out.write(buffer, 0, n);
                 }
                 return out.toByteArray();
+            } finally {
+                watchdog.cancel(false);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -18,6 +18,11 @@ public final class BloombertoEvents {
     public static final Event<Consumer<ServerPlayer>> PLAYER_JOIN = new Event<>("player_join");
     /** A player left the server. */
     public static final Event<Consumer<ServerPlayer>> PLAYER_LEAVE = new Event<>("player_leave");
+    /**
+     * The server stopped (a dedicated server shutting down, or the player leaving a singleplayer world). Cancel tasks and
+     * drop references to that server's levels and players here: in singleplayer the next world runs in the same game.
+     */
+    public static final Event<Consumer<MinecraftServer>> SERVER_STOPPED = new Event<>("server_stopped");
 
     private BloombertoEvents() {
     }

@@ -64,4 +64,9 @@ class TomlTest {
     void rejectsNonFiniteDoubles() {
         assertThrows(IllegalArgumentException.class, () -> Toml.format(Double.NaN));
     }
+
+    @Test
+    void deeplyNestedArraysAreAnErrorNotACrash() {
+        assertThrows(Toml.ParseException.class, () -> Toml.parse("a = " + "[".repeat(100_000)));
+    }
 }

@@ -8,6 +8,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [0.2.0] - API level 2
 
+### Fixed (code review)
+- Image "decompression bombs": `Textures` checked an image's size only after decoding it, so a small file claiming a huge picture could exhaust memory. The size is now read from the header first (`ImageDecoder`), and decoding no longer writes ImageIO temp files.
+- A download whose server stops sending data could block a texture worker forever; the whole body now has a time budget (three times the request timeout).
+- A texture whose loading hit an `Error` (e.g. out of memory) stayed `LOADING` forever; it now ends as `FAILED`.
+- Broken or hostile model / animation files (wrong JSON types, absurd nesting) could crash the game from the renderer; every parser now reports them as `ParseException` and `ModelLibrary` logs and skips them. Molang expressions are limited to 4096 characters and 64 levels of nesting; TOML arrays to 32 levels.
+- `AnimatedBlockEntityRenderer` ticked only the first block entity of its type each game tick, so with two or more of them the others did not animate. Controllers now tick once per game tick each (`AnimationController.tickAt`).
+- A scheduled task, tween or event listener that throws no longer stops or delays the others; a failing tween is removed; repeated listener failures are logged at 1, 2, 4, 8, ... occurrences instead of every frame; `LinkageError`s (such as `NoClassDefFoundError`) in a listener are isolated too.
+- `WorldDraw` restores the depth test even if drawing throws.
+- `DataGenerator` refuses to write outside its output folder.
+- `Shaders.create` with an id that already exists returns the same program instead of leaking a new one; two packet types with the same id are rejected.
+
+### Added (code review)
+- `BloombertoEvents.SERVER_STOPPED` on every loader, and `Scheduler.clear()`, so world-specific tasks can be cancelled when a singleplayer world closes.
+
 ### Fixed
 - `CameraZoom` also magnified the first-person hand: the Fabric mixin and the Forge/NeoForge `ComputeFov` listener changed every `getFov` call, including the hand's fixed one. It now only changes the world's field of view (`useFovSetting` / `usedConfiguredFov()`), so items drawn in the hand keep their size and position while zoomed.
 

@@ -83,11 +83,28 @@ public final class Molang {
         private final String s;
         private int pos;
 
+        private static final int MAX_LENGTH = 4096;
+        private static final int MAX_DEPTH = 64;
+        private int depth;
+
         Parser(String s) {
             this.s = s;
         }
 
+        private void enter() throws MolangException {
+            if (++depth > MAX_DEPTH) {
+                throw new MolangException("Expression is nested too deeply (limit " + MAX_DEPTH + ")");
+            }
+        }
+
+        private void leave() {
+            depth--;
+        }
+
         Node parseProgram() throws MolangException {
+            if (s.length() > MAX_LENGTH) {
+                throw new MolangException("Expression is too long (limit " + MAX_LENGTH + " characters)");
+            }
             List<Node> statements = new ArrayList<>();
             skip();
             while (pos < s.length()) {
@@ -152,6 +169,15 @@ public final class Molang {
         }
 
         private Node parseTernary() throws MolangException {
+            enter();
+            try {
+                return parseTernaryBody();
+            } finally {
+                leave();
+            }
+        }
+
+        private Node parseTernaryBody() throws MolangException {
             Node cond = parseOr();
             skip();
             if (peek() == '?') {
@@ -268,6 +294,15 @@ public final class Molang {
         }
 
         private Node parseUnary() throws MolangException {
+            enter();
+            try {
+                return parseUnaryBody();
+            } finally {
+                leave();
+            }
+        }
+
+        private Node parseUnaryBody() throws MolangException {
             skip();
             char c = peek();
             if (c == '-') {

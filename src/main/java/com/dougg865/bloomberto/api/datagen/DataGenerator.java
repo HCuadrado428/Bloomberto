@@ -341,7 +341,10 @@ public final class DataGenerator {
     public List<String> generate() throws IOException {
         List<String> written = new ArrayList<>();
         for (Map.Entry<String, String> file : preview().entrySet()) {
-            Path target = root.resolve(file.getKey());
+            Path target = root.resolve(file.getKey()).normalize();
+            if (!target.startsWith(root.normalize())) {
+                throw new IOException("Refusing to write outside the output folder: " + file.getKey());
+            }
             if (Files.exists(target) && Files.readString(target, StandardCharsets.UTF_8).equals(file.getValue())) {
                 continue;
             }

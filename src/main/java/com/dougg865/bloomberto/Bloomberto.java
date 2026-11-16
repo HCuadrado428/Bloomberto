@@ -56,6 +56,7 @@ public final class Bloomberto {
         });
         BloombertoEvents.PLAYER_JOIN.register(p -> LOGGER.info("[debugEvents] player_join {}", p.getGameProfile().getName()));
         BloombertoEvents.PLAYER_LEAVE.register(p -> LOGGER.info("[debugEvents] player_leave {}", p.getGameProfile().getName()));
+        BloombertoEvents.SERVER_STOPPED.register(s -> LOGGER.info("[debugEvents] server_stopped"));
     }
 
     /** Called by the client entrypoint of each loader, after {@link #init()}. Never call on a server. */

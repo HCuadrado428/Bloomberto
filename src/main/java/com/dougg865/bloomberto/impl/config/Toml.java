@@ -123,6 +123,7 @@ public final class Toml {
         private final String text;
         private final int line;
         private int pos;
+        private int depth;
 
         Cursor(String text, int pos, int line) {
             this.text = text;
@@ -224,6 +225,17 @@ public final class Toml {
         }
 
         private List<Object> readArray() throws ParseException {
+            if (++depth > 32) {
+                throw new ParseException(line, "arrays are nested too deeply");
+            }
+            try {
+                return readArrayBody();
+            } finally {
+                depth--;
+            }
+        }
+
+        private List<Object> readArrayBody() throws ParseException {
             List<Object> list = new ArrayList<>();
             pos++; // [
             while (true) {

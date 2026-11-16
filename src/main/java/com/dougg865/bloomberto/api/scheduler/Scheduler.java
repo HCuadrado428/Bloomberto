@@ -7,7 +7,10 @@ import java.util.List;
  * Runs tasks after a number of ticks. The owner calls {@link #tick()} once per game tick
  * (Bloomberto's client and server schedulers will be driven by the loader tick events).
  *
- * <p>Not thread-safe: use it from the thread that ticks it.
+ * <p>Not thread-safe: use it from the thread that ticks it. A task that throws is logged and does not affect the others.
+ *
+ * <p>Tasks are not tied to a world: in singleplayer they keep running after the player leaves one world and opens another.
+ * Cancel world-specific tasks yourself, for example on {@code BloombertoEvents.SERVER_STOPPED}.
  */
 public final class Scheduler {
     /** Handle to cancel a scheduled task. */
@@ -79,7 +82,12 @@ public final class Scheduler {
                 } else {
                     task.active = false;
                 }
-                task.action.run();
+                try {
+                    task.action.run();
+                } catch (RuntimeException e) {
+                    // one failing task must not stop or delay the others
+                    com.dougg865.bloomberto.Bloomberto.LOGGER.error("Scheduled task failed", e);
+                }
             }
         } finally {
             ticking = false;
@@ -87,6 +95,16 @@ public final class Scheduler {
             tasks.addAll(pending);
             pending.clear();
         }
+    }
+
+    /** Cancels every task. Use it when the world your tasks belong to goes away (see {@code BloombertoEvents.SERVER_STOPPED}). */
+    public void clear() {
+        tasks.forEach(Task::cancel);
+        pending.forEach(Task::cancel);
+        if (!ticking) {
+            tasks.clear();
+        }
+        pending.clear();
     }
 
     public int size() {

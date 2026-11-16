@@ -21,6 +21,14 @@ public final class Shaders {
      * @param format the vertex format your shader's vertex stage expects
      */
     public static synchronized ShaderProgram create(ResourceLocation id, VertexFormat format) {
+        for (ShaderProgram existing : PROGRAMS) {
+            if (existing.id().equals(id)) {
+                if (!existing.format().equals(format)) {
+                    throw new IllegalArgumentException("Shader " + id + " was already created with another vertex format");
+                }
+                return existing; // creating it again (e.g. every frame by mistake) must not leak programs
+            }
+        }
         ShaderProgram program = new ShaderProgram(id, format);
         PROGRAMS.add(program);
         return program;

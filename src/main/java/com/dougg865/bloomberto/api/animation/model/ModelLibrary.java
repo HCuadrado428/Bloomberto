@@ -50,7 +50,7 @@ public final class ModelLibrary {
             try {
                 String text = read(loc);
                 return loc.getPath().endsWith(".bbmodel") ? BbModelParser.parseModel(text) : GeoParser.parse(text);
-            } catch (ParseException | IOException e) {
+            } catch (ParseException | IOException | RuntimeException e) {
                 Bloomberto.LOGGER.error("Could not load model {}: {}", loc, e.getMessage());
                 return EMPTY_MODEL;
             }
@@ -63,7 +63,7 @@ public final class ModelLibrary {
             try {
                 String text = read(loc);
                 return new AnimationSet(loc.getPath().endsWith(".bbmodel") ? BbModelParser.parseAnimations(text) : AnimationParser.parse(text));
-            } catch (ParseException | IOException e) {
+            } catch (ParseException | IOException | RuntimeException e) {
                 Bloomberto.LOGGER.error("Could not load animations {}: {}", loc, e.getMessage());
                 return AnimationSet.EMPTY;
             }

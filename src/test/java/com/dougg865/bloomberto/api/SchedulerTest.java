@@ -79,7 +79,7 @@ class SchedulerTest {
             n.incrementAndGet();
             throw new IllegalStateException("boom");
         });
-        assertThrows(IllegalStateException.class, s::tick);
+        s.tick(); // the error is logged, not thrown, so the other tasks of this tick still run
         s.tick();
         assertEquals(1, n.get());
     }

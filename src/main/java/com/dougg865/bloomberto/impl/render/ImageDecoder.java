@@ -14,9 +14,34 @@ public final class ImageDecoder {
     private ImageDecoder() {
     }
 
-    /** @throws IOException if the bytes are not a supported image */
+    /**
+     * The size is checked from the file header before any pixel is decoded, so a tiny file that claims a huge picture (a
+     * "decompression bomb") is rejected without allocating it.
+     *
+     * @throws IOException if the bytes are not a supported image, or the image is larger than {@code maxPixels}
+     */
     public static Decoded decode(byte[] data, int maxPixels) throws IOException {
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
+        BufferedImage image;
+        try (javax.imageio.stream.ImageInputStream in = new javax.imageio.stream.MemoryCacheImageInputStream(
+                new ByteArrayInputStream(data))) {
+            java.util.Iterator<javax.imageio.ImageReader> readers = ImageIO.getImageReaders(in);
+            if (!readers.hasNext()) {
+                throw new IOException("Unsupported or corrupt image");
+            }
+            javax.imageio.ImageReader reader = readers.next();
+            try {
+                reader.setInput(in, true, true);
+                long declared = (long) reader.getWidth(0) * reader.getHeight(0);
+                if (declared <= 0 || declared > maxPixels) {
+                    throw new IOException("Image too large: " + reader.getWidth(0) + "x" + reader.getHeight(0));
+                }
+                image = reader.read(0);
+            } catch (RuntimeException e) {
+                throw new IOException("Unsupported or corrupt image: " + e.getMessage(), e);
+            } finally {
+                reader.dispose();
+            }
+        }
         if (image == null) {
             throw new IOException("Unsupported or corrupt image");
         }

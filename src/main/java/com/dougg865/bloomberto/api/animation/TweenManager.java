@@ -28,7 +28,15 @@ public final class TweenManager {
     public void tick() {
         ticking = true;
         try {
-            active.removeIf(Animation::tick);
+            active.removeIf(animation -> {
+                try {
+                    return animation.tick();
+                } catch (RuntimeException e) {
+                    // drop the broken animation so it does not fail again every tick or hold up the others
+                    com.dougg865.bloomberto.Bloomberto.LOGGER.error("Animation failed and was removed", e);
+                    return true;
+                }
+            });
         } finally {
             ticking = false;
             active.addAll(pending);

@@ -21,6 +21,17 @@ public final class GeoParser {
      * @param geometryId which geometry to read when the file has several (e.g. {@code "geometry.golem"}); {@code null} = the first
      */
     public static GeoModel parse(String json, String geometryId) throws ParseException {
+        try {
+            return parseUnchecked(json, geometryId);
+        } catch (ParseException e) {
+            throw e;
+        } catch (RuntimeException | StackOverflowError e) {
+            // a value of the wrong type or absurd nesting: report it like any other bad file instead of crashing the game
+            throw new ParseException("Malformed geometry file: " + e, e);
+        }
+    }
+
+    private static GeoModel parseUnchecked(String json, String geometryId) throws ParseException {
         JsonObject root;
         try {
             root = JsonParser.parseString(json).getAsJsonObject();

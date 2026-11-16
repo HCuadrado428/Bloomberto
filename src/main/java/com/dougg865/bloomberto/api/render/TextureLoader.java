@@ -31,11 +31,12 @@ final class TextureLoader {
                     try {
                         Runnable releaser = uploader.upload(id, image);
                         handle.ready(image.width(), image.height(), releaser);
-                    } catch (RuntimeException e) {
+                    } catch (Throwable e) {
                         handle.failed(e);
                     }
                 });
-            } catch (IOException | RuntimeException e) {
+            } catch (Throwable e) {
+                // includes OutOfMemoryError: a handle must always end up FAILED or READY, never stay LOADING forever
                 handle.failed(e);
             }
         });

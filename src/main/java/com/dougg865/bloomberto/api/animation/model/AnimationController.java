@@ -116,6 +116,19 @@ public final class AnimationController {
         return current != null && current.isFinished(time);
     }
 
+    private long lastTickedAt = Long.MIN_VALUE;
+
+    /**
+     * Ticks once per distinct {@code gameTime}: calling it again with the same value does nothing. Renderers use it so a
+     * controller advances exactly once per game tick however many frames are drawn.
+     */
+    public void tickAt(long gameTime) {
+        if (gameTime != lastTickedAt) {
+            lastTickedAt = gameTime;
+            tick();
+        }
+    }
+
     /** Advances time by one game tick. */
     public void tick() {
         freshSwitch = false;

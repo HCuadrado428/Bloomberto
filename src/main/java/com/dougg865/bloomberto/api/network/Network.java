@@ -59,7 +59,13 @@ public final class Network {
         Services.NETWORK.sendToServer(typeOf(packet), packet);
     }
 
+    private static final Map<net.minecraft.resources.ResourceLocation, PacketType<?>> IDS = new ConcurrentHashMap<>();
+
     private static void remember(PacketType<?> type) {
+        PacketType<?> sameId = IDS.putIfAbsent(type.id(), type);
+        if (sameId != null && sameId != type) {
+            throw new IllegalStateException("Packet id " + type.id() + " is already used by " + sameId.type().getName());
+        }
         PacketType<?> previous = TYPES.putIfAbsent(type.type(), type);
         if (previous != null && previous != type) {
             throw new IllegalStateException("Packet class " + type.type().getName() + " is already registered as "

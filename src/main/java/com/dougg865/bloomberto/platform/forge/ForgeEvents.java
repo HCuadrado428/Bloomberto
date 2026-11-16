@@ -32,6 +32,8 @@ final class ForgeEvents {
                 BloombertoEvents.PLAYER_JOIN.invoke(l -> l.accept(player));
             }
         });
+        MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.server.ServerStoppedEvent e) ->
+                BloombertoEvents.SERVER_STOPPED.invoke(l -> l.accept(e.getServer())));
         MinecraftForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer player) {
                 BloombertoEvents.PLAYER_LEAVE.invoke(l -> l.accept(player));

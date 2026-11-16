@@ -53,10 +53,13 @@ public final class WorldDraw {
         if (throughWalls) {
             RenderSystem.disableDepthTest();
         }
-        body.accept(ctx.buffers().getBuffer(type));
-        ctx.buffers().endBatch(type);
-        if (throughWalls) {
-            RenderSystem.enableDepthTest();
+        try {
+            body.accept(ctx.buffers().getBuffer(type));
+            ctx.buffers().endBatch(type);
+        } finally {
+            if (throughWalls) {
+                RenderSystem.enableDepthTest();
+            }
         }
     }
 
@@ -174,13 +177,16 @@ public final class WorldDraw {
         if (throughWalls) {
             RenderSystem.disableDepthTest();
         }
-        font.drawInBatch(text, x, 0f, color.argb(), false, stack.last().pose(), ctx.buffers(),
-                throughWalls ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
-        ctx.buffers().endBatch();
-        if (throughWalls) {
-            RenderSystem.enableDepthTest();
+        try {
+            font.drawInBatch(text, x, 0f, color.argb(), false, stack.last().pose(), ctx.buffers(),
+                    throughWalls ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+            ctx.buffers().endBatch();
+        } finally {
+            if (throughWalls) {
+                RenderSystem.enableDepthTest();
+            }
+            stack.popPose();
         }
-        stack.popPose();
         return this;
     }
 

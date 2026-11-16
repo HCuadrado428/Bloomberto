@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class AnimatedBlockEntityRenderer<T extends BlockEntity & Animatable> implements BlockEntityRenderer<T> {
     private final ResourceLocation geometry;
     private final ResourceLocation texture;
-    private long lastTick = Long.MIN_VALUE;
 
     public AnimatedBlockEntityRenderer(ResourceLocation geometry, ResourceLocation texture) {
         this.geometry = geometry;
@@ -34,11 +33,8 @@ public class AnimatedBlockEntityRenderer<T extends BlockEntity & Animatable> imp
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int light, int overlay) {
         if (blockEntity.getLevel() != null) {
-            long now = blockEntity.getLevel().getGameTime();
-            if (now != lastTick) {
-                lastTick = now;
-                blockEntity.animationController().tick();
-            }
+            // per controller, not per renderer: one renderer draws every block entity of its type
+            blockEntity.animationController().tickAt(blockEntity.getLevel().getGameTime());
         }
         poseStack.pushPose();
         poseStack.translate(0.5, 0.0, 0.5);

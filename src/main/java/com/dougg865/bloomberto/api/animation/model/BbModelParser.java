@@ -42,6 +42,16 @@ public final class BbModelParser {
 
     /** The model of a project. The identifier is {@code geometry.<name>} from the project name. */
     public static GeoModel parseModel(String json) throws ParseException {
+        try {
+            return parseModelUnchecked(json);
+        } catch (ParseException e) {
+            throw e;
+        } catch (RuntimeException | StackOverflowError e) {
+            throw new ParseException("Malformed Blockbench project: " + e, e);
+        }
+    }
+
+    private static GeoModel parseModelUnchecked(String json) throws ParseException {
         JsonObject root = root(json);
         int width = 64;
         int height = 64;
@@ -189,6 +199,16 @@ public final class BbModelParser {
 
     /** The animations of a project, by name, in file order. */
     public static Map<String, AnimationClip> parseAnimations(String json) throws ParseException {
+        try {
+            return parseAnimationsUnchecked(json);
+        } catch (ParseException e) {
+            throw e;
+        } catch (RuntimeException | StackOverflowError e) {
+            throw new ParseException("Malformed Blockbench project: " + e, e);
+        }
+    }
+
+    private static Map<String, AnimationClip> parseAnimationsUnchecked(String json) throws ParseException {
         JsonObject root = root(json);
         Map<String, AnimationClip> clips = new LinkedHashMap<>();
         if (!root.has("animations")) {
@@ -281,6 +301,16 @@ public final class BbModelParser {
 
     /** The embedded textures (PNG bytes) of a project, in order; entries that are not embedded are {@code null}. */
     public static List<byte[]> embeddedTextures(String json) throws ParseException {
+        try {
+            return embeddedTexturesUnchecked(json);
+        } catch (ParseException e) {
+            throw e;
+        } catch (RuntimeException | StackOverflowError e) {
+            throw new ParseException("Malformed Blockbench project: " + e, e);
+        }
+    }
+
+    private static List<byte[]> embeddedTexturesUnchecked(String json) throws ParseException {
         JsonObject root = root(json);
         List<byte[]> result = new ArrayList<>();
         if (root.has("textures")) {
