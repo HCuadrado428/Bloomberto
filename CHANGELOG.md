@@ -8,6 +8,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [0.2.0] - API level 2
 
+### Fixed
+- `CameraZoom` also magnified the first-person hand: the Fabric mixin and the Forge/NeoForge `ComputeFov` listener changed every `getFov` call, including the hand's fixed one. It now only changes the world's field of view (`useFovSetting` / `usedConfiguredFov()`), so items drawn in the hand keep their size and position while zoomed.
+
 ### Added
 - `BloombertoApi` (`level()`, `has(n)`, `require(modName, n)`): an API level that goes up with every public API change, so a dependent mod can refuse to start with a clear message when an older jar is installed. Documented in the usage guides, with the stability policy for 0.x.
 
