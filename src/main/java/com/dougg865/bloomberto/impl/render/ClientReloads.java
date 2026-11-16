@@ -38,7 +38,16 @@ public final class ClientReloads {
         Minecraft mc = Minecraft.getInstance();
         ResourceManager manager = mc == null ? null : mc.getResourceManager();
         if (manager instanceof ReloadableResourceManager reloadable) {
-            reloadable.registerReloadListener((ResourceManagerReloadListener) m -> CALLBACKS.forEach(Runnable::run));
+            reloadable.registerReloadListener((ResourceManagerReloadListener) m -> {
+                for (Runnable callback : CALLBACKS) {
+                    try {
+                        callback.run();
+                    } catch (RuntimeException e) {
+                        // one failing callback must not abort the whole resource reload (that leaves the game half reloaded)
+                        com.dougg865.bloomberto.Bloomberto.LOGGER.error("A Bloomberto reload callback failed", e);
+                    }
+                }
+            });
             registered = true;
         }
         return registered;

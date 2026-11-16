@@ -16,7 +16,21 @@ public final class TweenManager {
         return SHARED;
     }
 
+    /**
+     * Starts ticking {@code animation}. Adding one that is already running does nothing, so restarting a tween while it plays
+     * (e.g. a recoil fired twice in a row) rewinds it instead of making it advance twice per tick.
+     */
     public void add(Animation animation) {
+        for (Animation a : active) {
+            if (a == animation) {
+                return;
+            }
+        }
+        for (Animation a : pending) {
+            if (a == animation) {
+                return;
+            }
+        }
         (ticking ? pending : active).add(animation);
     }
 

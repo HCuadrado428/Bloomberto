@@ -19,6 +19,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - `DataGenerator` refuses to write outside its output folder.
 - `Shaders.create` with an id that already exists returns the same program instead of leaking a new one; two packet types with the same id are rejected.
 
+### Fixed (second review)
+- Restarting a tween or keyframe track that is still playing no longer makes it advance twice per tick; it rewinds instead.
+- If a post effect fails while drawing, the main framebuffer is bound again, so the hand and HUD are not drawn into the effect's buffer.
+- A failing resource-reload callback no longer aborts the whole F3+T reload.
+- The config screen's slider no longer divides by zero when an option's minimum equals its maximum.
+- Config keys and sections are limited to letters, digits, `_` and `-`, so a name can never produce a broken TOML file.
+- Translations (English and Spanish) for the F8 debug key, the config screen and the "Hold [Shift]" tooltip, which showed raw keys or fixed English text; the testmod's keys and blocks have names too.
+
 ### Added (code review)
 - `Textures.Request.allowLocalAddresses(false)`: refuses URLs (and redirects) that resolve to this computer or the local network, for URLs that come from players or servers. Redirects are now followed by hand (at most 5, never https to http).
 - The texture download cache prunes itself once per session: files older than 30 days go, and the oldest are deleted while the folder is over 256 MiB.

@@ -1,0 +1,11 @@
+{
+  "key.categories.bloomberto_testmod.general": "Testmod de Bloomberto",
+  "key.bloomberto_testmod.open_ui": "Abrir el ejemplo de interfaz",
+  "key.bloomberto_testmod.next_effect": "Siguiente efecto de pantalla",
+  "key.bloomberto_testmod.toggle_hud": "Mostrar/ocultar el HUD de ejemplo",
+  "key.bloomberto_testmod.shake": "Hacer temblar la cámara",
+  "key.bloomberto_testmod.zoom": "Activar/desactivar zoom",
+  "item.bloomberto_testmod.example_item": "Objeto de ejemplo",
+  "block.bloomberto_testmod.example_block": "Bloque de ejemplo",
+  "block.bloomberto_testmod.totem": "Tótem"
+}

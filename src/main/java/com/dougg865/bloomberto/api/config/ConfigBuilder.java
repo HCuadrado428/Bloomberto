@@ -22,6 +22,9 @@ import java.util.Set;
  * }</pre>
  */
 public final class ConfigBuilder {
+    /** Bare TOML keys: letters, digits, '_' and '-'. Anything else would need quoting, which the file format does not use. */
+    private static final java.util.regex.Pattern VALID_NAME = java.util.regex.Pattern.compile("[A-Za-z0-9_-]+");
+
     private final String modId;
     private final Deque<String> sections = new ArrayDeque<>();
     private final List<ConfigValue<?>> values = new ArrayList<>();
@@ -37,7 +40,7 @@ public final class ConfigBuilder {
 
     /** Starts a section (a TOML table); sections can be nested. */
     public ConfigBuilder push(String section) {
-        if (section.isBlank() || section.contains(".")) {
+        if (!VALID_NAME.matcher(section).matches()) {
             throw new IllegalArgumentException("Invalid section name: '" + section + "'");
         }
         sections.addLast(section);
@@ -80,7 +83,7 @@ public final class ConfigBuilder {
 
     /** Defines an option with a custom {@link ValueType}. */
     public <T> ConfigValue<T> define(String key, T defaultValue, String comment, ValueType<T> type) {
-        if (key.isBlank() || key.contains(".") || key.contains("=") || key.contains("#")) {
+        if (!VALID_NAME.matcher(key).matches()) {
             throw new IllegalArgumentException("Invalid key: '" + key + "'");
         }
         String path = sections.isEmpty() ? key : String.join(".", sections) + "." + key;

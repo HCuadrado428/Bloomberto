@@ -1,0 +1,11 @@
+{
+  "key.categories.bloomberto_testmod.general": "Bloomberto testmod",
+  "key.bloomberto_testmod.open_ui": "Open the UI example",
+  "key.bloomberto_testmod.next_effect": "Next screen effect",
+  "key.bloomberto_testmod.toggle_hud": "Toggle the HUD example",
+  "key.bloomberto_testmod.shake": "Shake the camera",
+  "key.bloomberto_testmod.zoom": "Toggle zoom",
+  "item.bloomberto_testmod.example_item": "Example Item",
+  "block.bloomberto_testmod.example_block": "Example Block",
+  "block.bloomberto_testmod.totem": "Totem"
+}

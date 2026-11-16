@@ -39,7 +39,7 @@ public final class ConfigScreen extends Screen {
     private Button next;
 
     private ConfigScreen(Screen parent, Config config) {
-        super(Component.literal(config.modId() + " settings"));
+        super(Component.translatableWithFallback("bloomberto.config.title", config.modId() + " settings", config.modId()));
         this.parent = parent;
         this.config = config;
         this.values = new ArrayList<>(config.values());
@@ -67,11 +67,11 @@ public final class ConfigScreen extends Screen {
                 .bounds(width / 2 + 135, bottom, 20, 20).build());
         prev.active = page > 0;
         next.active = page < pages - 1;
-        addRenderableWidget(Button.builder(Component.literal("Reset all"), b -> {
+        addRenderableWidget(Button.builder(Component.translatableWithFallback("bloomberto.config.reset_all", "Reset all"), b -> {
             values.forEach(ConfigValue::reset);
             rebuildWidgets();
         }).bounds(width / 2 - 130, bottom, 80, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.CommonComponents.GUI_DONE, b -> onClose())
                 .bounds(width / 2 - 40, bottom, 80, 20).build());
     }
 
@@ -156,13 +156,21 @@ public final class ConfigScreen extends Screen {
         private final boolean integer;
 
         RangeSlider(int x, int y, int width, ConfigValue<T> option, ValueType.Ranged range) {
-            super(x, y, width, 20, Component.empty(),
-                    (((Number) option.localValue()).doubleValue() - range.min()) / (range.max() - range.min()));
+            super(x, y, width, 20, Component.empty(), position(((Number) option.localValue()).doubleValue(), range));
             this.option = option;
             this.min = range.min();
             this.max = range.max();
             this.integer = option.localValue() instanceof Integer;
             updateMessage();
+        }
+
+        /** Where {@code value} sits on the slider (0-1); a range with min == max is always at 0. */
+        private static double position(double value, ValueType.Ranged range) {
+            double span = range.max() - range.min();
+            if (!(span > 0)) {
+                return 0;
+            }
+            return Math.max(0, Math.min(1, (value - range.min()) / span));
         }
 
         @SuppressWarnings("unchecked")

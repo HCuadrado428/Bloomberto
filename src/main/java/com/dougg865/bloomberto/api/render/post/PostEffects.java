@@ -93,10 +93,14 @@ public final class PostEffects {
         if (active.isEmpty() || isSuppressed()) {
             return;
         }
-        for (PostEffect effect : active) {
-            RUNNER.run(effect, partialTick);
+        try {
+            for (PostEffect effect : active) {
+                RUNNER.run(effect, partialTick);
+            }
+        } finally {
+            // even if an effect failed, the hand and HUD must be drawn into the main target, not into an effect's buffer
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         }
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
     }
 
     /** Frees the GPU chains so they are rebuilt from resources; called after resource reloads. */

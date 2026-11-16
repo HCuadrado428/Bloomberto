@@ -36,7 +36,7 @@ public final class DebugOverlay {
         lines.add("textures: " + Textures.activeCount());
         for (PostEffect effect : PostEffects.all()) {
             if (effect.isEnabled()) {
-                lines.add("fx " + effect.getClass().getSimpleName() + " " + String.format("%.2f", effect.getIntensity()));
+                lines.add("fx " + effect.getClass().getSimpleName() + " " + String.format(java.util.Locale.ROOT, "%.2f", effect.getIntensity()));
             }
         }
         if (PostEffects.isSuppressed()) {

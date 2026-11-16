@@ -1,0 +1,7 @@
+{
+  "bloomberto.config.title": "Ajustes de %s",
+  "bloomberto.config.reset_all": "Restablecer todo",
+  "bloomberto.tooltip.hold_shift": "Mantén [Mayús] para ver más",
+  "key.bloomberto.toggle_debug": "Mostrar/ocultar depuración de Bloomberto",
+  "key.categories.bloomberto.general": "Bloomberto"
+}

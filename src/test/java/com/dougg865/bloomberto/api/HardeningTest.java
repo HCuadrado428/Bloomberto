@@ -157,4 +157,27 @@ class HardeningTest {
             }
         };
     }
+
+    @Test
+    void keyframeTrackPlaysAtNormalSpeed() {
+        TweenManager m = new TweenManager();
+        List<Float> values = new ArrayList<>();
+        com.dougg865.bloomberto.api.animation.KeyframeTrack.create().at(0, 0f).at(4, 4f).onUpdate(values::add).start(m);
+        m.tick();
+        assertEquals(List.of(1f), values); // one step per game tick, not two
+    }
+
+    @Test
+    void restartingARunningTweenDoesNotDoubleItsSpeed() {
+        TweenManager m = new TweenManager();
+        List<Float> values = new ArrayList<>();
+        var tween = com.dougg865.bloomberto.api.animation.Tween.of(0f, 10f).duration(10).onUpdate(values::add);
+        tween.start(m);
+        m.tick();
+        tween.start(m); // fired again while still playing
+        m.tick();
+        assertEquals(1, m.size());
+        assertEquals(2, values.size());
+        assertEquals(values.get(0), values.get(1), 1e-6f); // rewound: the same first step again
+    }
 }

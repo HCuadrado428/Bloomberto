@@ -46,7 +46,7 @@ public final class Tooltips {
             if (Screen.hasShiftDown()) {
                 lines.addAll(details);
             } else {
-                lines.add(Component.literal("Hold [Shift] for more info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                lines.add(Component.translatableWithFallback("bloomberto.tooltip.hold_shift", "Hold [Shift] for more info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             }
         });
     }
