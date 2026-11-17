@@ -47,7 +47,7 @@ public final class TestScreen extends Screen {
 
                 @Override
                 public void render(GuiGraphics graphics, Rect area, int mouseX, int mouseY, boolean hovered) {
-                    graphics.drawString(font, "Row " + n, area.x() + 4, area.y() + 3, hovered ? 0xFFFFAA : 0xFFFFFF);
+                    graphics.drawString(font, "Row " + n, area.x() + 4, area.y() + 3, hovered ? 0xFFFFFFAA : 0xFFFFFFFF);
                 }
             });
         }

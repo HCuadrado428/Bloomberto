@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
  *
  * <pre>{@code
  * HudOverlays.register(Bloomberto.id("mymod", "mana"), (graphics, partialTick) ->
- *         graphics.drawString(font, "Mana: " + mana, 4, 4, 0xFFFFFF));
+ *         graphics.drawString(font, "Mana: " + mana, 4, 4, 0xFFFFFFFF));
  * HudOverlays.setVisible(Bloomberto.id("mymod", "mana"), false);
  * }</pre>
  */

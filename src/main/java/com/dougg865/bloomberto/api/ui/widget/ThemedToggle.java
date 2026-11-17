@@ -32,8 +32,19 @@ public class ThemedToggle extends ThemedButton {
         setMessage(Component.empty().append(name).append(": ").append(value ? "ON" : "OFF"));
     }
 
+    //? if >=1.21.11 {
+    /*@Override
+    public void onClick(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        toggle();
+    }
+    *///?} else {
     @Override
     public void onClick(double mouseX, double mouseY) {
+        toggle();
+    }
+    //?}
+
+    private void toggle() {
         value = !value;
         refreshLabel();
         onChange.accept(value);

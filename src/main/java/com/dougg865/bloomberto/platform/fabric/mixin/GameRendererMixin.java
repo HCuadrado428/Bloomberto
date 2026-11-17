@@ -30,10 +30,19 @@ abstract class GameRendererMixin {
     }
     *///?}
 
+    //? if >=1.21.11 {
+    /*@Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
+    private void bloomberto$zoom(Camera camera, float partialTick, boolean useFovSetting, CallbackInfoReturnable<Float> cir) {
+        if (useFovSetting && CameraZoom.shared().isZoomed()) {
+            cir.setReturnValue((float) CameraZoom.shared().apply(cir.getReturnValueF(), partialTick));
+        }
+    }
+    *///?} else {
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
     private void bloomberto$zoom(Camera camera, float partialTick, boolean useFovSetting, CallbackInfoReturnable<Double> cir) {
         if (useFovSetting && CameraZoom.shared().isZoomed()) {
             cir.setReturnValue(CameraZoom.shared().apply(cir.getReturnValueD(), partialTick));
         }
     }
+    //?}
 }

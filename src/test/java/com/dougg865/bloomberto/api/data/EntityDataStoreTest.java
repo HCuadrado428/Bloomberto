@@ -97,7 +97,7 @@ class EntityDataStoreTest {
 
                     @Override
                     public StringBuilder read(net.minecraft.nbt.Tag t) {
-                        return new StringBuilder(t.getAsString());
+                        return new StringBuilder(com.dougg865.bloomberto.impl.Compat.string(t));
                     }
                 }, StringBuilder::new);
         assertTrue(mutable.defaultValue() != mutable.defaultValue());

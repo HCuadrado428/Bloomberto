@@ -30,8 +30,13 @@ for t in "$@"; do
       fi
       mkdir -p "$run/saves" && cp -r "$run/selftest" "$run/saves/testworld"
     fi
+    # software OpenGL is slow: no menu blur (1.21+ blurs every menu frame), short view distance
+    opts="$run/options.txt"; touch "$opts"
+    for kv in menuBackgroundBlurriness:0 renderDistance:2 simulationDistance:5 graphicsMode:0 renderClouds:\"false\" onboardAccessibility:false; do
+      grep -q "^${kv%%:*}:" "$opts" && sed -i "s/^${kv%%:*}:.*/$kv/" "$opts" || echo "$kv" >> "$opts"
+    done
     timeout 900 env LIBGL_ALWAYS_SOFTWARE=1 MESA_GL_VERSION_OVERRIDE=4.5 MESA_GLSL_VERSION_OVERRIDE=450 \
-      xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew ":$t:runClient" -PselfTest=all \
+      xvfb-run -a -s "-screen 0 854x480x24" ./gradlew ":$t:runClient" -PselfTest=all \
       --args="--quickPlaySingleplayer testworld --username Dev" > "$log" 2>&1
   fi
   grep -E "\[selftest\] (FAIL|.* done)" "$log" | sed "s/^/$t: /"

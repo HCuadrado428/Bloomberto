@@ -115,6 +115,15 @@ val testmod: SourceSet = sourceSets.create("testmod") {
     runtimeClasspath += sourceSets.main.get().runtimeClasspath + output
 }
 
+// Compile the testmod from Stonecutter's output so its version comments (//? if ...) apply too.
+afterEvaluate {
+    tasks.named<JavaCompile>("compileTestmodJava") {
+        dependsOn("stonecutterGenerateTestmod")
+        setSource(layout.buildDirectory.dir("generated/stonecutter/testmod/java"))
+        listOf("fabric", "forge", "neoforge").filter { it != loader }.forEach { exclude("**/testmod/$it/**") }
+    }
+}
+
 val metaProps = mapOf(
     "mod_id" to modId,
     "mod_name" to property("mod_name"),

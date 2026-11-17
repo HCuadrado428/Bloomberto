@@ -66,7 +66,11 @@ public final class Textures {
         closeExisting(id);
         TextureHandle handle = new TextureHandle(id, id);
         Minecraft mc = Minecraft.getInstance();
+        //? if >=1.21.11 {
+        /*mc.getTextureManager().register(id, new DynamicTexture(id::toString, image));
+        *///?} else {
         mc.getTextureManager().register(id, new DynamicTexture(image));
+        //?}
         handle.ready(image.getWidth(), image.getHeight(), () -> mc.getTextureManager().release(id));
         ACTIVE.put(id, handle);
         return handle;
@@ -194,11 +198,19 @@ public final class Textures {
         NativeImage native0 = new NativeImage(image.width(), image.height(), false);
         for (int y = 0; y < image.height(); y++) {
             for (int x = 0; x < image.width(); x++) {
+                //? if >=1.21.11 {
+                /*native0.setPixelABGR(x, y, ImageDecoder.argbToAbgr(image.argb()[y * image.width() + x]));
+                *///?} else {
                 native0.setPixelRGBA(x, y, ImageDecoder.argbToAbgr(image.argb()[y * image.width() + x]));
+                //?}
             }
         }
         var textures = Minecraft.getInstance().getTextureManager();
+        //? if >=1.21.11 {
+        /*textures.register(id, new DynamicTexture(id::toString, native0));
+        *///?} else {
         textures.register(id, new DynamicTexture(native0));
+        //?}
         return () -> textures.release(id);
     }
 }

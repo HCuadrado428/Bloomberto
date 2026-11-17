@@ -49,6 +49,31 @@ public class ThemedSlider extends AbstractWidget {
                 getY() + (getHeight() - 8) / 2, active ? theme.textColor() : theme.disabledTextColor());
     }
 
+    private boolean arrow(int keyCode) {
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT || keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT) {
+            model.nudge(keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT ? -1 : 1);
+            onChange.accept(model.value());
+            return true;
+        }
+        return false;
+    }
+
+    //? if >=1.21.11 {
+    /*@Override
+    public void onClick(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        update(event.x());
+    }
+
+    @Override
+    protected void onDrag(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
+        update(event.x());
+    }
+
+    @Override
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+        return arrow(event.key()) || super.keyPressed(event);
+    }
+    *///?} else {
     @Override
     public void onClick(double mouseX, double mouseY) {
         update(mouseX);
@@ -61,13 +86,9 @@ public class ThemedSlider extends AbstractWidget {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT || keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT) {
-            model.nudge(keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT ? -1 : 1);
-            onChange.accept(model.value());
-            return true;
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return arrow(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
     }
+    //?}
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {

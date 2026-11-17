@@ -3,7 +3,9 @@ package com.dougg865.bloomberto.api.registry;
 import com.dougg865.bloomberto.platform.Services;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -18,13 +20,14 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /**
  * Declares content for a mod and registers it the right way for the running loader.
  *
  * <pre>{@code
  * private static final Registrar REG = Registrar.of("mymod");
- * public static final Registered<Block> RUBY_BLOCK = REG.block("ruby_block", () -> new Block(BlockBehaviour.Properties.of()));
+ * public static final Registered<Block> RUBY_BLOCK = REG.block("ruby_block", Block::new, BlockBehaviour.Properties::of);
  * public static final Registered<Item> RUBY_BLOCK_ITEM = REG.blockItem("ruby_block", RUBY_BLOCK);
  *
  * // in your mod's initializer, once:
@@ -96,17 +99,56 @@ public final class Registrar {
         return holder;
     }
 
+    /**
+     * Declares an item created from a supplier. On Minecraft 1.21.11 the supplier must set the item's id itself
+     * ({@code new Item.Properties().setId(...)}); prefer {@link #item(String, Function)}, which works on every version.
+     */
     public Registered<Item> item(String name, Supplier<? extends Item> factory) {
         return register(Registries.ITEM, name, factory);
     }
 
+    /**
+     * Declares an item; Bloomberto creates its properties (with the id Minecraft 1.21.11 requires).
+     *
+     * <pre>{@code REG.item("ruby", Item::new);}</pre>
+     */
+    public Registered<Item> item(String name, Function<Item.Properties, ? extends Item> factory) {
+        return item(name, factory, p -> p);
+    }
+
+    /** Like {@link #item(String, Function)}, with extra settings: {@code p -> p.stacksTo(16)}. */
+    public Registered<Item> item(String name, Function<Item.Properties, ? extends Item> factory,
+                                 UnaryOperator<Item.Properties> settings) {
+        ResourceLocation id = com.dougg865.bloomberto.Bloomberto.id(modId, name);
+        return register(Registries.ITEM, name,
+                () -> factory.apply(settings.apply(com.dougg865.bloomberto.impl.Compat.itemProperties(id, new Item.Properties()))));
+    }
+
+    /**
+     * Declares a block created from a supplier. On Minecraft 1.21.11 the supplier must set the block's id itself; prefer
+     * {@link #block(String, Function, Supplier)}, which works on every version.
+     */
     public Registered<Block> block(String name, Supplier<? extends Block> factory) {
         return register(Registries.BLOCK, name, factory);
     }
 
+    /**
+     * Declares a block; Bloomberto adds the id Minecraft 1.21.11 requires to the properties.
+     *
+     * <pre>{@code REG.block("ruby_block", Block::new, () -> BlockBehaviour.Properties.of().strength(3f));}</pre>
+     */
+    public Registered<Block> block(String name, Function<BlockBehaviour.Properties, ? extends Block> factory,
+                                   Supplier<BlockBehaviour.Properties> properties) {
+        ResourceLocation id = com.dougg865.bloomberto.Bloomberto.id(modId, name);
+        return register(Registries.BLOCK, name,
+                () -> factory.apply(com.dougg865.bloomberto.impl.Compat.blockProperties(id, properties.get())));
+    }
+
     /** Registers a plain {@link BlockItem} for a block declared with {@link #block}, under the same name. */
     public Registered<Item> blockItem(String name, Registered<? extends Block> block, Supplier<Item.Properties> properties) {
-        return item(name, () -> new BlockItem(block.get(), properties.get()));
+        ResourceLocation id = com.dougg865.bloomberto.Bloomberto.id(modId, name);
+        return item(name, () -> new BlockItem(block.get(),
+                com.dougg865.bloomberto.impl.Compat.blockItemProperties(id, properties.get())));
     }
 
     public Registered<Item> blockItem(String name, Registered<? extends Block> block) {
@@ -121,6 +163,24 @@ public final class Registrar {
     public <B extends net.minecraft.world.level.block.entity.BlockEntity> Registered<BlockEntityType<?>> blockEntityType(
             String name, Supplier<BlockEntityType<B>> factory) {
         return register(Registries.BLOCK_ENTITY_TYPE, name, factory);
+    }
+
+    /**
+     * Declares a block entity type for the given blocks, on every version (Minecraft 1.21.11 removed the vanilla builder).
+     *
+     * <pre>{@code REG.blockEntityType("totem", TotemBlockEntity::new, TOTEM_BLOCK);}</pre>
+     */
+    @SafeVarargs
+    public final <B extends net.minecraft.world.level.block.entity.BlockEntity> Registered<BlockEntityType<?>> blockEntityType(
+            String name, java.util.function.BiFunction<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState, B> factory,
+            Registered<? extends Block>... blocks) {
+        return register(Registries.BLOCK_ENTITY_TYPE, name, () -> {
+            Block[] resolved = new Block[blocks.length];
+            for (int i = 0; i < blocks.length; i++) {
+                resolved[i] = blocks[i].get();
+            }
+            return Services.PLATFORM.createBlockEntityType(factory, resolved);
+        });
     }
 
     /** Registers a sound event whose id is the entry's own id. */

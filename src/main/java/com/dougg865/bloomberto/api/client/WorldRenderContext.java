@@ -16,11 +16,15 @@ import net.minecraft.world.phys.Vec3;
  */
 public record WorldRenderContext(PoseStack poseStack, Camera camera, float partialTick, MultiBufferSource.BufferSource buffers) {
     public Vec3 cameraPos() {
+        //? if >=1.21.11 {
+        /*return camera.position();
+        *///?} else {
         return camera.getPosition();
+        //?}
     }
 
     /** {@code worldPos} expressed relative to the camera, as needed when drawing with {@link #poseStack()}. */
     public Vec3 relative(Vec3 worldPos) {
-        return worldPos.subtract(camera.getPosition());
+        return worldPos.subtract(cameraPos());
     }
 }

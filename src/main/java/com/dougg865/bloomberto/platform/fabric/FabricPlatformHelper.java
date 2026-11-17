@@ -46,4 +46,13 @@ public final class FabricPlatformHelper implements PlatformHelper {
     public boolean isClient() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
+
+    //? if >=1.21.11 {
+    /*@Override
+    public <T extends net.minecraft.world.level.block.entity.BlockEntity> net.minecraft.world.level.block.entity.BlockEntityType<T>
+            createBlockEntityType(java.util.function.BiFunction<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState, T> factory,
+                                  net.minecraft.world.level.block.Block... blocks) {
+        return net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder.create(factory::apply, blocks).build();
+    }
+    *///?}
 }

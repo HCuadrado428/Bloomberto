@@ -95,8 +95,39 @@ public class ScrollList extends AbstractWidget {
         return scroll.canScroll() && mouseX >= getX() + getWidth() - BAR_WIDTH - 1 && mouseX < getX() + getWidth();
     }
 
+    //? if >=1.21.11 {
+    /*@Override
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        return click(event.x(), event.y());
+    }
+
+    @Override
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
+        return drag(event.y());
+    }
+
+    @Override
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
+        return release();
+    }
+    *///?} else {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return click(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        return drag(mouseY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return release();
+    }
+    //?}
+
+    private boolean click(double mouseX, double mouseY) {
         if (!isMouseOver(mouseX, mouseY)) {
             return false;
         }
@@ -115,8 +146,7 @@ public class ScrollList extends AbstractWidget {
         return true;
     }
 
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    private boolean drag(double mouseY) {
         if (scroll.isDragging()) {
             scroll.dragTo(mouseY - getY(), MIN_THUMB);
             return true;
@@ -124,8 +154,7 @@ public class ScrollList extends AbstractWidget {
         return false;
     }
 
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    private boolean release() {
         boolean wasDragging = scroll.isDragging();
         scroll.endDrag();
         return wasDragging;

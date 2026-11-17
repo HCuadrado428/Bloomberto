@@ -54,7 +54,7 @@ public final class DebugOverlay {
             Minecraft mc = Minecraft.getInstance();
             int y = 4;
             for (String line : lines()) {
-                graphics.drawString(mc.font, line, 4, y, 0xFFFFAA, true);
+                graphics.drawString(mc.font, line, 4, y, 0xFFFFFFAA, true);
                 y += 10;
             }
         });

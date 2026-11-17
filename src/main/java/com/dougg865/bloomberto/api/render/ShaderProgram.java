@@ -131,6 +131,17 @@ public final class ShaderProgram {
         return true;
     }
 
+    /**
+     * Draws a filled rectangle with this shader into a GUI, in GUI coordinates. The program must use the
+     * {@code POSITION_COLOR} vertex format. Prefer this over the {@code Matrix4f} overload: it also keeps the GUI's
+     * drawing order on Minecraft 1.21.11, where GUIs are drawn at the end of the frame.
+     *
+     * @return {@code false} if the shader could not be loaded
+     */
+    public boolean drawQuad(net.minecraft.client.gui.GuiGraphics graphics, float x, float y, float width, float height, int argb) {
+        return drawQuad(graphics.pose().last().pose(), x, y, width, height, argb);
+    }
+
     /** The loaded GPU program, creating it if needed; {@code null} if it failed to load. */
     ShaderInstance instance() {
         com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();

@@ -34,10 +34,17 @@ public class ThemedButton extends AbstractWidget {
         graphics.drawCenteredString(font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, color);
     }
 
+    //? if >=1.21.11 {
+    /*@Override
+    public void onClick(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        onPress.run();
+    }
+    *///?} else {
     @Override
     public void onClick(double mouseX, double mouseY) {
         onPress.run();
     }
+    //?}
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {

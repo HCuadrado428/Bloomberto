@@ -188,11 +188,17 @@ public final class SelfTest {
         check("molang", () -> expect(Math.abs(Molang.compile("math.sin(q.anim_time * 90) * 2")
                 .eval(new MolangContext().set("query.anim_time", 1)) - 2) < 1e-9, "wrong value"));
         check("particles from the server", () -> Particles.of(net.minecraft.core.particles.ParticleTypes.FLAME)
-                .sphere(level.getSharedSpawnPos().getCenter(), 1, 8).spawn(level));
+                .sphere(spawnPos(level).getCenter(), 1, 8).spawn(level));
 
         // Entity data: set on a real entity, read back, then removed with the entity.
+        //? if >=1.21.11 {
+        /*Entity pig = EntityType.PIG.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+        *///?} else {
         Entity pig = EntityType.PIG.create(level);
-        BlockPos spawn = level.getSharedSpawnPos();
+        //?}
+        BlockPos spawn = spawnPos(level);
+        // since 1.21.9 the spawn chunks are not always loaded; an entity in an unloaded chunk is never tracked
+        level.setChunkForced(spawn.getX() >> 4, spawn.getZ() >> 4, true);
         check("entity data on a live entity", () -> {
             expect(pig != null, "could not create a pig");
             pig.setPos(spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5);
@@ -258,5 +264,13 @@ public final class SelfTest {
             expect(in != null, "missing resource " + path);
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
+    }
+
+    static BlockPos spawnPos(net.minecraft.world.level.Level level) {
+        //? if >=1.21.11 {
+        /*return level.getRespawnData().pos();
+        *///?} else {
+        return level.getSharedSpawnPos();
+        //?}
     }
 }

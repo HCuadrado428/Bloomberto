@@ -30,7 +30,18 @@ public final class WorldRenderBridge {
     public static void fire(PoseStack poseStack, Camera camera, float partialTick, Matrix4f view) {
         MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         WorldRenderContext context = new WorldRenderContext(poseStack, camera, partialTick, buffers);
-        //? if >=1.21 {
+        //? if >=1.21.11 {
+        /*// 1.21.11 has no applyModelViewMatrix: draws read the model-view stack directly. Set it to the camera's view, as below.
+        org.joml.Matrix4fStack modelView = RenderSystem.getModelViewStack();
+        modelView.pushMatrix();
+        modelView.set(view != null ? view : new Matrix4f().rotation(camera.rotation().conjugate(new org.joml.Quaternionf())));
+        try {
+            ClientEvents.WORLD_RENDER.invoke(l -> l.render(context));
+            buffers.endBatch();
+        } finally {
+            modelView.popMatrix();
+        }
+        *///?} elif >=1.21 {
         org.joml.Matrix4fStack modelView = RenderSystem.getModelViewStack();
         modelView.pushMatrix();
         // Without a loader matrix, use the view matrix of vanilla's world rendering: the inverse of the camera's orientation.

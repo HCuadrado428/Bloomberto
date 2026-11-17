@@ -105,9 +105,14 @@ public final class ConfigScreen extends Screen {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void addEnumButton(ConfigValue value, Enum<?> current, int x, int y) {
         Enum<?>[] constants = current.getDeclaringClass().getEnumConstants();
+        //? if >=1.21.11 {
+        /*addRenderableWidget(CycleButton.builder((Enum<?> e) -> Component.literal(e.name().toLowerCase(Locale.ROOT)), (Enum) current)
+                .withValues(constants)
+        *///?} else {
         addRenderableWidget(CycleButton.builder((Enum<?> e) -> Component.literal(e.name().toLowerCase(Locale.ROOT)))
                 .withValues(constants)
                 .withInitialValue(current)
+        //?}
                 .create(x, y, WIDGET_WIDTH, 20, Component.empty(), (button, v) -> setValue(value, v)));
     }
 
@@ -203,14 +208,18 @@ public final class ConfigScreen extends Screen {
         /*this.renderBackground(graphics);
         *///?}
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(font, title, width / 2, 14, 0xFFFFFF);
+        graphics.drawCenteredString(font, title, width / 2, 14, 0xFFFFFFFF);
         int pages = Math.max(1, (values.size() + perPage - 1) / perPage);
-        graphics.drawCenteredString(font, Component.literal((page + 1) + " / " + pages), width / 2, height - 22, 0xAAAAAA);
+        graphics.drawCenteredString(font, Component.literal((page + 1) + " / " + pages), width / 2, height - 22, 0xFFAAAAAA);
         for (Label label : labels) {
-            graphics.drawString(font, label.text(), label.x(), label.y(), 0xFFFFFF);
+            graphics.drawString(font, label.text(), label.x(), label.y(), 0xFFFFFFFF);
             if (!label.tooltip().isEmpty() && mouseX >= label.x() && mouseX < label.x() + 150
                     && mouseY >= label.y() - 2 && mouseY < label.y() + 10) {
+                //? if >=1.21.11 {
+                /*graphics.setTooltipForNextFrame(font, Component.literal(label.tooltip()), mouseX, mouseY);
+                *///?} else {
                 graphics.renderTooltip(font, Component.literal(label.tooltip()), mouseX, mouseY);
+                //?}
             }
         }
     }

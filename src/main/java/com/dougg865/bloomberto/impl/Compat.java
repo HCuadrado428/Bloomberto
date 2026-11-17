@@ -94,4 +94,33 @@ public final class Compat {
         return net.minecraft.SharedConstants.getCurrentVersion().getName();
         //?}
     }
+    /** Item properties for the item {@code id} (Minecraft 1.21.11 needs the id before the item is created). */
+    public static net.minecraft.world.item.Item.Properties itemProperties(ResourceLocation id,
+                                                                         net.minecraft.world.item.Item.Properties properties) {
+        //? if >=1.21.11 {
+        /*return properties.setId(ResourceKey.create(net.minecraft.core.registries.Registries.ITEM, id));
+        *///?} else {
+        return properties;
+        //?}
+    }
+
+    /** Item properties for a block's item: the id, and (from 1.21.11) the block's name as the item name. */
+    public static net.minecraft.world.item.Item.Properties blockItemProperties(ResourceLocation id,
+                                                                              net.minecraft.world.item.Item.Properties properties) {
+        //? if >=1.21.11 {
+        /*return itemProperties(id, properties).useBlockDescriptionPrefix();
+        *///?} else {
+        return properties;
+        //?}
+    }
+
+    /** Block properties for the block {@code id} (Minecraft 1.21.11 needs the id before the block is created). */
+    public static net.minecraft.world.level.block.state.BlockBehaviour.Properties blockProperties(ResourceLocation id,
+            net.minecraft.world.level.block.state.BlockBehaviour.Properties properties) {
+        //? if >=1.21.11 {
+        /*return properties.setId(ResourceKey.create(net.minecraft.core.registries.Registries.BLOCK, id));
+        *///?} else {
+        return properties;
+        //?}
+    }
 }

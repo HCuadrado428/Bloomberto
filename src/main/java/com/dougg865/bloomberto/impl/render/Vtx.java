@@ -24,7 +24,9 @@ public final class Vtx {
     /** Position, color and normal (for {@code POSITION_COLOR_NORMAL} formats, i.e. lines). */
     public static void posColorNormal(VertexConsumer c, PoseStack.Pose pose, float x, float y, float z, int argb,
                                       float nx, float ny, float nz) {
-        //? if >=1.21 {
+        //? if >=1.21.11 {
+        /*c.addVertex(pose, x, y, z).setColor(argb).setNormal(pose, nx, ny, nz).setLineWidth(2f);
+        *///?} elif >=1.21 {
         c.addVertex(pose, x, y, z).setColor(argb).setNormal(pose, nx, ny, nz);
         //?} else {
         /*c.vertex(pose.pose(), x, y, z).color(r(argb), g(argb), b(argb), a(argb)).normal(pose.normal(), nx, ny, nz).endVertex();

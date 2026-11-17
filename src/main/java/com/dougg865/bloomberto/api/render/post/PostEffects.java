@@ -134,8 +134,10 @@ public final class PostEffects {
             }
             framesDrawn++;
         } finally {
+            //? if <1.21.11 {
             // even if an effect failed, the hand and HUD must be drawn into the main target, not into an effect's buffer
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+            //?}
         }
     }
 

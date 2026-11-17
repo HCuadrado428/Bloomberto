@@ -31,4 +31,37 @@ public interface PlatformHelper {
 
     /** {@code true} when running on the physical client (not a dedicated server). */
     boolean isClient();
+
+    /**
+     * Creates a block entity type for {@code blocks}. Minecraft 1.21.11 made the vanilla constructor private, so each
+     * loader provides its own way; older versions use the vanilla builder.
+     */
+    default <T extends net.minecraft.world.level.block.entity.BlockEntity> net.minecraft.world.level.block.entity.BlockEntityType<T>
+            createBlockEntityType(java.util.function.BiFunction<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState, T> factory,
+                                  net.minecraft.world.level.block.Block... blocks) {
+        //? if >=1.21.11 {
+        /*try {
+            // the constructor and BlockEntitySupplier are private; loaders that have an API for this override the method
+            Class<?> supplierType = Class.forName(net.minecraft.world.level.block.entity.BlockEntityType.class.getName() + "$BlockEntitySupplier");
+            Object supplier = java.lang.reflect.Proxy.newProxyInstance(supplierType.getClassLoader(), new Class<?>[] {supplierType},
+                    (proxy, method, args) -> switch (method.getName()) {
+                        case "create" -> factory.apply((net.minecraft.core.BlockPos) args[0],
+                                (net.minecraft.world.level.block.state.BlockState) args[1]);
+                        case "hashCode" -> System.identityHashCode(proxy);
+                        case "equals" -> proxy == args[0];
+                        case "toString" -> "BlockEntitySupplier(" + factory + ")";
+                        default -> throw new UnsupportedOperationException(method.getName());
+                    });
+            var constructor = net.minecraft.world.level.block.entity.BlockEntityType.class.getDeclaredConstructor(supplierType, java.util.Set.class);
+            constructor.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            var type = (net.minecraft.world.level.block.entity.BlockEntityType<T>) constructor.newInstance(supplier, java.util.Set.of(blocks));
+            return type;
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Could not create a block entity type", e);
+        }
+        *///?} else {
+        return net.minecraft.world.level.block.entity.BlockEntityType.Builder.of(factory::apply, blocks).build(null);
+        //?}
+    }
 }

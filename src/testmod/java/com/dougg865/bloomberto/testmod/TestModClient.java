@@ -72,20 +72,24 @@ public final class TestModClient {
                         .placeholder(Bloomberto.id("minecraft", "textures/item/apple.png")).load();
             }
             if (urlTexture != null) {
+                //? if >=1.21.11 {
+                /*graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, urlTexture.location(), 8, 24, 0f, 0f, 32, 32, 32, 32);
+                *///?} else {
                 graphics.blit(urlTexture.location(), 8, 24, 0f, 0f, 32, 32, 32, 32);
-                graphics.drawString(Minecraft.getInstance().font, urlTexture.state().name(), 44, 36, 0xFFFFFF);
+                //?}
+                graphics.drawString(Minecraft.getInstance().font, urlTexture.state().name(), 44, 36, 0xFFFFFFFF);
             }
             if (demoShader == null) {
                 demoShader = Shaders.create(Bloomberto.id(TestMod.MOD_ID, "demo"), com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR);
             }
             demoShader.setFloat("Time", (System.nanoTime() / 1_000_000L % 1_000_000L) / 1000f);
-            demoShader.drawQuad(graphics.pose().last().pose(), 8, 64, 96, 18, 0xFF55AAFF);
-            graphics.drawString(Minecraft.getInstance().font, "custom shader", 112, 69, 0xFFFFFF);
+            demoShader.drawQuad(graphics, 8, 64, 96, 18, 0xFF55AAFF);
+            graphics.drawString(Minecraft.getInstance().font, "custom shader", 112, 69, 0xFFFFFFFF);
         });
         // A key (default: K) that toggles the demo HUD overlay, an overlay and a tooltip.
         net.minecraft.resources.ResourceLocation overlay = Bloomberto.id(TestMod.MOD_ID, "hud");
         HudOverlays.register(overlay, (graphics, partialTick) ->
-                graphics.drawString(Minecraft.getInstance().font, "Bloomberto testmod HUD (press K)", 4, 4, 0xFFFFFF));
+                graphics.drawString(Minecraft.getInstance().font, "Bloomberto testmod HUD (press K)", 4, 4, 0xFFFFFFFF));
         Keybinds.register(TestMod.MOD_ID, "toggle_hud", org.lwjgl.glfw.GLFW.GLFW_KEY_K, "general",
                 () -> HudOverlays.setVisible(overlay, !HudOverlays.isVisible(overlay)));
         // A key (default: J) that shakes the screen; a ribbon that follows the player.
@@ -146,7 +150,7 @@ public final class TestModClient {
             if (mc.level == null || !TestMod.EFFECTS_ENABLED.get()) {
                 return;
             }
-            Vec3 spawn = Vec3.atCenterOf(mc.level.getSharedSpawnPos());
+            Vec3 spawn = Vec3.atCenterOf(SelfTest.spawnPos(mc.level));
             WorldDraw.of(ctx)
                     .box(new AABB(spawn, spawn).inflate(0.5), Color.fromHex("#ffcc00"))
                     .line(spawn, spawn.add(0, 3, 0), Color.fromHex("#00ccff"))

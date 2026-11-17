@@ -21,8 +21,8 @@ public final class DebugContent {
 
     public static void register() {
         Registrar reg = Registrar.of(Bloomberto.MOD_ID);
-        Registered<Item> item = reg.item("debug_item", () -> new Item(new Item.Properties()));
-        Registered<Block> block = reg.block("debug_block", () -> new Block(BlockBehaviour.Properties.of()));
+        Registered<Item> item = reg.item("debug_item", Item::new);
+        Registered<Block> block = reg.block("debug_block", Block::new, BlockBehaviour.Properties::of);
         Registered<Item> blockItem = reg.blockItem("debug_block", block);
         reg.sound("debug_sound");
         reg.mobEffect("debug_effect", () -> new MobEffect(MobEffectCategory.NEUTRAL, 0xFF00FF) { });

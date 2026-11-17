@@ -16,6 +16,22 @@ abstract class CameraMixin {
     @Shadow
     protected abstract void setRotation(float yRot, float xRot);
 
+    //? if >=1.21.11 {
+    /*@Shadow
+    public abstract float yRot();
+
+    @Shadow
+    public abstract float xRot();
+
+    @Inject(method = "setup", at = @At("TAIL"))
+    private void bloomberto$shake(net.minecraft.world.level.Level level, Entity entity, boolean detached, boolean mirrored,
+                                  float partialTick, CallbackInfo ci) {
+        float[] offset = CameraShake.shared().offset(partialTick);
+        if (offset[0] != 0f || offset[1] != 0f) {
+            setRotation(yRot() + offset[0], xRot() + offset[1]);
+        }
+    }
+    *///?} else {
     @Shadow
     public abstract float getYRot();
 
@@ -30,4 +46,5 @@ abstract class CameraMixin {
             setRotation(getYRot() + offset[0], getXRot() + offset[1]);
         }
     }
+    //?}
 }

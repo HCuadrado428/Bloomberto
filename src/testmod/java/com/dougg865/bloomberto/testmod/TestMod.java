@@ -53,17 +53,17 @@ public final class TestMod {
 
     // --- Registry: an item, a block with its item and a creative tab ---
     private static final Registrar REGISTRAR = Registrar.of(MOD_ID);
-    public static final Registered<Item> EXAMPLE_ITEM = REGISTRAR.item("example_item", () -> new Item(new Item.Properties()));
+    public static final Registered<Item> EXAMPLE_ITEM = REGISTRAR.item("example_item", Item::new);
     public static final Registered<Block> EXAMPLE_BLOCK = REGISTRAR.block("example_block",
-            () -> new Block(BlockBehaviour.Properties.of()));
+            Block::new, BlockBehaviour.Properties::of);
     public static final Registered<Item> EXAMPLE_BLOCK_ITEM = REGISTRAR.blockItem("example_block", EXAMPLE_BLOCK);
     public static final Registered<?> TAB = REGISTRAR.creativeTab("tab", Component.literal("Bloomberto testmod"),
             () -> new ItemStack(EXAMPLE_ITEM.get()), List.of(EXAMPLE_ITEM, EXAMPLE_BLOCK_ITEM));
 
     // --- A block entity drawn with a Blockbench model (see TotemBlockEntity and TestModClient) ---
-    public static final Registered<Block> TOTEM_BLOCK = REGISTRAR.block("totem", () -> new TotemBlock(BlockBehaviour.Properties.of().noOcclusion()));
+    public static final Registered<Block> TOTEM_BLOCK = REGISTRAR.block("totem", TotemBlock::new, () -> BlockBehaviour.Properties.of().noOcclusion());
     public static final Registered<net.minecraft.world.level.block.entity.BlockEntityType<?>> TOTEM_BE = REGISTRAR.blockEntityType("totem",
-            () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder.of(TotemBlockEntity::new, TOTEM_BLOCK.get()).build(null));
+            TotemBlockEntity::new, TOTEM_BLOCK);
 
     // --- Data: a counter saved on each player and synced to their client ---
     public static final DataKey<Integer> JOINS = DataKey.ofInt(Bloomberto.id(MOD_ID, "joins"), 0).synced();
