@@ -46,6 +46,7 @@ public final class TestModClient {
     }
 
     public static void init() {
+        SelfTestClient.register();
         // A key (default: Y) that turns on one post effect after another: blur, bloom, pixelate, color grade, desaturate, zoom, then none.
         Keybinds.register(TestMod.MOD_ID, "next_effect", org.lwjgl.glfw.GLFW.GLFW_KEY_Y, "general", () -> {
             for (String name : EFFECTS) {

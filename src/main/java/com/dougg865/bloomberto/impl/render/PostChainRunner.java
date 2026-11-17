@@ -48,6 +48,11 @@ public final class PostChainRunner {
         broken.clear();
     }
 
+    /** {@code true} if the effect's chain could not be built (it is skipped until the next resource reload). */
+    public boolean isBroken(PostEffect effect) {
+        return broken.containsKey(effect);
+    }
+
     /** Runs one effect on the main render target. */
     public void run(PostEffect effect, float partialTick) {
         if (broken.containsKey(effect)) {

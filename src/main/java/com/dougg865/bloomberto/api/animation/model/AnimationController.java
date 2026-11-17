@@ -103,6 +103,11 @@ public final class AnimationController {
         return this;
     }
 
+    /** Seconds played of the current animation (0 when nothing plays). */
+    public float time() {
+        return current == null ? 0f : time;
+    }
+
     public String currentName() {
         return current == null ? null : current.name();
     }

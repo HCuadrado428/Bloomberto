@@ -53,6 +53,27 @@ Instead of separate `common/`, `fabric/`, `forge/` Gradle modules, Stonecutter b
 produces `bloomberto-testmod-<version>.jar`; install both jars in `mods/` to try it. Add one example per
 feature here as modules are implemented.
 
+## In-game self-test
+
+The testmod checks every feature by itself on a real game and logs `[selftest] PASS <check>` or `[selftest] FAIL <check>: <why>`:
+
+```
+scripts/selftest.sh server 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge   # dedicated servers (13 checks)
+scripts/selftest.sh client 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge   # singleplayer: 13 server + 15 client checks
+```
+
+The server side covers registries, events (including `SERVER_STOPPED`), packet codecs (round trip and truncated packets), config
+files (clamping, broken file with backup), datagen, the Blockbench files packed in the jar, Molang, particles, entity data on a live
+pig (and its removal when the pig is gone), the scheduler with a failing task in between, and tweens. The client side covers
+translations, key mappings, models from resource packs, textures (a good, a corrupt and an oversized image), the custom shader,
+every post effect, camera shake and zoom, two animated block entities, world and HUD render events, the UI and config screens,
+item tooltips, networking with synced entity data, and an F3+T reload. With `-Dbloomberto.selfTest=server|client|all` it also runs
+in any other launcher; the game closes when done (`-Dbloomberto.selfTest.exit=false` keeps it open). CI runs both sides on every
+push. Last run by hand: all 28 checks passed on Fabric 1.20.1 and 1.21.1, Forge 1.20.1 and 1.21.1 (Forge's own installer and a
+small launcher script, since Loom cannot run it), NeoForge 1.21.1 and Quilt 1.20.1, plus the 13 server checks on a dedicated
+server of each. `src/test/.../fuzz/FuzzTest.java` throws thousands of corrupted model, animation, Blockbench, TOML, Molang and image
+inputs at the parsers; bad input must only ever produce the documented checked exception.
+
 ## Quilt
 
 The Fabric jar runs on Quilt Loader (no separate build). Verified with Quilt Loader 0.30.2 and Quilted Fabric API 7.7.0+0.92.2-1.20.1 on Minecraft 1.20.1: a dedicated server (init, events, networking, registries) and a client (HUD, custom shader, camera shake through the mixin). Install the Quilt launcher profile with `quilt-installer install client|server <mc>` and put Quilted Fabric API, `bloomberto` and `bloomberto-testmod` in `mods/`.

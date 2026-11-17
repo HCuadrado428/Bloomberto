@@ -19,6 +19,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - `DataGenerator` refuses to write outside its output folder.
 - `Shaders.create` with an id that already exists returns the same program instead of leaking a new one; two packet types with the same id are rejected.
 
+### Fixed (found by the in-game self-test)
+- `Tooltips` did nothing on Fabric and Quilt: the tooltip callback was never registered there (it worked on Forge and NeoForge).
+- In a Forge 1.21.1 singleplayer game started by our test launcher, `LEVEL_LOAD` never fired for the integrated server's levels
+  (Forge's level-load and server lifecycle events did not arrive, tick and player events did). Bloomberto now also announces missed
+  levels on the server's first tick, once per level.
+
+### Added (testing)
+- In-game self-test in the testmod (`scripts/selftest.sh server|client <targets>`, or `-Dbloomberto.selfTest=server|client|all`):
+  28 automatic checks of every feature on a real game. CI runs it on every push. Fuzz tests for every parser.
+- `PostEffects.hasFailed(effect)` and `AnimationController.time()`.
+
 ### Fixed (second review)
 - Restarting a tween or keyframe track that is still playing no longer makes it advance twice per tick; it rewinds instead.
 - If a post effect fails while drawing, the main framebuffer is bound again, so the hand and HUD are not drawn into the effect's buffer.

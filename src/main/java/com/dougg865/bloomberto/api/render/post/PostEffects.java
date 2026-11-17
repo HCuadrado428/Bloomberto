@@ -54,6 +54,11 @@ public final class PostEffects {
         return new ArrayList<>(EFFECTS.values());
     }
 
+    /** {@code true} if {@code effect} failed to build and is being skipped (the reason is in the log); cleared by F3+T. */
+    public static boolean hasFailed(PostEffect effect) {
+        return RUNNER.isBroken(effect);
+    }
+
     /** {@code true} while a shader mod is rendering a shader pack and effects are therefore not drawn. */
     public static boolean isSuppressed() {
         return RenderCompat.shaderPackActive();

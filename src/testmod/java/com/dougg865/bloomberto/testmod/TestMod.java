@@ -80,6 +80,8 @@ public final class TestMod {
     }
 
     private static final TweenManager TWEENS = new TweenManager();
+    /** Set when the client received the greeting packet (checked by the self-test). */
+    public static volatile boolean greetingReceived;
 
     private TestMod() {
     }
@@ -90,6 +92,7 @@ public final class TestMod {
         LOGGER.info("[testmod] config file {} (greeting_repeat={})", CONFIG.file().getFileName(), GREETING_REPEAT.get());
 
         REGISTRAR.register();
+        SelfTest.register();
 
         // Datagen: run "/bloomberto datagen bloomberto_testmod" to write the JSON resources for the items above.
         Datagen.register(MOD_ID, gen -> {
@@ -105,6 +108,7 @@ public final class TestMod {
         });
 
         Network.registerS2C(Greeting.TYPE, (packet, ctx) -> {
+            greetingReceived = true;
             LOGGER.info("[testmod] client got greeting '{}'; joins seen by the client: {}", packet.text(),
                     EntityData.get(ctx.player(), JOINS));
             Network.sendToServer(new Reply("hi back"));

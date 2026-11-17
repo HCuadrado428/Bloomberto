@@ -126,6 +126,7 @@ loom {
         ideConfigGenerated(false)
         property("bloomberto.debugEvents", "true")
         findProperty("autoEffect")?.let { property("bloomberto.autoEffect", it.toString()) }
+        findProperty("selfTest")?.let { property("bloomberto.selfTest", it.toString()) }
     }
 }
 

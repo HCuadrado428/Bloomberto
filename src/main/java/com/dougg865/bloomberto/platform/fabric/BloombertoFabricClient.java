@@ -26,6 +26,13 @@ public final class BloombertoFabricClient implements ClientModInitializer {
             com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(context.matrixStack(), context.camera(), partial, null);
             *///?}
         });
+        //? if >=1.21 {
+        net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, context, flag, lines) ->
+                com.dougg865.bloomberto.api.client.Tooltips.apply(stack, lines, flag.isAdvanced()));
+        //?} else {
+        /*net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, flag, lines) ->
+                com.dougg865.bloomberto.api.client.Tooltips.apply(stack, lines, flag.isAdvanced()));
+        *///?}
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             //? if >=1.21 {
             float partial = tickDelta.getGameTimeDeltaPartialTick(false);
