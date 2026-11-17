@@ -123,13 +123,23 @@ public final class AnimationController {
 
     private long lastTickedAt = Long.MIN_VALUE;
 
+    /** The most ticks {@link #tickAt} catches up at once (5 s), e.g. after the model was off screen for a long time. */
+    private static final int MAX_CATCH_UP = 100;
+
     /**
-     * Ticks once per distinct {@code gameTime}: calling it again with the same value does nothing. Renderers use it so a
-     * controller advances exactly once per game tick however many frames are drawn.
+     * Advances to {@code gameTime}: as many ticks as passed since the last call, so the animation keeps real-time speed
+     * however many or few frames are drawn (a game at 5 FPS still plays it at full speed). Calling it again with the same
+     * value does nothing; a jump back in time (another world) restarts the count. Renderers call it every frame.
      */
     public void tickAt(long gameTime) {
-        if (gameTime != lastTickedAt) {
+        if (lastTickedAt == Long.MIN_VALUE || gameTime < lastTickedAt) {
             lastTickedAt = gameTime;
+            tick();
+            return;
+        }
+        long steps = Math.min(gameTime - lastTickedAt, MAX_CATCH_UP);
+        lastTickedAt = gameTime;
+        for (long i = 0; i < steps; i++) {
             tick();
         }
     }

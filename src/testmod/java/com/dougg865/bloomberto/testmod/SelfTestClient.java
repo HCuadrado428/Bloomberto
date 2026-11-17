@@ -126,7 +126,7 @@ public final class SelfTestClient {
                         expect(time > 0.5f, "totem at " + pos + " played only " + time + " s");
                     }
                 });
-                check("world and HUD render events", () -> expect(worldRenders > 20 && hudRenders > 20,
+                check("world and HUD render events", () -> expect(worldRenders >= 3 && hudRenders >= 3,
                         "world " + worldRenders + ", hud " + hudRenders));
                 mc.setScreen(new TestScreen());
             }

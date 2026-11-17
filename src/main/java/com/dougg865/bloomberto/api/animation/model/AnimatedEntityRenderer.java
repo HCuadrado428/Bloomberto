@@ -2,8 +2,6 @@ package com.dougg865.bloomberto.api.animation.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Map;
-import java.util.WeakHashMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -20,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 public class AnimatedEntityRenderer<T extends Entity & Animatable> extends EntityRenderer<T> {
     private final ResourceLocation geometry;
     private final ResourceLocation texture;
-    private final Map<Entity, Integer> lastTick = new WeakHashMap<>();
 
     public AnimatedEntityRenderer(EntityRendererProvider.Context context, ResourceLocation geometry, ResourceLocation texture) {
         super(context);
@@ -30,10 +27,8 @@ public class AnimatedEntityRenderer<T extends Entity & Animatable> extends Entit
 
     @Override
     public void render(T entity, float yaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int light) {
-        Integer seen = lastTick.put(entity, entity.tickCount);
-        if (seen == null || seen != entity.tickCount) {
-            entity.animationController().tick();
-        }
+        // catches up the ticks that passed since the last frame, so low frame rates do not slow the animation down
+        entity.animationController().tickAt(entity.tickCount);
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - yaw));
         GeoRenderer.render(ModelLibrary.model(geometry), entity.animationController().pose(partialTick), poseStack,

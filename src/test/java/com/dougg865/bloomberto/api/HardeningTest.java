@@ -82,6 +82,25 @@ class HardeningTest {
     }
 
     @Test
+    void controllerKeepsRealTimeSpeedAtLowFrameRates() throws Exception {
+        var clips = com.dougg865.bloomberto.api.animation.model.AnimationParser.parse(
+                "{\"animations\":{\"a\":{\"loop\":true,\"animation_length\":100,\"bones\":{\"b\":{\"position\":[0,0,0]}}}}}");
+        AnimationController fast = new AnimationController(clips);
+        AnimationController slow = new AnimationController(clips);
+        fast.play("a");
+        slow.play("a");
+        for (long t = 0; t <= 40; t++) {
+            fast.tickAt(t);          // a frame every tick (60 FPS draws several per tick)
+            if (t % 8 == 0) {
+                slow.tickAt(t);      // a frame every 8 ticks (2.5 FPS)
+            }
+        }
+        assertEquals(fast.time(), slow.time(), 1e-4f);
+        slow.tickAt(10_000);         // after a long time off screen: catches up at most 5 s
+        assertTrue(slow.time() - fast.time() <= 5.001f, "caught up " + (slow.time() - fast.time()));
+    }
+
+    @Test
     void controllerTicksOncePerGameTick() {
         AnimationController c = new AnimationController(java.util.Map.of());
         // no clip: only checks that tickAt with the same game time is a no-op and different times both tick

@@ -20,6 +20,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 - `Shaders.create` with an id that already exists returns the same program instead of leaking a new one; two packet types with the same id are rejected.
 
 ### Fixed (found by the in-game self-test)
+- Blockbench animations slowed down at low frame rates: renderers advanced a controller by one tick per drawn frame, so at 5 FPS
+  a model animated at a quarter of its speed. `AnimationController.tickAt` now catches up the ticks that passed (at most 5 s).
+  Found by the client self-test on GitHub's slow software-rendered runners.
 - `Tooltips` did nothing on Fabric and Quilt: the tooltip callback was never registered there (it worked on Forge and NeoForge).
 - In a Forge 1.21.1 singleplayer game started by our test launcher, `LEVEL_LOAD` never fired for the integrated server's levels
   (Forge's level-load and server lifecycle events did not arrive, tick and player events did). Bloomberto now also announces missed
