@@ -7,5 +7,6 @@
   "key.bloomberto_testmod.zoom": "Toggle zoom",
   "item.bloomberto_testmod.example_item": "Example Item",
   "block.bloomberto_testmod.example_block": "Example Block",
-  "block.bloomberto_testmod.totem": "Totem"
+  "block.bloomberto_testmod.totem": "Totem",
+  "key.category.bloomberto_testmod.general": "Bloomberto testmod"
 }

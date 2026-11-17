@@ -50,13 +50,13 @@ public final class Bloomberto {
             }
         });
         BloombertoEvents.LEVEL_LOAD.register(level -> {
-            LOGGER.info("[debugEvents] level_load {}", level.dimension().location());
+            LOGGER.info("[debugEvents] level_load {}", com.dougg865.bloomberto.impl.Compat.id(level.dimension()));
             com.dougg865.bloomberto.impl.registry.DebugContent.verify();
             LOGGER.info("[debugEvents] entity data store ok ({} entities)",
                     com.dougg865.bloomberto.impl.data.EntityDataSavedData.get(level.getServer()).store().entityCount());
         });
-        BloombertoEvents.PLAYER_JOIN.register(p -> LOGGER.info("[debugEvents] player_join {}", p.getGameProfile().getName()));
-        BloombertoEvents.PLAYER_LEAVE.register(p -> LOGGER.info("[debugEvents] player_leave {}", p.getGameProfile().getName()));
+        BloombertoEvents.PLAYER_JOIN.register(p -> LOGGER.info("[debugEvents] player_join {}", com.dougg865.bloomberto.impl.Compat.playerName(p)));
+        BloombertoEvents.PLAYER_LEAVE.register(p -> LOGGER.info("[debugEvents] player_leave {}", com.dougg865.bloomberto.impl.Compat.playerName(p)));
         BloombertoEvents.SERVER_STOPPED.register(s -> LOGGER.info("[debugEvents] server_stopped"));
     }
 

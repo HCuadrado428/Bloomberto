@@ -7,5 +7,6 @@
   "key.bloomberto_testmod.zoom": "Activar/desactivar zoom",
   "item.bloomberto_testmod.example_item": "Objeto de ejemplo",
   "block.bloomberto_testmod.example_block": "Bloque de ejemplo",
-  "block.bloomberto_testmod.totem": "Tótem"
+  "block.bloomberto_testmod.totem": "Tótem",
+  "key.category.bloomberto_testmod.general": "Testmod de Bloomberto"
 }

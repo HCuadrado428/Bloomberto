@@ -3,5 +3,6 @@
   "bloomberto.config.reset_all": "Restablecer todo",
   "bloomberto.tooltip.hold_shift": "Mantén [Mayús] para ver más",
   "key.bloomberto.toggle_debug": "Mostrar/ocultar depuración de Bloomberto",
-  "key.categories.bloomberto.general": "Bloomberto"
+  "key.categories.bloomberto.general": "Bloomberto",
+  "key.category.bloomberto.general": "Bloomberto"
 }

@@ -23,7 +23,9 @@ public final class EntityDataSavedData extends SavedData {
 
     /** The store of this server's world (kept in the overworld, shared by all dimensions). */
     public static EntityDataSavedData get(MinecraftServer server) {
-        //? if >=1.21 {
+        //? if >=1.21.11 {
+        /*return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+        *///?} elif >=1.21 {
         return server.overworld().getDataStorage().computeIfAbsent(
                 new SavedData.Factory<>(() -> new EntityDataSavedData(new EntityDataStore()),
                         (tag, provider) -> new EntityDataSavedData(EntityDataStore.fromTag(tag)), null), NAME);
@@ -34,7 +36,17 @@ public final class EntityDataSavedData extends SavedData {
         *///?}
     }
 
-    //? if >=1.21 {
+    //? if >=1.21.11 {
+    /*// 1.21.11 saves data through a codec; the "command storage" data fixer leaves custom compounds untouched.
+    private static final com.mojang.serialization.Codec<EntityDataSavedData> CODEC = CompoundTag.CODEC.xmap(
+            tag -> new EntityDataSavedData(EntityDataStore.fromTag(tag)), data -> data.store.toTag());
+    private static final net.minecraft.world.level.saveddata.SavedDataType<EntityDataSavedData> TYPE =
+            new net.minecraft.world.level.saveddata.SavedDataType<>(NAME, () -> new EntityDataSavedData(new EntityDataStore()),
+                    CODEC, net.minecraft.util.datafix.DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
+    *///?}
+
+    //? if >=1.21.11 {
+    //?} elif >=1.21 {
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
         return store.toTag();

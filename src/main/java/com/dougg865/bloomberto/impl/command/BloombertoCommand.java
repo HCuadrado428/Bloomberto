@@ -23,7 +23,7 @@ public final class BloombertoCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("bloomberto")
-                .requires(source -> source.hasPermission(2))
+                .requires(com.dougg865.bloomberto.impl.Compat::isGameMaster)
                 .then(Commands.literal("reload").executes(ctx -> {
                     int count = reloadConfigs();
                     ConfigSync.sendToAll(ctx.getSource().getServer());
@@ -69,7 +69,7 @@ public final class BloombertoCommand {
     public static java.util.List<String> info() {
         java.util.List<String> lines = new java.util.ArrayList<>();
         lines.add("Bloomberto " + Bloomberto.MOD_NAME + " on " + Services.PLATFORM.getLoaderName()
-                + ", Minecraft " + SharedConstants.getCurrentVersion().getName());
+                + ", Minecraft " + com.dougg865.bloomberto.impl.Compat.minecraftVersion());
         for (Config config : Configs.all()) {
             lines.add("[" + config.modId() + "] " + config.file().getFileName());
             for (ConfigValue<?> value : config.values()) {

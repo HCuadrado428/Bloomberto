@@ -14,11 +14,16 @@ import net.minecraft.client.KeyMapping;
  * }</pre>
  *
  * Register while your mod initializes: Forge and NeoForge only accept key mappings before the client finishes loading.
- * Translation keys are {@code key.<modId>.<name>} and {@code key.categories.<modId>.<category>}.
+ * Translation keys are {@code key.<modId>.<name>} and {@code key.categories.<modId>.<category>} (from 1.21.11:
+ * {@code key.category.<modId>.<category>}).
  */
 public final class Keybinds {
     private static final List<KeyMapping> PENDING = new ArrayList<>();
     private static boolean flushed;
+    //? if >=1.21.11 {
+    /*// 1.21.11 registers key categories as objects, once each (translation key key.category.<modId>.<category>)
+    private static final java.util.Map<String, KeyMapping.Category> CATEGORIES = new java.util.concurrent.ConcurrentHashMap<>();
+    *///?}
 
     private Keybinds() {
     }
@@ -28,8 +33,14 @@ public final class Keybinds {
      * @param onPress runs once per press, on the client thread
      */
     public static KeyMapping register(String modId, String name, int glfwKey, String category, Runnable onPress) {
+        //? if >=1.21.11 {
+        /*KeyMapping mapping = new KeyMapping("key." + modId + "." + name, InputConstants.Type.KEYSYM, glfwKey,
+                CATEGORIES.computeIfAbsent(modId + ":" + category,
+                        k -> KeyMapping.Category.register(com.dougg865.bloomberto.Bloomberto.id(modId, category))));
+        *///?} else {
         KeyMapping mapping = new KeyMapping("key." + modId + "." + name, InputConstants.Type.KEYSYM, glfwKey,
                 "key.categories." + modId + "." + category);
+        //?}
         synchronized (Keybinds.class) {
             if (flushed) {
                 throw new IllegalStateException("Key mappings must be registered while the mod loads");

@@ -43,7 +43,12 @@ public final class Tooltips {
      */
     public static void shiftInfo(Predicate<ItemStack> filter, List<Component> details) {
         add(filter, (stack, lines, advanced) -> {
-            if (Screen.hasShiftDown()) {
+            //? if >=1.21.11 {
+            /*boolean shift = net.minecraft.client.Minecraft.getInstance().hasShiftDown();
+            *///?} else {
+            boolean shift = Screen.hasShiftDown();
+            //?}
+            if (shift) {
                 lines.addAll(details);
             } else {
                 lines.add(Component.translatableWithFallback("bloomberto.tooltip.hold_shift", "Hold [Shift] for more info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));

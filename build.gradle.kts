@@ -39,6 +39,10 @@ dependencies {
     }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf("-Xmaxerrs", "5000"))
+}
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -54,6 +58,13 @@ tasks.withType<JavaCompile>().configureEach {
     options.release.set(javaVersion)
 }
 
+// Minecraft 1.21.11 renamed ResourceLocation to Identifier (Mojang mappings); the sources keep the old name.
+stonecutter {
+    replacements.string(eval(current.version, ">=1.21.11")) {
+        replace("ResourceLocation", "Identifier")
+    }
+}
+
 // Platform-specific code lives under platform/<loader>; only the active loader is compiled.
 sourceSets.main {
     java {
@@ -62,6 +73,33 @@ sourceSets.main {
         }
     }
     resources.srcDir(rootProject.file("loaders/$loader/resources"))
+}
+
+// Minecraft 1.21.11 replaced most of the rendering API. Files that had to be rewritten for it live in
+// src/overlay-1.21.11/java (same package and name as the file they replace) and take the place of the
+// Stonecutter-processed original only when building a 1.21.11 target.
+if (stonecutter.eval(mc, ">=1.21.11")) {
+    val overlayDir = rootProject.file("src/overlay-1.21.11/java")
+    val mergedDir = layout.buildDirectory.dir("generated/overlay/main/java")
+    val mergeOverlay = tasks.register<Sync>("mergeOverlay") {
+        dependsOn("stonecutterGenerate")
+        from(overlayDir)
+        from(layout.buildDirectory.dir("generated/stonecutter/main/java"))
+        into(mergedDir)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE // the overlay is listed first, so its files win
+        listOf("fabric", "forge", "neoforge").filter { it != loader }.forEach { exclude("**/platform/$it/**") }
+    }
+    afterEvaluate {
+        tasks.named<JavaCompile>("compileJava") {
+            dependsOn(mergeOverlay)
+            setSource(mergedDir)
+        }
+        tasks.named<Jar>("sourcesJar") {
+            dependsOn(mergeOverlay)
+            exclude("**/*.java")
+            from(mergedDir)
+        }
+    }
 }
 
 // Example mod ("testmod"): compiled against the main output and packaged as a separate jar.

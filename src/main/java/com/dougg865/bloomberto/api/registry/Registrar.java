@@ -88,7 +88,7 @@ public final class Registrar {
         ResourceLocation id = com.dougg865.bloomberto.Bloomberto.id(modId, name);
         for (Entry<?> e : entries) {
             if (e.registryKey().equals(registry) && e.id().equals(id)) {
-                throw new IllegalStateException("Duplicate registry entry " + id + " in " + registry.location());
+                throw new IllegalStateException("Duplicate registry entry " + id + " in " + com.dougg865.bloomberto.impl.Compat.id(registry));
             }
         }
         Registered<T> holder = new Registered<>(id, factory);

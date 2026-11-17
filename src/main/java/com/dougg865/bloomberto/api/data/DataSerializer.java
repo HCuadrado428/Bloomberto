@@ -21,7 +21,8 @@ public interface DataSerializer<T> {
 
         @Override
         public Integer read(Tag tag) {
-            return tag instanceof NumericTag n ? n.getAsInt() : null;
+            Number n = com.dougg865.bloomberto.impl.Compat.number(tag);
+            return n == null ? null : n.intValue();
         }
     };
 
@@ -33,7 +34,8 @@ public interface DataSerializer<T> {
 
         @Override
         public Double read(Tag tag) {
-            return tag instanceof NumericTag n ? n.getAsDouble() : null;
+            Number n = com.dougg865.bloomberto.impl.Compat.number(tag);
+            return n == null ? null : n.doubleValue();
         }
     };
 
@@ -45,7 +47,8 @@ public interface DataSerializer<T> {
 
         @Override
         public Boolean read(Tag tag) {
-            return tag instanceof NumericTag n ? n.getAsByte() != 0 : null;
+            Number n = com.dougg865.bloomberto.impl.Compat.number(tag);
+            return n == null ? null : n.byteValue() != 0;
         }
     };
 
@@ -57,7 +60,7 @@ public interface DataSerializer<T> {
 
         @Override
         public String read(Tag tag) {
-            return tag instanceof StringTag s ? s.getAsString() : null;
+            return com.dougg865.bloomberto.impl.Compat.string(tag);
         }
     };
 }

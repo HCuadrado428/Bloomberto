@@ -3,5 +3,6 @@
   "bloomberto.config.reset_all": "Reset all",
   "bloomberto.tooltip.hold_shift": "Hold [Shift] for more info",
   "key.bloomberto.toggle_debug": "Toggle Bloomberto debug overlay",
-  "key.categories.bloomberto.general": "Bloomberto"
+  "key.categories.bloomberto.general": "Bloomberto",
+  "key.category.bloomberto.general": "Bloomberto"
 }

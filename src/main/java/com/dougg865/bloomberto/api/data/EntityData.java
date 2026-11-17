@@ -77,7 +77,7 @@ public final class EntityData {
     }
 
     private static EntityDataSavedData saved(Entity entity) {
-        return EntityDataSavedData.get(entity.getServer());
+        return EntityDataSavedData.get(com.dougg865.bloomberto.impl.Compat.server(entity));
     }
 
     private static com.dougg865.bloomberto.impl.data.EntityDataStore store(Entity entity) {

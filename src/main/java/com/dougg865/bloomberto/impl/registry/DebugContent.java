@@ -42,7 +42,7 @@ public final class DebugContent {
     private static boolean has(net.minecraft.core.Registry<?> registry, String name) {
         boolean present = registry.containsKey(Bloomberto.id(name));
         if (!present) {
-            Bloomberto.LOGGER.error("[debugEvents] missing {} in {}", name, registry.key().location());
+            Bloomberto.LOGGER.error("[debugEvents] missing {} in {}", name, com.dougg865.bloomberto.impl.Compat.id(registry.key()));
         }
         return present;
     }

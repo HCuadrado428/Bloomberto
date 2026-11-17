@@ -42,7 +42,7 @@ public final class EntityDataStore {
         CompoundTag tag = data.get(entity);
         Map<String, Tag> result = new HashMap<>();
         if (tag != null) {
-            for (String key : tag.getAllKeys()) {
+            for (String key : com.dougg865.bloomberto.impl.Compat.keys(tag)) {
                 result.put(key, tag.get(key));
             }
         }
@@ -61,7 +61,7 @@ public final class EntityDataStore {
 
     public static EntityDataStore fromTag(CompoundTag root) {
         EntityDataStore store = new EntityDataStore();
-        for (String key : root.getAllKeys()) {
+        for (String key : com.dougg865.bloomberto.impl.Compat.keys(root)) {
             try {
                 UUID id = UUID.fromString(key);
                 if (root.get(key) instanceof CompoundTag tag && !tag.isEmpty()) {

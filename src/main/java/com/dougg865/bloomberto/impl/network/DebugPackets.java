@@ -28,8 +28,8 @@ public final class DebugPackets {
         });
         Network.registerC2S(Pong.C2S, (packet, ctx) ->
                 Bloomberto.LOGGER.info("[debugEvents] server received '{}' from {}", packet.text(),
-                        ctx.player().getGameProfile().getName()));
-        BloombertoEvents.PLAYER_JOIN.register(player -> Network.sendToPlayer(player, new Ping("hello " + player.getGameProfile().getName())));
+                        com.dougg865.bloomberto.impl.Compat.playerName(ctx.player())));
+        BloombertoEvents.PLAYER_JOIN.register(player -> Network.sendToPlayer(player, new Ping("hello " + com.dougg865.bloomberto.impl.Compat.playerName(player))));
         Bloomberto.LOGGER.info("[debugEvents] network packets registered");
     }
 }

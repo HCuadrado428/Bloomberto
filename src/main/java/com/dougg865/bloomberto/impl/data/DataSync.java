@@ -62,7 +62,7 @@ public final class DataSync {
 
     /** Sends every synced value stored for this player (called when they join). */
     public static void sendAll(ServerPlayer player) {
-        EntityDataStore store = EntityDataSavedData.get(player.getServer()).store();
+        EntityDataStore store = EntityDataSavedData.get(com.dougg865.bloomberto.impl.Compat.server(player)).store();
         for (Map.Entry<String, Tag> entry : store.entries(player.getUUID()).entrySet()) {
             ResourceLocation id = ResourceLocation.tryParse(entry.getKey());
             DataKey<?> key = id == null ? null : DataKey.byId(id);

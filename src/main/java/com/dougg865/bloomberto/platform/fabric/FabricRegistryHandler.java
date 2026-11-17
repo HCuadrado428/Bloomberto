@@ -16,9 +16,14 @@ public final class FabricRegistryHandler implements RegistryHandler {
 
     @SuppressWarnings("unchecked")
     private static <T> void registerOne(Registrar.Entry<T> entry) {
-        Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(entry.registryKey().location());
+        //? if >=1.21.11 {
+        /*Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.getOptional(com.dougg865.bloomberto.impl.Compat.id(entry.registryKey()))
+                .orElse(null);
+        *///?} else {
+        Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(com.dougg865.bloomberto.impl.Compat.id(entry.registryKey()));
+        //?}
         if (registry == null) {
-            throw new IllegalStateException("Unknown registry " + entry.registryKey().location());
+            throw new IllegalStateException("Unknown registry " + com.dougg865.bloomberto.impl.Compat.id(entry.registryKey()));
         }
         Registry.register(registry, entry.id(), entry.create());
     }
