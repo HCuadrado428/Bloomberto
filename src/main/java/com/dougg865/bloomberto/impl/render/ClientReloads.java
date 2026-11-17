@@ -18,7 +18,28 @@ public final class ClientReloads {
     private static final List<Runnable> CALLBACKS = new CopyOnWriteArrayList<>();
     private static boolean registered;
 
+    private static final ResourceManagerReloadListener LISTENER = m -> {
+        for (Runnable callback : CALLBACKS) {
+            try {
+                callback.run();
+            } catch (RuntimeException e) {
+                // one failing callback must not abort the whole resource reload (that leaves the game half reloaded)
+                com.dougg865.bloomberto.Bloomberto.LOGGER.error("A Bloomberto reload callback failed", e);
+            }
+        }
+    };
+
     private ClientReloads() {
+    }
+
+    /** The listener, for loaders that add reload listeners through an event of their own. */
+    public static ResourceManagerReloadListener listener() {
+        return LISTENER;
+    }
+
+    /** Called by a loader that added {@link #listener()} itself. */
+    public static synchronized void markRegistered() {
+        registered = true;
     }
 
     /** Adds a callback to run after every resource reload. Safe to call at any time, including during mod initialization. */
@@ -38,16 +59,12 @@ public final class ClientReloads {
         Minecraft mc = Minecraft.getInstance();
         ResourceManager manager = mc == null ? null : mc.getResourceManager();
         if (manager instanceof ReloadableResourceManager reloadable) {
-            reloadable.registerReloadListener((ResourceManagerReloadListener) m -> {
-                for (Runnable callback : CALLBACKS) {
-                    try {
-                        callback.run();
-                    } catch (RuntimeException e) {
-                        // one failing callback must not abort the whole resource reload (that leaves the game half reloaded)
-                        com.dougg865.bloomberto.Bloomberto.LOGGER.error("A Bloomberto reload callback failed", e);
-                    }
-                }
-            });
+            try {
+                reloadable.registerReloadListener(LISTENER);
+            } catch (UnsupportedOperationException e) {
+                // NeoForge 1.21.11 locks the list after startup; its event (see markRegistered) adds the listener instead
+                com.dougg865.bloomberto.Bloomberto.LOGGER.error("Could not add Bloomberto's resource reload listener", e);
+            }
             registered = true;
         }
         return registered;

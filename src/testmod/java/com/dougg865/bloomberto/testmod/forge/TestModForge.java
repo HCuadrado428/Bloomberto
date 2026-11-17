@@ -12,8 +12,14 @@ public final class TestModForge {
         TestMod.init();
         if (FMLEnvironment.dist == Dist.CLIENT) {
             TestModClient.init();
+            //? if >=1.21.11 {
+            /*net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent.getBus(
+                    net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())
+                    .addListener(e -> e.enqueueWork(TestModClient::registerRenderers));
+            *///?} else {
             net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus().addListener(
                     (net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e) -> e.enqueueWork(TestModClient::registerRenderers));
+            //?}
         }
     }
 }

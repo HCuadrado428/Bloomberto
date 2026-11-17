@@ -12,7 +12,11 @@ public final class BloombertoNeoForge {
         modEventBus.addListener(NeoForgeNetworkHandler::onRegisterPayloads);
         Bloomberto.init();
         NeoForgeEvents.register();
+        //? if >=1.21.11 {
+        /*if (FMLEnvironment.getDist() == Dist.CLIENT) {
+        *///?} else {
         if (FMLEnvironment.dist == Dist.CLIENT) {
+        //?}
             NeoForgeClientEvents.register(modEventBus);
         }
     }

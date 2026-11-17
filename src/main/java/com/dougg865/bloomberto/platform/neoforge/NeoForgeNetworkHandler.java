@@ -66,7 +66,11 @@ public final class NeoForgeNetworkHandler implements NetworkHandler {
 
     @Override
     public <T> void sendToServer(PacketType<T> type, T packet) {
+        //? if >=1.21.11 {
+        /*net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new BloombertoPayload<>(type, payloadType(type), packet));
+        *///?} else {
         PacketDistributor.sendToServer(new BloombertoPayload<>(type, payloadType(type), packet));
+        //?}
     }
 
     @SuppressWarnings("unchecked")

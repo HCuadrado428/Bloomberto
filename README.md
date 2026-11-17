@@ -9,7 +9,7 @@ identical across versions and loaders**.
 como dependencia para simplificar shaders y post-procesado, animación, texturas, UI, red y
 utilidades comunes, con **una única API pública idéntica en todas las versiones y loaders**.
 
-> Status / Estado: **Phase 1 MVP (core, animation, render) implemented; not published yet.** Server-side behavior is tested on real servers; rendering and client UI compile on every target but have not been seen on screen yet. / Fase 1 MVP implementada, sin publicar; el render y la UI de cliente compilan en todos los targets pero aún no se han visto en pantalla.
+> Status / Estado: **beta.** Every target passes the in-game self-test (13 server + 15 client checks) and rendering has been checked on screen, also with Iris shader packs. / **Beta.** Todos los targets pasan el self-test dentro del juego (13 comprobaciones de servidor + 15 de cliente) y el render se ha comprobado en pantalla, también con shader packs de Iris.
 
 ## Supported targets
 
@@ -17,8 +17,9 @@ utilidades comunes, con **una única API pública idéntica en todas las version
 |---|---|---|---|---|---|
 | 1.20.1 | 17 | yes | no | yes | via Fabric jar (verified on 1.20.1) |
 | 1.21.1 | 21 | yes | yes | yes | via Fabric jar |
+| 1.21.11 | 21 | yes | yes | yes | via Fabric jar |
 
-One jar per version and loader (5 in total).
+One jar per version and loader (8 in total).
 
 ## Modules
 

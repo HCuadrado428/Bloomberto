@@ -36,18 +36,26 @@ public final class NeoForgePlatformHelper implements PlatformHelper {
 
     @Override
     public boolean isDevelopmentEnvironment() {
+        //? if >=1.21.11 {
+        /*return !FMLEnvironment.isProduction();
+        *///?} else {
         return !FMLLoader.isProduction();
+        //?}
     }
 
     @Override
     public void registerConfigScreen(String modId, com.dougg865.bloomberto.api.config.Config config) {
-        if (FMLEnvironment.dist.isClient()) {
+        if (isClient()) {
             NeoForgeClientEvents.registerConfigScreen(config);
         }
     }
 
     @Override
     public boolean isClient() {
+        //? if >=1.21.11 {
+        /*return FMLEnvironment.getDist().isClient();
+        *///?} else {
         return FMLEnvironment.dist.isClient();
+        //?}
     }
 }

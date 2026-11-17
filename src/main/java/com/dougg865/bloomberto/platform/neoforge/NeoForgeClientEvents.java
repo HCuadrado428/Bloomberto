@@ -15,6 +15,13 @@ final class NeoForgeClientEvents {
 
     static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         Bloomberto.initClient();
+        //? if >=1.21.11 {
+        /*// 1.21.11 only accepts reload listeners through this event
+        modEventBus.addListener((net.neoforged.neoforge.client.event.AddClientReloadListenersEvent e) -> {
+            e.addListener(Bloomberto.id("bloomberto", "client_reloads"), com.dougg865.bloomberto.impl.render.ClientReloads.listener());
+            com.dougg865.bloomberto.impl.render.ClientReloads.markRegistered();
+        });
+        *///?}
         modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent e) ->
                 com.dougg865.bloomberto.api.client.Keybinds.drainPending().forEach(e::register));
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.ItemTooltipEvent e) ->
@@ -26,19 +33,32 @@ final class NeoForgeClientEvents {
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ViewportEvent.ComputeFov e) -> {
             // only the world's field of view: the first-person hand uses a fixed one and must not be magnified
             if (e.usedConfiguredFov())
+                //? if >=1.21.11 {
+                /*e.setFOV((float) com.dougg865.bloomberto.api.render.CameraZoom.shared().apply(e.getFOV(), (float) e.getPartialTick()));
+                *///?} else {
                 e.setFOV(com.dougg865.bloomberto.api.render.CameraZoom.shared().apply(e.getFOV(), (float) e.getPartialTick()));
+                //?}
         });
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles e) -> {
             float[] shake = com.dougg865.bloomberto.api.render.CameraShake.shared().offset((float) e.getPartialTick());
             e.setYaw(e.getYaw() + shake[0]);
             e.setPitch(e.getPitch() + shake[1]);
         });
+        //? if >=1.21.11 {
+        /*NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent.AfterParticles e) -> {
+            net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+            com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(
+                    e.getPoseStack() != null ? e.getPoseStack() : new com.mojang.blaze3d.vertex.PoseStack(),
+                    mc.gameRenderer.getMainCamera(), mc.getDeltaTracker().getGameTimeDeltaPartialTick(false), null);
+        });
+        *///?} else {
         NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
                 com.dougg865.bloomberto.impl.render.WorldRenderBridge.fire(new com.mojang.blaze3d.vertex.PoseStack(), e.getCamera(),
                         e.getPartialTick().getGameTimeDeltaPartialTick(false), e.getModelViewMatrix());
             }
         });
+        //?}
         NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Pre e) ->
                 com.dougg865.bloomberto.api.render.post.PostEffects.renderOverHud(e.getPartialTick().getGameTimeDeltaPartialTick(false)));
         NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post e) ->

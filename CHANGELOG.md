@@ -6,6 +6,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
 
 ## [Unreleased]
 
+### Added
+- **Minecraft 1.21.11** on Fabric, NeoForge and Forge (8 jars in total). Same public API; all 28 self-test checks pass on
+  each 1.21.11 target, and blur, pixelate, custom shaders, HUD, models and camera effects were checked on screen.
+- `Registrar.item(name, Item::new)`, `block(name, Block::new, properties)` and `blockEntityType(name, factory, blocks...)`:
+  work on every version (1.21.11 needs the id before an item or block is created, and removed the block entity builder).
+- `ShaderProgram.drawQuad(GuiGraphics, ...)`: keeps the GUI's drawing order on 1.21.11, where GUIs are drawn at the end
+  of the frame. `OffscreenTarget.colorTextureView()` on 1.21.11.
+
+### Fixed
+- Fabric: the stored data of an entity removed outside a tracked chunk was never deleted (the unload event only fires for
+  tracked entities); every removal is now seen.
+- The client self-test timed out on GitHub's runners for 1.21.1: menus are blurred every frame there, which is very slow
+  with software OpenGL. The test turns the menu blur off and uses a short view distance.
+
 ## [0.2.0] - API level 2
 
 ### Fixed (code review)

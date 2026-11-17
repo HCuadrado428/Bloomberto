@@ -18,10 +18,20 @@ Jars are written to `versions/<mc>-<loader>/build/libs/`.
 | Architectury Loom | 1.11-SNAPSHOT |
 | Stonecutter | 0.9.8 (0.10 needs Java 25, so it is not used) |
 | Fabric Loader | 0.20.1 |
-| Fabric API | 0.92.12+1.20.1 / 0.116.18+1.21.1 |
-| Forge | 1.20.1-47.4.29 / 1.21.1-52.1.21 |
-| NeoForge | 21.1.266 |
-| Parchment | 2023.09.03 (1.20.1) / 2024.11.17 (1.21.1) |
+| Fabric API | 0.92.12+1.20.1 / 0.116.18+1.21.1 / 0.141.6+1.21.11 |
+| Forge | 1.20.1-47.4.29 / 1.21.1-52.1.21 / 1.21.11-61.2.5 |
+| NeoForge | 21.1.266 / 21.11.48 |
+| Parchment | 2023.09.03 (1.20.1) / 2024.11.17 (1.21.1) / 2025.12.20 (1.21.11) |
+
+### Minecraft 1.21.11
+
+1.21.11 renamed `ResourceLocation` to `Identifier` (a Stonecutter string replacement handles it) and replaced the
+OpenGL-state rendering with a GPU device API. Files whose rendering had to be rewritten live in
+`src/overlay-1.21.11/java` and replace their counterpart from `src/main/java` when a 1.21.11 target is built (task
+`mergeOverlay`); everything else is shared, with small differences in `//? if >=1.21.11` comments. The public API keeps
+the same names; `ShaderProgram.drawQuad(GuiGraphics, ...)` is the draw call that works on every version. Post-processing
+and custom shaders keep their GLSL 150 files: `impl/render/LegacyGlsl` moves their plain uniforms into a uniform block
+at load time.
 
 ## Layout
 
@@ -45,6 +55,9 @@ Instead of separate `common/`, `fabric/`, `forge/` Gradle modules, Stonecutter b
 | 1.20.1-forge | OK |
 | 1.21.1-fabric | OK |
 | 1.21.1-neoforge | OK |
+| 1.21.11-fabric | OK |
+| 1.21.11-neoforge | OK |
+| 1.21.11-forge | Like 1.21.1-forge: Loom's dev runs fail; the jars pass the self-test (28/28) on a real Forge 1.21.11-61.2.5 server and client. Unit tests that load Minecraft's NBT/codec classes are skipped for this target (Loom's test classpath mixes patched and unpatched classes). |
 | 1.21.1-forge | Jar verified on a real Forge 1.21.1-52.1.21 server (installer). Loom's dev `runServer` fails for this target (module resolution errors in Forge's bootstrap, also with Loom 1.13), so `smoke-test.sh` reports FAIL for it; this is a Loom dev-run limitation, not a problem of the jar. |
 
 ## Testmod
@@ -58,8 +71,8 @@ feature here as modules are implemented.
 The testmod checks every feature by itself on a real game and logs `[selftest] PASS <check>` or `[selftest] FAIL <check>: <why>`:
 
 ```
-scripts/selftest.sh server 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge   # dedicated servers (13 checks)
-scripts/selftest.sh client 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge   # singleplayer: 13 server + 15 client checks
+scripts/selftest.sh server 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge 1.21.11-fabric 1.21.11-neoforge   # dedicated servers (13 checks)
+scripts/selftest.sh client 1.20.1-fabric 1.20.1-forge 1.21.1-fabric 1.21.1-neoforge 1.21.11-fabric 1.21.11-neoforge   # singleplayer: 13 server + 15 client checks
 ```
 
 The server side covers registries, events (including `SERVER_STOPPED`), packet codecs (round trip and truncated packets), config

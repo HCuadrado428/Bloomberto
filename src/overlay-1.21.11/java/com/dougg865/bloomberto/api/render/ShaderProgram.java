@@ -36,12 +36,9 @@ import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
-import org.joml.Matrix3x2f;
 import org.joml.Matrix4f;
 
 /**
@@ -169,11 +166,9 @@ public final class ShaderProgram {
         draw(target, projection, new Matrix4f(), x, y, width, height, argb);
         int x0 = (int) Math.floor(x);
         int y0 = (int) Math.floor(y);
-        graphics.guiRenderState.submitGuiElement(new BlitRenderState(RenderPipelines.GUI_TEXTURED,
-                TextureSetup.singleTexture(target.getColorTextureView(),
-                        RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST)),
-                new Matrix3x2f(graphics.pose()), x0, y0, x0 + (int) Math.ceil(width), y0 + (int) Math.ceil(height),
-                0f, 1f, 0f, 1f, 0xFFFFFFFF, null));
+        int w = (int) Math.ceil(width);
+        int h = (int) Math.ceil(height);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, textureId(target), x0, y0, 0f, 0f, w, h, w, h);
         return true;
     }
 
@@ -247,6 +242,33 @@ public final class ShaderProgram {
                 pass.drawIndexed(0, 0, count, 1);
             }
         }
+    }
+
+    /** Shows a pooled target to the texture manager, so the GUI can draw it like any other texture. */
+    private static final class ViewTexture extends net.minecraft.client.renderer.texture.AbstractTexture {
+        ViewTexture(TextureTarget target) {
+            this.texture = target.getColorTexture();
+            this.textureView = target.getColorTextureView();
+            this.sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST);
+        }
+
+        @Override
+        public void close() {
+            // the target owns the texture
+        }
+    }
+
+    private final Map<TextureTarget, Identifier> registered = new java.util.IdentityHashMap<>();
+    private final Map<TextureTarget, com.mojang.blaze3d.textures.GpuTextureView> registeredView = new java.util.IdentityHashMap<>();
+
+    private Identifier textureId(TextureTarget target) {
+        Identifier tid = registered.computeIfAbsent(target, t -> Bloomberto.id("bloomberto", "shader_quad/"
+                + Integer.toHexString(System.identityHashCode(this)) + "/" + targets.indexOf(t)));
+        if (registeredView.get(target) != target.getColorTextureView()) {
+            Minecraft.getInstance().getTextureManager().register(tid, new ViewTexture(target));
+            registeredView.put(target, target.getColorTextureView());
+        }
+        return tid;
     }
 
     /** A texture to draw one GUI quad into; textures are reused from the next frame on. */
@@ -381,6 +403,9 @@ public final class ShaderProgram {
             close(loaded);
             loaded = null;
         }
+        registered.values().forEach(Minecraft.getInstance().getTextureManager()::release);
+        registered.clear();
+        registeredView.clear();
         targets.forEach(RenderTarget::destroyBuffers);
         targets.clear();
         failed = false;

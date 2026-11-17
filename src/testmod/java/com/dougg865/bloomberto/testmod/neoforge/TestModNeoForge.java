@@ -10,7 +10,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 public final class TestModNeoForge {
     public TestModNeoForge(net.neoforged.bus.api.IEventBus modEventBus) {
         TestMod.init();
+        //? if >=1.21.11 {
+        /*if (FMLEnvironment.getDist() == Dist.CLIENT) {
+        *///?} else {
         if (FMLEnvironment.dist == Dist.CLIENT) {
+        //?}
             TestModClient.init();
             modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLClientSetupEvent e) -> e.enqueueWork(TestModClient::registerRenderers));
         }

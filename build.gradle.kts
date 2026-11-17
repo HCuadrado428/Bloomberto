@@ -45,6 +45,12 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.test {
     useJUnitPlatform()
+    if (loader == "forge" && stonecutter.eval(mc, ">=1.21.11")) {
+        // Loom's unit-test classpath for Forge 1.21.11 mixes patched and unpatched Minecraft classes, so tests that load
+        // Minecraft's NBT/codec classes cannot start there (NoSuchMethodError in vanilla static initializers). The same
+        // tests run on every other target, and the in-game self-test covers Forge 1.21.11.
+        exclude("**/ConfigTest*", "**/EntityDataStoreTest*", "**/TextureLogicTest*")
+    }
 }
 
 java {
@@ -138,6 +144,9 @@ val metaProps = mapOf(
     "minecraft_version" to mc,
     "java_version" to javaVersion,
     "pack_format" to property("pack_format"),
+    // one pack.mcmeta serves the mod's resource and data packs, whose formats differ on newer versions
+    "pack_min" to (findProperty("pack_min") ?: property("pack_format")),
+    "pack_max" to (findProperty("pack_max") ?: property("pack_format")),
 )
 
 tasks.named<ProcessResources>("processTestmodResources") {

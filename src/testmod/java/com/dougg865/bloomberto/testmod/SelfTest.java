@@ -190,24 +190,50 @@ public final class SelfTest {
         check("particles from the server", () -> Particles.of(net.minecraft.core.particles.ParticleTypes.FLAME)
                 .sphere(spawnPos(level).getCenter(), 1, 8).spawn(level));
 
-        // Entity data: set on a real entity, read back, then removed with the entity.
-        //? if >=1.21.11 {
-        /*Entity pig = EntityType.PIG.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-        *///?} else {
-        Entity pig = EntityType.PIG.create(level);
-        //?}
+        // Entity data: set on a real entity, read back, then removed with the entity. Since 1.21.9 the spawn chunks are
+        // not always loaded, so the chunk is loaded first: entities in unloaded chunks are never tracked by the level.
         BlockPos spawn = spawnPos(level);
-        // since 1.21.9 the spawn chunks are not always loaded; an entity in an unloaded chunk is never tracked
         level.setChunkForced(spawn.getX() >> 4, spawn.getZ() >> 4, true);
-        check("entity data on a live entity", () -> {
-            expect(pig != null, "could not create a pig");
-            pig.setPos(spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5);
-            expect(level.addFreshEntity(pig), "pig not added");
-            EntityData.set(pig, PROBE, 42);
-            expect(EntityData.get(pig, PROBE) == 42, "read back " + EntityData.get(pig, PROBE));
-            expect(EntityData.has(pig, PROBE), "has() false");
+        AtomicInteger parts = new AtomicInteger(2); // the entity part and the scheduler part; then the summary
+        Runnable partDone = () -> {
+            if (parts.decrementAndGet() == 0) {
+                summary("server");
+                if (exitWhenDone() && server.isDedicatedServer()) {
+                    server.halt(false);
+                }
+            }
+        };
+        AtomicInteger waited = new AtomicInteger();
+        Scheduler.Handle[] waitForChunk = new Scheduler.Handle[1];
+        waitForChunk[0] = Schedulers.server().runRepeating(0, 1, () -> {
+            boolean loaded = level.areEntitiesLoaded(net.minecraft.world.level.ChunkPos.asLong(spawn));
+            if (!loaded && waited.incrementAndGet() < 400) {
+                return;
+            }
+            waitForChunk[0].cancel();
+            //? if >=1.21.11 {
+            /*Entity pig = EntityType.PIG.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+            *///?} else {
+            Entity pig = EntityType.PIG.create(level);
+            //?}
+            check("entity data on a live entity", () -> {
+                expect(loaded, "spawn chunk did not load");
+                expect(pig != null, "could not create a pig");
+                pig.setPos(spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5);
+                expect(level.addFreshEntity(pig), "pig not added");
+                EntityData.set(pig, PROBE, 42);
+                expect(EntityData.get(pig, PROBE) == 42, "read back " + EntityData.get(pig, PROBE));
+                expect(EntityData.has(pig, PROBE), "has() false");
+            });
+            if (pig != null) {
+                pig.discard();
+            }
+            Schedulers.server().runLater(2, () -> {
+                check("data of a removed entity is deleted", () -> expect(pig != null && !EntityData.has(pig, PROBE), "still stored"));
+                level.setChunkForced(spawn.getX() >> 4, spawn.getZ() >> 4, false);
+                partDone.run();
+            });
         });
-        pig.discard();
 
         // Scheduler and tweens over the next ticks.
         AtomicInteger later = new AtomicInteger();
@@ -224,16 +250,12 @@ public final class SelfTest {
 
         Schedulers.server().runLater(10, () -> {
             rep.cancel();
-            check("data of a removed entity is deleted", () -> expect(!EntityData.has(pig, PROBE), "still stored"));
             check("scheduler (incl. a failing task in between)", () -> {
                 expect(later.get() == 1, "runLater ran " + later.get() + " times");
                 expect(repeating.get() >= 9, "repeating ran " + repeating.get() + " times");
             });
             check("tween reached its end", () -> expect(tweenValue[0] == 1f, "value " + tweenValue[0]));
-            summary("server");
-            if (exitWhenDone() && server.isDedicatedServer()) {
-                server.halt(false);
-            }
+            partDone.run();
         });
     }
 

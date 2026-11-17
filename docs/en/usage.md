@@ -1,7 +1,7 @@
 # Using Bloomberto
 
 Bloomberto is a library mod: other mods depend on it. The API is the same on Fabric (and Quilt), Forge and NeoForge, for
-Minecraft 1.20.1 and 1.21.1. Public classes live in `com.dougg865.bloomberto.api`; anything in `impl` can change.
+Minecraft 1.20.1, 1.21.1 and 1.21.11. Public classes live in `com.dougg865.bloomberto.api`; anything in `impl` can change.
 
 > Status: version 0.2.0 (API level 2: see `BloombertoApi`). Items marked *(client)* only exist on the physical client: never touch them from
 > code that runs on a dedicated server. Rendering features were checked in real clients; see `docs/BUILD.md` for exactly what was verified where.
@@ -96,15 +96,18 @@ Call `EntityData.clear(entity)` when an entity is gone for good. Only players ar
 
 ```java
 private static final Registrar REG = Registrar.of("mymod");
-public static final Registered<Block> RUBY_BLOCK = REG.block("ruby_block", () -> new Block(BlockBehaviour.Properties.of()));
+public static final Registered<Block> RUBY_BLOCK = REG.block("ruby_block", Block::new, () -> BlockBehaviour.Properties.of().strength(3f));
 public static final Registered<Item> RUBY_BLOCK_ITEM = REG.blockItem("ruby_block", RUBY_BLOCK);
-public static final Registered<Item> RUBY = REG.item("ruby", () -> new Item(new Item.Properties()));
-// also: entityType, blockEntityType, sound, mobEffect, attribute, creativeTab, register(registryKey, name, factory)
+public static final Registered<Item> RUBY = REG.item("ruby", Item::new);                    // or item("ruby", Item::new, p -> p.stacksTo(16))
+public static final Registered<BlockEntityType<?>> RUBY_BE = REG.blockEntityType("ruby", RubyBlockEntity::new, RUBY_BLOCK);
+// also: entityType, sound, mobEffect, attribute, creativeTab, register(registryKey, name, factory)
 
 REG.register();   // once, from your mod constructor / initializer
 ```
 
-`RUBY.get()` works after registration. Entity attributes, renderers and models are still registered with each loader's
+These forms work on every version: Minecraft 1.21.11 needs an item's or block's id before it is created, and Bloomberto
+adds it to the properties it passes to your constructor. The older `item(name, () -> new Item(...))` form still exists, but on
+1.21.11 the supplier must set the id itself. `RUBY.get()` works after registration. Entity attributes, renderers and models are still registered with each loader's
 own events.
 
 ## Rendering *(client)*
@@ -123,9 +126,11 @@ in `bloomberto/cache/textures`.
 ```java
 static final ShaderProgram GLOW = Shaders.create(Bloomberto.id("mymod", "glow"), DefaultVertexFormat.POSITION_COLOR);
 GLOW.setFloat("Intensity", 0.5f).setColor("Tint", Color.fromHex("#ff8800"));
-if (GLOW.use()) { /* draw */ }
+GLOW.drawQuad(guiGraphics, x, y, width, height, 0xFFFFFFFF);   // in a screen or HUD callback
 ```
-Files go in `assets/minecraft/shaders/core/mymod_glow.json` (vanilla only finds it there) plus the `.vsh` and `.fsh` it names.
+Files go in `assets/minecraft/shaders/core/mymod_glow.json` (vanilla only finds it there) plus the `.vsh` and `.fsh` it names,
+written in GLSL 150 with plain `uniform` declarations. The same files work on 1.21.11, whose renderer only accepts uniform
+blocks: Bloomberto moves the plain uniforms into one block when it loads the shader (also for post-processing programs).
 
 **Post-processing**
 ```java
