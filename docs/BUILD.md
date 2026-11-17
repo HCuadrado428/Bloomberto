@@ -69,7 +69,8 @@ translations, key mappings, models from resource packs, textures (a good, a corr
 every post effect, camera shake and zoom, two animated block entities, world and HUD render events, the UI and config screens,
 item tooltips, networking with synced entity data, and an F3+T reload. With `-Dbloomberto.selfTest=server|client|all` it also runs
 in any other launcher; the game closes when done (`-Dbloomberto.selfTest.exit=false` keeps it open). CI runs both sides on every
-push. Last run by hand: all 28 checks passed on Fabric 1.20.1 and 1.21.1, Forge 1.20.1 and 1.21.1 (Forge's own installer and a
+push. With Iris 1.7.6, Sodium 0.5.13 and a shader pack on a real Fabric 1.20.1 client (official Fabric loader profile, our launcher
+script) all 28 checks also pass, including every post effect drawn over the shaded image. Last run by hand: all 28 checks passed on Fabric 1.20.1 and 1.21.1, Forge 1.20.1 and 1.21.1 (Forge's own installer and a
 small launcher script, since Loom cannot run it), NeoForge 1.21.1 and Quilt 1.20.1, plus the 13 server checks on a dedicated
 server of each. `src/test/.../fuzz/FuzzTest.java` throws thousands of corrupted model, animation, Blockbench, TOML, Molang and image
 inputs at the parsers; bad input must only ever produce the documented checked exception.

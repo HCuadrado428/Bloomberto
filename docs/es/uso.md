@@ -133,8 +133,9 @@ PostEffects.get(Bloomberto.id("vignette")).setIntensity(0.6f).enable();
 PostEffects.get(Bloomberto.id("blur")).fadeIn(1f, 20, Easing.OUT_CUBIC);
 PostEffects.register(Bloomberto.id("mymod", "bloom"), () -> new BuiltInEffects.Bloom().strength(2f)).enable();
 ```
-Incluidos: `blur`, `bloom`, `vignette`, `desaturate`, `pixelate`, `color_grade`. Los efectos se ejecutan en orden de registro y se
-omiten mientras Iris, Oculus u OptiFine rendericen un shader pack. Para uno propio, extiende `PostEffect` y describe los
+Incluidos: `blur`, `bloom`, `vignette`, `desaturate`, `pixelate`, `color_grade`. Los efectos se ejecutan en orden de registro. Con un
+shader pack de Iris, Oculus u OptiFine siguen funcionando: se aplican a la imagen final del pack justo antes del HUD, así que
+también cubren la mano (comprobado con Iris 1.7.6 en Fabric 1.20.1; Oculus y NeoForge con Iris, todavía no). Para uno propio, extiende `PostEffect` y describe los
 pases en `define(ChainSpec)`.
 
 **Dibujar en el mundo**
@@ -158,7 +159,7 @@ Tooltips.shiftInfo(stack -> stack.is(MyItems.RUBY.get()), List.of(Component.lite
 ```java
 CameraZoom.shared().zoomTo(3f, 8, Easing.OUT_CUBIC);   // zoom real por FOV (3x), funciona con shaders; reset(8, ...) lo deshace
 CameraShake.shared().shake(1f, 30);   // temblor de impacto: mueve la cámara real, así que funciona también con shaders
-// ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // versión en pantalla; se pausa con shaders
+// ((BuiltInEffects.Shake) PostEffects.get(Bloomberto.id("shake"))).trigger(1f, 20);  // versión en pantalla (con shaders también mueve la mano)
 PostEffects.get(Bloomberto.id("zoom")).fadeIn(0.5f, 10, Easing.OUT_CUBIC);               // zoom en pantalla
 Particles.of(ParticleTypes.FLAME).ring(pos, 1.5, 24).speed(0.05).spawn(level);            // nivel de cliente o de servidor
 Trail trail = new Trail(30, 30); trail.add(pos);  /* cada tick */  WorldDraw.of(ctx).trail(trail, 0.4f, cabeza, cola);

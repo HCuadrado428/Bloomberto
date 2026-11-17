@@ -22,7 +22,8 @@ import net.minecraft.resources.ResourceLocation;
  *
  * The built-in effects are already registered under {@code bloomberto:blur}, {@code bloomberto:bloom},
  * {@code bloomberto:vignette}, {@code bloomberto:desaturate}, {@code bloomberto:pixelate}, {@code bloomberto:color_grade}, {@code bloomberto:shake} and {@code bloomberto:zoom}.
- * While Iris, Oculus or OptiFine render with a shader pack, effects are skipped (see {@link #isSuppressed()}).
+ * While Iris, Oculus or OptiFine render with a shader pack, effects are applied to the pack's finished image just before the
+ * HUD (see {@link #isSuppressed()}).
  */
 public final class PostEffects {
     private static final Map<ResourceLocation, PostEffect> EFFECTS = new LinkedHashMap<>();
@@ -59,7 +60,10 @@ public final class PostEffects {
         return RUNNER.isBroken(effect);
     }
 
-    /** {@code true} while a shader mod is rendering a shader pack and effects are therefore not drawn. */
+    /**
+     * {@code true} while a shader mod is rendering a shader pack. Effects still work then, but they run on the finished image
+     * just before the HUD (so they also cover the hand) instead of right after the world.
+     */
     public static boolean isSuppressed() {
         return RenderCompat.shaderPackActive();
     }
@@ -88,20 +92,47 @@ public final class PostEffects {
         all().forEach(PostEffect::tick);
     }
 
-    /** Runs every active effect; called by Bloomberto in the world render event. */
+    private static long framesDrawn;
+
+    /** How many frames had at least one effect drawn (diagnostics and tests). */
+    public static long framesDrawn() {
+        return framesDrawn;
+    }
+
+    /**
+     * Runs every active effect; called by Bloomberto in the world render event. While a shader pack is active this does
+     * nothing: the world is then still in the shader mod's own buffers, so the effects run later, in {@link #renderOverHud}.
+     */
     public static void render(float partialTick) {
+        if (!isSuppressed()) {
+            run(partialTick);
+        }
+    }
+
+    /**
+     * Runs the effects on the shader pack's finished image, right before the HUD is drawn; called by Bloomberto. Does
+     * nothing without a shader pack (the effects already ran in {@link #render}). Here the effects also cover the hand.
+     */
+    public static void renderOverHud(float partialTick) {
+        if (isSuppressed()) {
+            run(partialTick);
+        }
+    }
+
+    private static void run(float partialTick) {
         com.dougg865.bloomberto.impl.render.ClientReloads.ensureRegistered();
         if (Minecraft.getInstance().level == null) {
             return;
         }
         List<PostEffect> active = all().stream().filter(PostEffect::isActive).toList();
-        if (active.isEmpty() || isSuppressed()) {
+        if (active.isEmpty()) {
             return;
         }
         try {
             for (PostEffect effect : active) {
                 RUNNER.run(effect, partialTick);
             }
+            framesDrawn++;
         } finally {
             // even if an effect failed, the hand and HUD must be drawn into the main target, not into an effect's buffer
             Minecraft.getInstance().getMainRenderTarget().bindWrite(false);

@@ -40,7 +40,7 @@ public final class DebugOverlay {
             }
         }
         if (PostEffects.isSuppressed()) {
-            lines.add("post effects paused: shader pack active");
+            lines.add("shader pack active: effects drawn over the finished image");
         }
         return lines;
     }

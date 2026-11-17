@@ -39,6 +39,8 @@ final class NeoForgeClientEvents {
                         e.getPartialTick().getGameTimeDeltaPartialTick(false), e.getModelViewMatrix());
             }
         });
+        NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Pre e) ->
+                com.dougg865.bloomberto.api.render.post.PostEffects.renderOverHud(e.getPartialTick().getGameTimeDeltaPartialTick(false)));
         NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post e) ->
                 ClientEvents.HUD_RENDER.invoke(l ->
                         l.render(e.getGuiGraphics(), e.getPartialTick().getGameTimeDeltaPartialTick(false))));

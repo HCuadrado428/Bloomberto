@@ -23,7 +23,7 @@ One jar per version and loader (5 in total).
 ## Modules
 
 - `core` — registration, events, networking, per-entity data, config, utilities.
-- `render` — dynamic textures, custom shaders, chainable post-processing, in-world rendering, camera shake and FOV zoom (these two also work with shader packs).
+- `render` — dynamic textures, custom shaders, chainable post-processing, in-world rendering, camera shake and FOV zoom; everything also works with Iris shader packs.
 - `animation` — easing, tweens, timelines, Blockbench models and animations (`.geo.json`, `.animation.json` or `.bbmodel`) with Molang expressions.
 - `ui` — basic widgets and layout (v2).
 

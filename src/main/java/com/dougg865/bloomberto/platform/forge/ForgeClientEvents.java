@@ -58,7 +58,9 @@ final class ForgeClientEvents {
                 e.getLayeredDraw().add(Bloomberto.id("hud"), (graphics, delta) ->
                         ClientEvents.HUD_RENDER.invoke(l -> l.render(graphics, delta.getGameTimeDeltaPartialTick(false)))));
         //?} else {
-        /*MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post e) ->
+        /*MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Pre e) ->
+                com.dougg865.bloomberto.api.render.post.PostEffects.renderOverHud(e.getPartialTick()));
+        MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post e) ->
                 ClientEvents.HUD_RENDER.invoke(l -> l.render(e.getGuiGraphics(), e.getPartialTick())));
         *///?}
     }

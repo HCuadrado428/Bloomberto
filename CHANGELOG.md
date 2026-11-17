@@ -25,6 +25,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versions follow
   (Forge's level-load and server lifecycle events did not arrive, tick and player events did). Bloomberto now also announces missed
   levels on the server's first tick, once per level.
 
+### Changed
+- Post effects (blur, bloom, vignette, ...) now also work while a shader pack is active: they are applied to the pack's finished
+  image right before the HUD (and so also cover the hand) instead of being paused. Verified with Iris 1.7.6, Sodium 0.5.13 and a
+  shader pack on Fabric 1.20.1: all 28 self-test checks pass, and a screenshot shows the blur over the shaded world.
+- Architectury Loom 1.17.
+
 ### Added (testing)
 - In-game self-test in the testmod (`scripts/selftest.sh server|client <targets>`, or `-Dbloomberto.selfTest=server|client|all`):
   28 automatic checks of every feature on a real game. CI runs it on every push. Fuzz tests for every parser.

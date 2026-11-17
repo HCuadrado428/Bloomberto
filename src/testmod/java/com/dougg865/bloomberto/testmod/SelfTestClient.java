@@ -46,6 +46,11 @@ public final class SelfTestClient {
     private static BlockPos totemA;
     private static BlockPos totemB;
     private static List<PostEffect> effects;
+    private static long framesBefore;
+    private static int effectIndex = -1;
+    private static long effectFrame;
+    private static int drawnEffects;
+    private static int effectTicks;
 
     private SelfTestClient() {
     }
@@ -94,10 +99,14 @@ public final class SelfTestClient {
                 CameraShake.shared().stop();
                 CameraZoom.shared().zoomTo(1f, 0, null);
                 effects = PostEffects.all();
+                framesBefore = PostEffects.framesDrawn();
             }
             case 50 -> {
-                check("post effects ran without failing", () -> {
-                    expect(!PostEffects.isSuppressed(), "suppressed by a shader pack");
+                check("post effects ran without failing" + (PostEffects.isSuppressed() ? " (over a shader pack)" : ""), () -> {
+                    expect(drawnEffects == effects.size(), "only " + drawnEffects + " of " + effects.size() + " effects were drawn");
+                    for (PostEffect e : effects) {
+                        e.disable();
+                    }
                     for (PostEffect e : PostEffects.all()) {
                         expect(!PostEffects.hasFailed(e), e.getClass().getSimpleName() + " failed to build");
                     }
@@ -139,14 +148,24 @@ public final class SelfTestClient {
                 mc.reloadResourcePacks().thenRun(() -> reloadDone = true);
             }
             default -> {
-                if (t > 5 && t < 50 && effects != null) {
-                    // each effect on for 3 ticks, one after another, so each one is really drawn
-                    int i = (t - 6) / 3;
-                    for (PostEffect e : effects) {
-                        e.disable();
+                if (t > 5 && t < 50 && effects != null && effectIndex < effects.size()) {
+                    // one effect at a time; move on only once a frame has really been drawn with it (slow GPUs draw few frames)
+                    if (effectIndex < 0 || PostEffects.framesDrawn() > effectFrame) {
+                        if (effectIndex >= 0) {
+                            effects.get(effectIndex).disable();
+                            drawnEffects++;
+                        }
+                        effectIndex++;
+                        if (effectIndex < effects.size()) {
+                            effectFrame = PostEffects.framesDrawn();
+                            effects.get(effectIndex).setIntensity(1f).enable();
+                        }
                     }
-                    if (i < effects.size()) {
-                        effects.get(i).setIntensity(1f).enable();
+                    if (++effectTicks > 2400) {
+                        effectIndex = effects.size(); // give up after 2 minutes; the check below then reports it
+                    }
+                    if (effectIndex < effects.size()) {
+                        ticks = t; // hold the clock until every effect was drawn
                     }
                 }
                 if (t > 70 && reloadDone && !shaderOkAfterReload && t < 600) {
